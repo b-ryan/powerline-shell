@@ -57,14 +57,40 @@ class Powerline:
 
 def add_git_segment(powerline):
     try:
-        cmd = "git branch 2> /dev/null | grep -e '\*'"
+        #cmd = "git branch 2> /dev/null | grep -e '\*'"
         p1 = subprocess.Popen(['git', 'branch'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        p2 = subprocess.Popen(['grep', '-e', '\*'], stdin=p1.stdout,
-            stdout=subprocess.PIPE)
+        p2 = subprocess.Popen(['grep', '-e', '\*'], stdin=p1.stdout, stdout=subprocess.PIPE)
         output = p2.communicate()[0].strip()
         if len(output) > 0:
           branch = output.rstrip()[2:]
           p.append(' ' + branch + ' ', 22, 148)
+    except subprocess.CalledProcessError:
+      pass
+
+def add_svn_segment(powerline):
+    '''svn info:
+        First column: Says if item was added, deleted, or otherwise changed
+        ' ' no modifications
+        'A' Added
+        'C' Conflicted
+        'D' Deleted
+        'I' Ignored
+        'M' Modified
+        'R' Replaced
+        'X' an unversioned directory created by an externals definition
+        '?' item is not under version control
+        '!' item is missing (removed by non-svn command) or incomplete
+         '~' versioned item obstructed by some item of a different kind
+    '''
+    #TODO: Color segment based on above status codes
+    try:
+        #cmd = '"svn status | grep -c "^[ACDIMRX\!\~]"'
+        p1 = subprocess.Popen(['svn', 'status'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p2 = subprocess.Popen(['grep', '-c', '^[ACDIMRX\!\~]'], stdin=p1.stdout, stdout=subprocess.PIPE)
+        output = p2.communicate()[0].strip()
+        if len(output) > 0 and int(output) > 0:
+          changes = output.strip()
+          p.append(' ' + changes + ' ', 22, 148)
     except subprocess.CalledProcessError:
       pass
 
@@ -99,5 +125,6 @@ if __name__ == '__main__':
     p.append(' \h ', 250, 238)
     add_cwd_segment(p)
     add_git_segment(p)
+    add_svn_segment(p)
     add_root_indicator(p, sys.argv[1] if len(sys.argv) > 1 else 0)
     print p.draw(),
