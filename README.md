@@ -11,15 +11,15 @@ I implemented a [Powerline](https://github.com/Lokaltog/vim-powerline) like prom
 
 # Setup
 
-* This script users ANSI color codes to display colors in a terminal. These are notoriously non-portable, so may not work for you out of the box, but try setting your $TERM to xterm-256color, because that works for me.
+* This script uses ANSI color codes to display colors in a terminal. These are notoriously non-portable, so may not work for you out of the box, but try setting your $TERM to xterm-256color, because that works for me.
 
 * Patch the font you use for your terminal: see (https://github.com/Lokaltog/vim-powerline/wiki/Patched-fonts)
 
 * Now add the following to your .bashrc:
 
-    function _update_ps1()
-    {
-       export PS1="$(~/powerline-bash.py $?)"
-    }
+        function _update_ps1()
+        {
+           export PS1="$(~/powerline-bash.py $?)"
+        }
 
-    export PROMPT_COMMAND="_update_ps1"
+        export PROMPT_COMMAND="_update_ps1"
