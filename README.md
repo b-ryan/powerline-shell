@@ -15,6 +15,13 @@ I implemented a [Powerline](https://github.com/Lokaltog/vim-powerline) like prom
 
 * Patch the font you use for your terminal: see (https://github.com/Lokaltog/vim-powerline/wiki/Patched-fonts)
 
+* Clone this repository somewhere:
+        git clone https://github.com/milkbikis/powerline-bash
+
+* Create a symlink to the python script in your home:
+        ln -s <path/to/powerline-bash.py> ~/powerline-bash.py
+  If you don't want the symlink, just modify the path in the .bashrc command below
+
 * Now add the following to your .bashrc:
 
         function _update_ps1()
