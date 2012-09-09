@@ -13,7 +13,7 @@ I implemented a [Powerline](https://github.com/Lokaltog/vim-powerline) like prom
 
 * This script uses ANSI color codes to display colors in a terminal. These are notoriously non-portable, so may not work for you out of the box, but try setting your $TERM to xterm-256color, because that works for me.
 
-* Patch the font you use for your terminal: see (https://github.com/Lokaltog/vim-powerline/wiki/Patched-fonts)
+* Patch the font you use for your terminal: see https://github.com/Lokaltog/vim-powerline/wiki/Patched-fonts
 
 * Clone this repository somewhere:
 
