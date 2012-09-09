@@ -91,6 +91,9 @@ def add_svn_segment(powerline):
         if len(output) > 0 and int(output) > 0:
           changes = output.strip()
           p.append(' ' + changes + ' ', 22, 148)
+    # if svn or grep is not installed on the machine
+    except OSError:
+      pass
     except subprocess.CalledProcessError:
       pass
 
