@@ -78,7 +78,7 @@ def add_git_segment(powerline):
           if is_git_clean():
               bg = green
               fg = 0
-          p.append(' ' + branch + ' ', fg, bg)
+          powerline.append(' ' + branch + ' ', fg, bg)
     # if git or grep is not installed on the machine
     except OSError:
       pass
@@ -108,7 +108,7 @@ def add_svn_segment(powerline):
         output = p2.communicate()[0].strip()
         if len(output) > 0 and int(output) > 0:
           changes = output.strip()
-          p.append(' ' + changes + ' ', 22, 148)
+          powerline.append(' ' + changes + ' ', 22, 148)
     # if svn or grep is not installed on the machine
     except OSError:
       pass
@@ -117,7 +117,7 @@ def add_svn_segment(powerline):
 
 # Show working directory with fancy separators
 def add_cwd_segment(powerline):
-    #p.append(' \w ', 15, 237)
+    #powerline.append(' \w ', 15, 237)
     home = os.getenv('HOME')
     cwd = os.getenv('PWD')
 
@@ -138,7 +138,7 @@ def add_root_indicator(powerline, error):
     if int(error) != 0:
         fg = 15
         bg = 161
-    p.append(' \$ ', fg, bg)
+    powerline.append(' \$ ', fg, bg)
 
 if __name__ == '__main__':
     p = Powerline()
