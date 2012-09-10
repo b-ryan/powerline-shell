@@ -148,4 +148,4 @@ if __name__ == '__main__':
     add_git_segment(p)
     add_svn_segment(p)
     add_root_indicator(p, sys.argv[1] if len(sys.argv) > 1 else 0)
-    print p.draw(),
+    sys.stdout.write(p.draw())
