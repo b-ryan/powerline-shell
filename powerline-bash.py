@@ -55,13 +55,11 @@ class Powerline:
         line += self.reset + self.fgcolor(s['separator_fg']) + s['separator'] + self.reset
         return line
 
-def is_get_clean():
+def is_git_clean():
     # [[ $(git status 2> /dev/null | tail -n1) != "nothing to commit (working directory clean)" ]] && echo "*"
     try:
         output = os.popen('git status 2> /dev/null | tail -n1 | grep "nothing to commit (working directory clean)" ').read()
-        if len(output) > 0:
-            return 1
-        return 0
+        return len(output) > 0
     except subprocess.CalledProcessError:
         return 0
 
@@ -76,8 +74,8 @@ def add_git_segment(powerline):
         if len(output) > 0:
           branch = output.rstrip()[2:]
           bg = red
-          fg = 0
-          if is_get_clean():
+          fg = 15
+          if is_git_clean():
               bg = green
               fg = 0
           p.append(' ' + branch + ' ', fg, bg)
