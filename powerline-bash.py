@@ -79,6 +79,9 @@ def add_git_segment(powerline):
               bg = green
               fg = 0
           p.append(' ' + branch + ' ', fg, bg)
+    # if git or grep is not installed on the machine
+    except OSError:
+      pass
     except subprocess.CalledProcessError:
       pass
 
