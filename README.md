@@ -1,11 +1,11 @@
 Powerline style prompt for Bash
 ===============================
 
-I implemented a [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash:
+A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash:
 
 ![MacVim+Solarized+Powerline+CtrlP](https://raw.github.com/milkbikis/dotfiles-mac/master/bash-powerline-screenshot.png)
 
-*  Displays the current git branch
+*  Displays the current git branch which changes background color when the branch is dirty
 *  Changes color if the last command exited with a failure code
 *  It's all done in a Python script, so you could go nuts with it
 
