@@ -88,7 +88,11 @@ def add_git_segment(powerline):
     except subprocess.CalledProcessError:
       return False
     return True
-    
+
+
+def check_svn(path):
+  return os.path.exists(os.path.join(path,'.svn'))
+
 def add_svn_segment(powerline):
     '''svn info:
         First column: Says if item was added, deleted, or otherwise changed
@@ -157,6 +161,6 @@ if __name__ == '__main__':
     not_repo = True
   
     not_repo = not add_git_segment(p)
-    if not_repo: add_svn_segment(p)
+    if not_repo and check_svn(os.path.curdir): add_svn_segment(p)
     add_root_indicator(p, sys.argv[1] if len(sys.argv) > 1 else 0)
     sys.stdout.write(p.draw())
