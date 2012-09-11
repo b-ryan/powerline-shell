@@ -84,10 +84,11 @@ def add_git_segment(powerline):
           powerline.append(' %s ' % branch, fg, bg)
     # if git or grep is not installed on the machine
     except OSError:
-      pass
+      return False
     except subprocess.CalledProcessError:
-      pass
-
+      return False
+    return True
+    
 def add_svn_segment(powerline):
     '''svn info:
         First column: Says if item was added, deleted, or otherwise changed
@@ -148,7 +149,10 @@ if __name__ == '__main__':
     p.append(' \\u ', 250, 240)
     p.append(' \\h ', 250, 238)
     add_cwd_segment(p)
-    add_git_segment(p)
-    add_svn_segment(p)
+    
+    not_repo = True
+  
+    not_repo = not add_git_segment(p)
+    if not_repo: add_svn_segment(p)
     add_root_indicator(p, sys.argv[1] if len(sys.argv) > 1 else 0)
     sys.stdout.write(p.draw())
