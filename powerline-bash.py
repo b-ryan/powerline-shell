@@ -132,6 +132,10 @@ def add_cwd_segment(powerline):
       cwd = cwd[1:]
 
     names = cwd.split('/')
+    if len(names) > 6:
+        names = names[-6:]
+        names[0] = '…'
+    
     for n in names[:-1]:
       powerline.append(' %s ' % n, 250, 237, Powerline.separator_thin, 244)
     powerline.append(' %s ' % names[-1], 254, 237)
