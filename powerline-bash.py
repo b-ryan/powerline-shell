@@ -7,13 +7,11 @@ import sys
 
 class Powerline:
     separator = '⮀'
-    separator_thin="⮁"
-    ESC = '\\e'
-    LSQ = '\\['
-    RSQ = '\\]'
-    clear_fg = LSQ + ESC + '[38;0m' + RSQ
-    clear_bg = LSQ + ESC + '[48;0m' + RSQ
-    reset = LSQ + ESC + '[0m' + RSQ
+    separator_thin='⮁'
+    LSQESCRSQ = '\\[\\e%s\\]'
+    clear_fg = LSQESCRSQ % '[38;0m'
+    clear_bg = LSQESCRSQ % '[48;0m'
+    reset = LSQESCRSQ % '[0m'
 
     def __init__(self):
         self.segments = []
@@ -24,16 +22,16 @@ class Powerline:
       if separator_fg == None:
         separator_fg = bg
       segment = {
-          'content': str(content),
-          'fg': str(fg),
-          'bg': str(bg),
-          'separator': str(separator),
-          'separator_fg': str(separator_fg)
+          'content': content,
+          'fg': fg,
+          'bg': bg,
+          'separator': separator,
+          'separator_fg': separator_fg
           }
       self.segments.append(segment)
 
     def color(self, prefix, code):
-        return self.LSQ + self.ESC + '[' + prefix + ';5;' + code + 'm' + self.RSQ
+        return self.LSQESCRSQ % ('[%s;5;%sm' % (prefix, code))
 
     def fgcolor(self, code):
         return self.color('38', code)
@@ -42,18 +40,23 @@ class Powerline:
         return self.color('48', code)
 
     def draw(self):
-        i=0
-        line=''
-        while i < len(self.segments)-1:
-            s = self.segments[i]
-            ns = self.segments[i+1]
-            line += self.fgcolor(s['fg']) + self.bgcolor(s['bg']) + s['content']
-            line += self.fgcolor(s['separator_fg']) + self.bgcolor(ns['bg']) + s['separator']
-            i += 1
-        s = self.segments[i]
-        line += self.fgcolor(s['fg']) + self.bgcolor(s['bg']) + s['content']
-        line += self.reset + self.fgcolor(s['separator_fg']) + s['separator'] + self.reset
-        return line
+        line = ''.join(''.join((self.fgcolor(s['fg']), 
+                                self.bgcolor(s['bg']),
+                                s['content'],
+                                self.fgcolor(s['separator_fg']), 
+                                self.bgcolor(self.segments[i+1]['bg']), 
+                                s['separator']))
+                         for i, s in enumerate(self.segments[:-1]))
+        
+        s = self.segments[-1]
+        return ''.join([line,
+                        self.fgcolor(s['fg']), 
+                        self.bgcolor(s['bg']), 
+                        s['content'],
+                        self.reset, 
+                        self.fgcolor(s['separator_fg']), 
+                        s['separator'], 
+                        self.reset])
 
 def is_git_clean():
     # [[ $(git status 2> /dev/null | tail -n1) != "nothing to commit (working directory clean)" ]] && echo "*"
@@ -78,7 +81,7 @@ def add_git_segment(powerline):
           if is_git_clean():
               bg = green
               fg = 0
-          powerline.append(' ' + branch + ' ', fg, bg)
+          powerline.append(' %s ' % branch, fg, bg)
     # if git or grep is not installed on the machine
     except OSError:
       pass
@@ -108,7 +111,7 @@ def add_svn_segment(powerline):
         output = p2.communicate()[0].strip()
         if len(output) > 0 and int(output) > 0:
           changes = output.strip()
-          powerline.append(' ' + changes + ' ', 22, 148)
+          powerline.append(' %s ' % changes, 22, 148)
     # if svn or grep is not installed on the machine
     except OSError:
       pass
@@ -129,8 +132,8 @@ def add_cwd_segment(powerline):
 
     names = cwd.split('/')
     for n in names[:-1]:
-      powerline.append(' ' + n + ' ', 250, 237, Powerline.separator_thin, 244)
-    powerline.append(' ' + names[-1] + ' ', 254, 237)
+      powerline.append(' %s ' % n, 250, 237, Powerline.separator_thin, 244)
+    powerline.append(' %s ' % names[-1], 254, 237)
 
 def add_root_indicator(powerline, error):
     bg = 236
