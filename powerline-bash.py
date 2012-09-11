@@ -8,9 +8,9 @@ import sys
 class Powerline:
     separator = '⮀'
     separator_thin="⮁"
-    ESC = '\e'
-    LSQ = '\['
-    RSQ = '\]'
+    ESC = '\\e'
+    LSQ = '\\['
+    RSQ = '\\]'
     clear_fg = LSQ + ESC + '[38;0m' + RSQ
     clear_bg = LSQ + ESC + '[48;0m' + RSQ
     reset = LSQ + ESC + '[0m' + RSQ
@@ -67,9 +67,9 @@ def add_git_segment(powerline):
     green = 148
     red = 161
     try:
-        #cmd = "git branch 2> /dev/null | grep -e '\*'"
+        #cmd = "git branch 2> /dev/null | grep -e '\\*'"
         p1 = subprocess.Popen(['git', 'branch'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        p2 = subprocess.Popen(['grep', '-e', '\*'], stdin=p1.stdout, stdout=subprocess.PIPE)
+        p2 = subprocess.Popen(['grep', '-e', '\\*'], stdin=p1.stdout, stdout=subprocess.PIPE)
         output = p2.communicate()[0].strip()
         if len(output) > 0:
           branch = output.rstrip()[2:]
@@ -102,9 +102,9 @@ def add_svn_segment(powerline):
     '''
     #TODO: Color segment based on above status codes
     try:
-        #cmd = '"svn status | grep -c "^[ACDIMRX\!\~]"'
+        #cmd = '"svn status | grep -c "^[ACDIMRX\\!\\~]"'
         p1 = subprocess.Popen(['svn', 'status'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        p2 = subprocess.Popen(['grep', '-c', '^[ACDIMRX\!\~]'], stdin=p1.stdout, stdout=subprocess.PIPE)
+        p2 = subprocess.Popen(['grep', '-c', '^[ACDIMRX\\!\\~]'], stdin=p1.stdout, stdout=subprocess.PIPE)
         output = p2.communicate()[0].strip()
         if len(output) > 0 and int(output) > 0:
           changes = output.strip()
@@ -117,7 +117,7 @@ def add_svn_segment(powerline):
 
 # Show working directory with fancy separators
 def add_cwd_segment(powerline):
-    #powerline.append(' \w ', 15, 237)
+    #powerline.append(' \\w ', 15, 237)
     home = os.getenv('HOME')
     cwd = os.getenv('PWD')
 
@@ -138,12 +138,12 @@ def add_root_indicator(powerline, error):
     if int(error) != 0:
         fg = 15
         bg = 161
-    powerline.append(' \$ ', fg, bg)
+    powerline.append(' \\$ ', fg, bg)
 
 if __name__ == '__main__':
     p = Powerline()
-    p.append(' \u ', 250, 240)
-    p.append(' \h ', 250, 238)
+    p.append(' \\u ', 250, 240)
+    p.append(' \\h ', 250, 238)
     add_cwd_segment(p)
     add_git_segment(p)
     add_svn_segment(p)
