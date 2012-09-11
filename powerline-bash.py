@@ -49,14 +49,14 @@ class Powerline:
                          for i, s in enumerate(self.segments[:-1]))
         
         s = self.segments[-1]
-        return ''.join([line,
+        return ''.join((line,
                         self.fgcolor(s['fg']), 
                         self.bgcolor(s['bg']), 
                         s['content'],
                         self.reset, 
                         self.fgcolor(s['separator_fg']), 
                         s['separator'], 
-                        self.reset])
+                        self.reset))
 
 def is_git_clean():
     # [[ $(git status 2> /dev/null | tail -n1) != "nothing to commit (working directory clean)" ]] && echo "*"
