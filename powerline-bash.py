@@ -142,8 +142,8 @@ def add_root_indicator(powerline, error):
 
 if __name__ == '__main__':
     p = Powerline()
-    p.append(' \u ', 250, 240)
-    p.append(' \h ', 250, 238)
+    #p.append(' \u ', 250, 240)
+    #p.append(' \h ', 250, 238)
     add_cwd_segment(p)
     add_git_segment(p)
     add_svn_segment(p)
