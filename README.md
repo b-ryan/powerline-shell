@@ -7,6 +7,7 @@ A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash:
 
 *  Displays the current git branch which changes background color when the branch is dirty
 *  Changes color if the last command exited with a failure code
+*  If you're too deep into a directory tree, shortens the displayed path with an ellipsis
 *  It's all done in a Python script, so you could go nuts with it
 
 # Setup
