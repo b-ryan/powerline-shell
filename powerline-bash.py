@@ -94,6 +94,13 @@ def is_git_clean():
     output = os.popen('git status 2> /dev/null | tail -n1 | grep "nothing to commit (working directory clean)" ').read()
     return len(output) > 0
 
+def git_has_untracked_files():
+    try:
+        output = os.popen('git status 2> /dev/null | grep "Untracked files" ').read()
+        return len(output) > 0
+    except subprocess.CalledProcessError:
+        return 0
+
 def add_git_segment(powerline, cwd):
     green = 148
     red = 161
@@ -104,6 +111,8 @@ def add_git_segment(powerline, cwd):
     if len(output) == 0:
         return false
     branch = output.rstrip()[2:]
+    if git_has_untracked_files():
+        branch += ' +'
     bg = red
     fg = 15
     if is_git_clean():
