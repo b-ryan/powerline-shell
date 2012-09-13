@@ -56,6 +56,32 @@ class Powerline:
                         s['separator'],
                         self.reset))
 
+def is_hg_clean():
+    try:
+        output = os.popen("hg status 2> /dev/null | grep -P '^[^?]' | tail -n1").read()
+        return len(output) == 0
+    except subprocess.CalledProcessError:
+        return 0
+
+def add_hg_segment(powerline):
+    green = 148
+    red = 161
+    try:
+        output = os.popen('hg branch 2> /dev/null').read()
+        if len(output) > 0:
+          branch = output.rstrip()
+          bg = red
+          fg = 15
+          if is_hg_clean():
+              bg = green
+              fg = 0
+          powerline.append(' %s ' % branch, fg, bg)
+        else:
+          return False
+    except OSError:
+      return False
+    return True
+
 def is_git_clean():
     # [[ $(git status 2> /dev/null | tail -n1) != "nothing to commit (working directory clean)" ]] && echo "*"
     try:
@@ -80,6 +106,8 @@ def add_git_segment(powerline):
               bg = green
               fg = 0
           powerline.append(' %s ' % branch, fg, bg)
+        else:
+          return False
     # if git or grep is not installed on the machine
     except OSError:
       return False
@@ -158,6 +186,8 @@ if __name__ == '__main__':
 
     not_git_repo = not add_git_segment(p)
     if not_git_repo:
-        add_svn_segment(p)
+        not_hg_repo = not add_hg_segment(p)
+        if not_hg_repo:
+            add_svn_segment(p)
     add_root_indicator(p, sys.argv[1] if len(sys.argv) > 1 else 0)
     sys.stdout.write(p.draw())
