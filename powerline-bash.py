@@ -89,17 +89,16 @@ def add_hg_segment(powerline, cwd):
     powerline.append(Segment(' %s ' % branch, fg, bg))
     return True
 
-def is_git_clean():
-    # [[ $(git status 2> /dev/null | tail -n1) != "nothing to commit (working directory clean)" ]] && echo "*"
-    output = os.popen('git status 2> /dev/null | tail -n1 | grep "nothing to commit (working directory clean)" ').read()
-    return len(output) > 0
-
-def git_has_untracked_files():
-    try:
-        output = os.popen('git status 2> /dev/null | grep "Untracked files" ').read()
-        return len(output) > 0
-    except subprocess.CalledProcessError:
-        return 0
+def get_git_status():
+    has_pending_commits = True
+    has_untracked_files = False
+    output = subprocess.Popen(['git', 'status'], stdout=subprocess.PIPE).communicate()[0]
+    for line in output.split('\n'):
+        if line.find('nothing to commit (working directory clean)') >= 0:
+            has_pending_commits = False
+        if line.find('Untracked files') >= 0:
+            has_untracked_files = True
+    return has_pending_commits, has_untracked_files
 
 def add_git_segment(powerline, cwd):
     green = 148
@@ -111,13 +110,14 @@ def add_git_segment(powerline, cwd):
     if len(output) == 0:
         return false
     branch = output.rstrip()[2:]
-    if git_has_untracked_files():
+    has_pending_commits, has_untracked_files = get_git_status()
+    if has_untracked_files:
         branch += ' +'
-    bg = red
-    fg = 15
-    if is_git_clean():
-        bg = green
-        fg = 0
+    bg = green
+    fg = 0
+    if has_pending_commits:
+        bg = red
+        fg = 15
     powerline.append(Segment(' %s ' % branch, fg, bg))
     return True
 
