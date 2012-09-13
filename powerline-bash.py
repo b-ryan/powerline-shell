@@ -14,20 +14,6 @@ class Powerline:
     def __init__(self):
         self.segments = []
 
-    def append(self, content, fg, bg, separator=None, separator_fg=None):
-      if separator == None:
-        separator = self.separator
-      if separator_fg == None:
-        separator_fg = bg
-      segment = {
-          'content': content,
-          'fg': fg,
-          'bg': bg,
-          'separator': separator,
-          'separator_fg': separator_fg
-          }
-      self.segments.append(segment)
-
     def color(self, prefix, code):
         return self.LSQESCRSQ % ('[%s;5;%sm' % (prefix, code))
 
@@ -37,24 +23,34 @@ class Powerline:
     def bgcolor(self, code):
         return self.color('48', code)
 
-    def draw(self):
-        line = ''.join(''.join((self.fgcolor(s['fg']),
-                                self.bgcolor(s['bg']),
-                                s['content'],
-                                self.fgcolor(s['separator_fg']),
-                                self.bgcolor(self.segments[i+1]['bg']),
-                                s['separator']))
-                         for i, s in enumerate(self.segments[:-1]))
+    def append(self, segment):
+        self.segments.append(segment)
 
-        s = self.segments[-1]
-        return ''.join((line,
-                        self.fgcolor(s['fg']),
-                        self.bgcolor(s['bg']),
-                        s['content'],
-                        self.reset,
-                        self.fgcolor(s['separator_fg']),
-                        s['separator'],
-                        self.reset))
+    def draw(self):
+        return (''.join((s[0].draw(self, s[1]) for s in zip(self.segments, self.segments[1:]+[None])))
+            + self.reset)
+
+class Segment:
+    def __init__(self, content, fg, bg, separator=Powerline.separator, separator_fg=None):
+        self.content = content
+        self.fg = fg
+        self.bg = bg
+        self.separator = separator
+        self.separator_fg = separator_fg or bg
+
+    def draw(self, powerline, next_segment=None):
+        if next_segment:
+            separator_bg = powerline.bgcolor(next_segment.bg)
+        else:
+            separator_bg = powerline.reset
+
+        return ''.join((
+            powerline.fgcolor(self.fg),
+            powerline.bgcolor(self.bg),
+            self.content,
+            separator_bg,
+            powerline.fgcolor(self.separator_fg),
+            self.separator))
 
 def is_hg_clean():
     try:
@@ -63,23 +59,23 @@ def is_hg_clean():
     except subprocess.CalledProcessError:
         return 0
 
-def add_hg_segment(powerline):
+def add_hg_segment(powerline, cwd):
     green = 148
     red = 161
     try:
         output = os.popen('hg branch 2> /dev/null').read()
         if len(output) > 0:
-          branch = output.rstrip()
-          bg = red
-          fg = 15
-          if is_hg_clean():
-              bg = green
-              fg = 0
-          powerline.append(' %s ' % branch, fg, bg)
+            branch = output.rstrip()
+            bg = red
+            fg = 15
+            if is_hg_clean():
+                bg = green
+                fg = 0
+            powerline.append(Segment(' %s ' % branch, fg, bg))
         else:
-          return False
+            return False
     except OSError:
-      return False
+        return False
     return True
 
 def is_git_clean():
@@ -90,7 +86,9 @@ def is_git_clean():
     except subprocess.CalledProcessError:
         return 0
 
-def add_git_segment(powerline):
+def add_git_segment(powerline, cwd):
+    if not os.path.exists(os.path.join(cwd,'.git')):
+        return
     green = 148
     red = 161
     try:
@@ -98,28 +96,23 @@ def add_git_segment(powerline):
         p1 = subprocess.Popen(['git', 'branch'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         p2 = subprocess.Popen(['grep', '-e', '\\*'], stdin=p1.stdout, stdout=subprocess.PIPE)
         output = p2.communicate()[0].strip()
-        if len(output) > 0:
-          branch = output.rstrip()[2:]
-          bg = red
-          fg = 15
-          if is_git_clean():
-              bg = green
-              fg = 0
-          powerline.append(' %s ' % branch, fg, bg)
-        else:
-          return False
+        if len(output) == 0: return false
+        branch = output.rstrip()[2:]
+        bg = red
+        fg = 15
+        if is_git_clean():
+            bg = green
+            fg = 0
+        powerline.append(Segment(' %s ' % branch, fg, bg))
     # if git or grep is not installed on the machine
     except OSError:
-      return False
+        return False
     except subprocess.CalledProcessError:
-      return False
+        return False
     return True
 
-def check_svn(path):
-  return os.path.exists(os.path.join(path,'.svn'))
-
-def add_svn_segment(powerline):
-    if not check_svn(os.path.curdir):
+def add_svn_segment(powerline, cwd):
+    if not os.path.exists(os.path.join(cwd,'.svn')):
         return
     '''svn info:
         First column: Says if item was added, deleted, or otherwise changed
@@ -142,33 +135,34 @@ def add_svn_segment(powerline):
         p2 = subprocess.Popen(['grep', '-c', '^[ACDIMRX\\!\\~]'], stdin=p1.stdout, stdout=subprocess.PIPE)
         output = p2.communicate()[0].strip()
         if len(output) > 0 and int(output) > 0:
-          changes = output.strip()
-          powerline.append(' %s ' % changes, 22, 148)
+            changes = output.strip()
+            powerline.append(Segment(' %s ' % changes, 22, 148))
     # if svn or grep is not installed on the machine
     except OSError:
-      pass
+        return False
     except subprocess.CalledProcessError:
-      pass
+        return False
+    return True
 
 # Show working directory with fancy separators
-def add_cwd_segment(powerline, maxdepth):
+def add_cwd_segment(powerline, cwd, maxdepth):
     #powerline.append(' \\w ', 15, 237)
     home = os.getenv('HOME')
     cwd = os.getenv('PWD')
 
     if cwd.find(home) == 0:
-      cwd = cwd.replace(home, '~', 1)
+        cwd = cwd.replace(home, '~', 1)
 
     if cwd[0] == '/':
-      cwd = cwd[1:]
+        cwd = cwd[1:]
 
     names = cwd.split('/')
     if len(names) > maxdepth:
         names = names[:2] + ['⋯ '] + names[2-maxdepth:]
 
     for n in names[:-1]:
-      powerline.append(' %s ' % n, 250, 237, Powerline.separator_thin, 244)
-    powerline.append(' %s ' % names[-1], 254, 237)
+        powerline.append(Segment(' %s ' % n, 250, 237, Powerline.separator_thin, 244))
+    powerline.append(Segment(' %s ' % names[-1], 254, 237))
 
 def add_root_indicator(powerline, error):
     bg = 236
@@ -176,18 +170,17 @@ def add_root_indicator(powerline, error):
     if int(error) != 0:
         fg = 15
         bg = 161
-    powerline.append(' \\$ ', fg, bg)
+    powerline.append(Segment(' \\$ ', fg, bg))
 
 if __name__ == '__main__':
     p = Powerline()
-    #p.append(' \\u ', 250, 240)
-    #p.append(' \\h ', 250, 238)
-    add_cwd_segment(p, 6)
+    cwd = os.getcwd()
+    p.append(Segment(' \\u ', 250, 240))
+    p.append(Segment(' \\h ', 250, 238))
+    add_cwd_segment(p, cwd, 6)
 
-    not_git_repo = not add_git_segment(p)
-    if not_git_repo:
-        not_hg_repo = not add_hg_segment(p)
-        if not_hg_repo:
-            add_svn_segment(p)
+    for add_repo_segment in [add_git_segment, add_svn_segment, add_hg_segment]:
+        if add_repo_segment(p, cwd):
+            break
     add_root_indicator(p, sys.argv[1] if len(sys.argv) > 1 else 0)
     sys.stdout.write(p.draw())
