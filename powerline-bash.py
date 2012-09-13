@@ -95,8 +95,6 @@ def is_git_clean():
     return len(output) > 0
 
 def add_git_segment(powerline, cwd):
-    if not os.path.exists(os.path.join(cwd,'.git')):
-        return False
     green = 148
     red = 161
     #cmd = "git branch 2> /dev/null | grep -e '\\*'"
