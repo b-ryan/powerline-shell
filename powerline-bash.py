@@ -86,6 +86,13 @@ def is_git_clean():
     except subprocess.CalledProcessError:
         return 0
 
+def git_has_untracked_files():
+    try:
+        output = os.popen('git status 2> /dev/null | grep "Untracked files" ').read()
+        return len(output) > 0
+    except subprocess.CalledProcessError:
+        return 0
+
 def add_git_segment(powerline, cwd):
     if not os.path.exists(os.path.join(cwd,'.git')):
         return
@@ -98,6 +105,8 @@ def add_git_segment(powerline, cwd):
         output = p2.communicate()[0].strip()
         if len(output) == 0: return false
         branch = output.rstrip()[2:]
+        if git_has_untracked_files():
+            branch += ' +'
         bg = red
         fg = 15
         if is_git_clean():
