@@ -52,63 +52,66 @@ class Segment:
             powerline.fgcolor(self.separator_fg),
             self.separator))
 
+def add_cwd_segment(powerline, cwd, maxdepth):
+    #powerline.append(' \\w ', 15, 237)
+    home = os.getenv('HOME')
+    cwd = os.getenv('PWD')
+
+    if cwd.find(home) == 0:
+        cwd = cwd.replace(home, '~', 1)
+
+    if cwd[0] == '/':
+        cwd = cwd[1:]
+
+    names = cwd.split('/')
+    if len(names) > maxdepth:
+        names = names[:2] + ['⋯ '] + names[2-maxdepth:]
+
+    for n in names[:-1]:
+        powerline.append(Segment(' %s ' % n, 250, 237, Powerline.separator_thin, 244))
+    powerline.append(Segment(' %s ' % names[-1], 254, 237))
+
 def is_hg_clean():
-    try:
-        output = os.popen("hg status 2> /dev/null | grep -P '^[^?]' | tail -n1").read()
-        return len(output) == 0
-    except subprocess.CalledProcessError:
-        return 0
+    output = os.popen("hg status 2> /dev/null | grep '^?' | tail -n1").read()
+    return len(output) == 0
 
 def add_hg_segment(powerline, cwd):
     green = 148
     red = 161
-    try:
-        output = os.popen('hg branch 2> /dev/null').read()
-        if len(output) > 0:
-            branch = output.rstrip()
-            bg = red
-            fg = 15
-            if is_hg_clean():
-                bg = green
-                fg = 0
-            powerline.append(Segment(' %s ' % branch, fg, bg))
-        else:
-            return False
-    except OSError:
+    branch = os.popen('hg branch 2> /dev/null').read().rstrip()
+    if len(branch) == 0:
         return False
+    bg = red
+    fg = 15
+    if is_hg_clean():
+        bg = green
+        fg = 0
+    powerline.append(Segment(' %s ' % branch, fg, bg))
     return True
 
 def is_git_clean():
     # [[ $(git status 2> /dev/null | tail -n1) != "nothing to commit (working directory clean)" ]] && echo "*"
-    try:
-        output = os.popen('git status 2> /dev/null | tail -n1 | grep "nothing to commit (working directory clean)" ').read()
-        return len(output) > 0
-    except subprocess.CalledProcessError:
-        return 0
+    output = os.popen('git status 2> /dev/null | tail -n1 | grep "nothing to commit (working directory clean)" ').read()
+    return len(output) > 0
 
 def add_git_segment(powerline, cwd):
     if not os.path.exists(os.path.join(cwd,'.git')):
-        return
+        return False
     green = 148
     red = 161
-    try:
-        #cmd = "git branch 2> /dev/null | grep -e '\\*'"
-        p1 = subprocess.Popen(['git', 'branch'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        p2 = subprocess.Popen(['grep', '-e', '\\*'], stdin=p1.stdout, stdout=subprocess.PIPE)
-        output = p2.communicate()[0].strip()
-        if len(output) == 0: return false
-        branch = output.rstrip()[2:]
-        bg = red
-        fg = 15
-        if is_git_clean():
-            bg = green
-            fg = 0
-        powerline.append(Segment(' %s ' % branch, fg, bg))
-    # if git or grep is not installed on the machine
-    except OSError:
-        return False
-    except subprocess.CalledProcessError:
-        return False
+    #cmd = "git branch 2> /dev/null | grep -e '\\*'"
+    p1 = subprocess.Popen(['git', 'branch'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p2 = subprocess.Popen(['grep', '-e', '\\*'], stdin=p1.stdout, stdout=subprocess.PIPE)
+    output = p2.communicate()[0].strip()
+    if len(output) == 0:
+        return false
+    branch = output.rstrip()[2:]
+    bg = red
+    fg = 15
+    if is_git_clean():
+        bg = green
+        fg = 0
+    powerline.append(Segment(' %s ' % branch, fg, bg))
     return True
 
 def add_svn_segment(powerline, cwd):
@@ -137,32 +140,20 @@ def add_svn_segment(powerline, cwd):
         if len(output) > 0 and int(output) > 0:
             changes = output.strip()
             powerline.append(Segment(' %s ' % changes, 22, 148))
-    # if svn or grep is not installed on the machine
     except OSError:
         return False
     except subprocess.CalledProcessError:
         return False
     return True
 
-# Show working directory with fancy separators
-def add_cwd_segment(powerline, cwd, maxdepth):
-    #powerline.append(' \\w ', 15, 237)
-    home = os.getenv('HOME')
-    cwd = os.getenv('PWD')
-
-    if cwd.find(home) == 0:
-        cwd = cwd.replace(home, '~', 1)
-
-    if cwd[0] == '/':
-        cwd = cwd[1:]
-
-    names = cwd.split('/')
-    if len(names) > maxdepth:
-        names = names[:2] + ['⋯ '] + names[2-maxdepth:]
-
-    for n in names[:-1]:
-        powerline.append(Segment(' %s ' % n, 250, 237, Powerline.separator_thin, 244))
-    powerline.append(Segment(' %s ' % names[-1], 254, 237))
+def add_repo_segment(powerline, cwd):
+    for add_repo_segment in [add_git_segment, add_svn_segment, add_hg_segment]:
+        try:
+            if add_repo_segment(p, cwd): return
+        except subprocess.CalledProcessError:
+            pass
+        except OSError:
+            pass
 
 def add_root_indicator(powerline, error):
     bg = 236
@@ -175,12 +166,9 @@ def add_root_indicator(powerline, error):
 if __name__ == '__main__':
     p = Powerline()
     cwd = os.getcwd()
-    p.append(Segment(' \\u ', 250, 240))
-    p.append(Segment(' \\h ', 250, 238))
-    add_cwd_segment(p, cwd, 6)
-
-    for add_repo_segment in [add_git_segment, add_svn_segment, add_hg_segment]:
-        if add_repo_segment(p, cwd):
-            break
+    #p.append(Segment(' \\u ', 250, 240))
+    #p.append(Segment(' \\h ', 250, 238))
+    add_cwd_segment(p, cwd, 4)
+    add_repo_segment(p, cwd)
     add_root_indicator(p, sys.argv[1] if len(sys.argv) > 1 else 0)
     sys.stdout.write(p.draw())
