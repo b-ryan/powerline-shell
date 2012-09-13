@@ -175,7 +175,7 @@ if __name__ == '__main__':
     cwd = os.getcwd()
     #p.append(Segment(' \\u ', 250, 240))
     #p.append(Segment(' \\h ', 250, 238))
-    add_cwd_segment(p, cwd, 4)
+    add_cwd_segment(p, cwd, 5)
     add_repo_segment(p, cwd)
     add_root_indicator(p, sys.argv[1] if len(sys.argv) > 1 else 0)
     sys.stdout.write(p.draw())
