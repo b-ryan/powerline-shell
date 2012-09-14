@@ -5,9 +5,13 @@ A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash:
 
 ![MacVim+Solarized+Powerline+CtrlP](https://raw.github.com/milkbikis/dotfiles-mac/master/bash-powerline-screenshot.png)
 
-*  Displays the current git branch which changes background color when the branch is dirty
+*  Shows some important details about the git branch:
+    *  Displays the current git branch which changes background color when the branch is dirty
+    *  A '+' appears when untracked files are present
+    *  When the local branch differs from the remote, the difference in number of commits is shown along with '⇡' or '⇣' indicating whether a git push or pull is pending
 *  Changes color if the last command exited with a failure code
 *  If you're too deep into a directory tree, shortens the displayed path with an ellipsis
+*  Shows the current Python [virtualenv](http://www.virtualenv.org/) environment
 *  It's all done in a Python script, so you could go nuts with it
 
 # Setup
