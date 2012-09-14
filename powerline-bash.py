@@ -73,7 +73,7 @@ def add_cwd_segment(powerline, cwd, maxdepth):
     powerline.append(Segment(' %s ' % names[-1], 254, 237))
 
 def is_hg_clean():
-    output = os.popen("hg status 2> /dev/null | grep '^?' | tail -n1").read()
+    output = os.popen("hg status 2> /dev/null | tail -n1").read()
     return len(output) == 0
 
 def add_hg_segment(powerline, cwd):
