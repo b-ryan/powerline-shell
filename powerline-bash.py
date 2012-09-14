@@ -108,7 +108,7 @@ def add_git_segment(powerline, cwd):
     p2 = subprocess.Popen(['grep', '-e', '\\*'], stdin=p1.stdout, stdout=subprocess.PIPE)
     output = p2.communicate()[0].strip()
     if len(output) == 0:
-        return false
+        return False
     branch = output.rstrip()[2:]
     has_pending_commits, has_untracked_files = get_git_status()
     if has_untracked_files:
