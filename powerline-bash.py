@@ -146,10 +146,10 @@ def add_git_segment(powerline, cwd):
     #cmd = "git branch 2> /dev/null | grep -e '\\*'"
     p1 = subprocess.Popen(['git', 'branch'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     p2 = subprocess.Popen(['grep', '-e', '\\*'], stdin=p1.stdout, stdout=subprocess.PIPE)
-    output = p2.communicate()[0].strip()
+    output = p2.communicate()[0].strip().decode("utf-8")
     if len(output) == 0:
         return False
-    branch = output.rstrip()[2:].decode("utf-8")
+    branch = output.rstrip()[2:]
     has_pending_commits, has_untracked_files, origin_position = get_git_status()
     branch += origin_position
     if has_untracked_files:
