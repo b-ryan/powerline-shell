@@ -4,6 +4,7 @@
 import os
 import subprocess
 import sys
+import re
 
 class Powerline:
     separator = '⮀'
@@ -92,13 +93,22 @@ def add_hg_segment(powerline, cwd):
 def get_git_status():
     has_pending_commits = True
     has_untracked_files = False
+    origin_position = ""
     output = subprocess.Popen(['git', 'status'], stdout=subprocess.PIPE).communicate()[0]
     for line in output.split('\n'):
+        origin_status = re.findall("Your branch is (ahead|behind).*'(.*?)'.*?(\d+) comm", line)
+        if len(origin_status) > 0:
+            if origin_status[0][0] == 'behind':
+                origin_position = " (-"
+            if origin_status[0][0] == 'ahead':
+                origin_position = " (+"
+            origin_position += "%d %s)" % (int(origin_status[0][2]), origin_status[0][1])
+              
         if line.find('nothing to commit (working directory clean)') >= 0:
             has_pending_commits = False
         if line.find('Untracked files') >= 0:
             has_untracked_files = True
-    return has_pending_commits, has_untracked_files
+    return has_pending_commits, has_untracked_files, origin_position
 
 def add_git_segment(powerline, cwd):
     green = 148
@@ -110,7 +120,8 @@ def add_git_segment(powerline, cwd):
     if len(output) == 0:
         return False
     branch = output.rstrip()[2:]
-    has_pending_commits, has_untracked_files = get_git_status()
+    has_pending_commits, has_untracked_files, origin_position = get_git_status()
+    branch += origin_position
     if has_untracked_files:
         branch += ' +'
     bg = green
@@ -179,3 +190,5 @@ if __name__ == '__main__':
     add_repo_segment(p, cwd)
     add_root_indicator(p, sys.argv[1] if len(sys.argv) > 1 else 0)
     sys.stdout.write(p.draw())
+
+# vim: set expandtab:
