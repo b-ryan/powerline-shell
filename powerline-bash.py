@@ -96,14 +96,14 @@ def get_git_status():
     origin_position = ""
     output = subprocess.Popen(['git', 'status'], stdout=subprocess.PIPE).communicate()[0]
     for line in output.split('\n'):
-        origin_status = re.findall("Your branch is (ahead|behind).*'(.*?)'.*?(\d+) comm", line)
+        origin_status = re.findall("Your branch is (ahead|behind).*?(\d+) comm", line)
         if len(origin_status) > 0:
+            origin_position = " %d" % int(origin_status[0][1])
             if origin_status[0][0] == 'behind':
-                origin_position = " (-"
+                origin_position += '⇣'
             if origin_status[0][0] == 'ahead':
-                origin_position = " (+"
-            origin_position += "%d %s)" % (int(origin_status[0][2]), origin_status[0][1])
-              
+                origin_position += '⇡'
+
         if line.find('nothing to commit (working directory clean)') >= 0:
             has_pending_commits = False
         if line.find('Untracked files') >= 0:
