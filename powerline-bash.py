@@ -173,13 +173,13 @@ def add_repo_segment(powerline, cwd):
         except OSError:
             pass
 
-def add_env_segment(powerline, cwd):
+def add_virtual_env_segment(powerline, cwd):
     env = os.getenv("VIRTUAL_ENV")
     if env == None:
         return False
     env_name = os.path.basename(env)
     bg = 35
-    fg = 15
+    fg = 22
     powerline.append(Segment(' %s ' % env_name, fg, bg))
     return True
 
@@ -195,11 +195,11 @@ def add_root_indicator(powerline, error):
 if __name__ == '__main__':
     p = Powerline()
     cwd = os.getcwd()
+    add_virtual_env_segment(p, cwd)
     #p.append(Segment(' \\u ', 250, 240))
     #p.append(Segment(' \\h ', 250, 238))
     add_cwd_segment(p, cwd, 5)
     add_repo_segment(p, cwd)
-    add_env_segment(p, cwd)
     add_root_indicator(p, sys.argv[1] if len(sys.argv) > 1 else 0)
     sys.stdout.write(p.draw())
 
