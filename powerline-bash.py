@@ -11,12 +11,14 @@ class Powerline:
     separator_thin='⮁'
     LSQESCRSQ = '\\[\\e%s\\]'
     reset = LSQESCRSQ % '[0m'
-
     def __init__(self):
         self.segments = []
+        self.color_memo = {}
 
     def color(self, prefix, code):
-        return self.LSQESCRSQ % ('[%s;5;%sm' % (prefix, code))
+        if (prefix, code) not in self.color_memo:
+            self.color_memo[(prefix, code)] = self.LSQESCRSQ % ('[%s;5;%sm' % (prefix, code))
+        return self.color_memo[(prefix, code)]
 
     def fgcolor(self, code):
         return self.color('38', code)
