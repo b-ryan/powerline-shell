@@ -133,8 +133,6 @@ def add_git_segment(powerline, cwd):
     return True
 
 def add_svn_segment(powerline, cwd):
-    if not os.path.exists(os.path.join(cwd,'.svn')):
-        return
     '''svn info:
         First column: Says if item was added, deleted, or otherwise changed
         ' ' no modifications
@@ -164,14 +162,31 @@ def add_svn_segment(powerline, cwd):
         return False
     return True
 
+def walk_up(path_):
+    path = path_
+    while (path != os.environ['HOME'] and path != '/'):
+        yield path
+        path = os.path.dirname(path)
+ 
+def check_repo(path):
+    if os.path.exists(os.path.join(path, '.svn')): return 'svn'
+    else:
+        for path_up in walk_up(path):
+            if os.path.exists(os.path.join(path_up, '.git')): return 'git'
+            if os.path.exists(os.path.join(path_up, '.hg')): return 'hg'
+    return ''
+
+def add__segment(powerline, cwd):
+    return True
+
 def add_repo_segment(powerline, cwd):
-    for add_repo_segment in [add_git_segment, add_svn_segment, add_hg_segment]:
-        try:
-            if add_repo_segment(p, cwd): return
-        except subprocess.CalledProcessError:
-            pass
-        except OSError:
-            pass
+    repo_kind = check_repo(cwd)
+    try:
+        if eval('add_%s_segment(p, cwd)' % repo_kind): return
+    except subprocess.CalledProcessError:
+        pass
+    except OSError:
+        pass
 
 def add_virtual_env_segment(powerline, cwd):
     env = os.getenv("VIRTUAL_ENV")
