@@ -204,7 +204,7 @@ def add_root_indicator(powerline, error):
     powerline.append(Segment(powerline, ' \\$ ', fg, bg))
 
 if __name__ == '__main__':
-    p = Powerline(mode='compatible')
+    p = Powerline(mode='patched')
     cwd = os.getcwd()
     add_virtual_env_segment(p, cwd)
     #p.append(Segment(powerline, ' \\u ', 250, 240))
