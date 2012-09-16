@@ -38,8 +38,8 @@ class Powerline:
         self.segments.append(segment)
 
     def draw(self):
-        return (''.join((s[0].draw(s[1]) for s in zip(self.segments, self.segments[1:]+[None])))
-            + self.reset).encode('utf-8')
+        output = ''.join((s[0].draw(self, s[1]) for s in zip(self.segments, self.segments[1:]+[None]))) + self.reset
+        return output
 
 class Segment:
     def __init__(self, powerline, content, fg, bg, separator=None, separator_fg=None):
