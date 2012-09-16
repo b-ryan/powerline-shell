@@ -6,6 +6,8 @@ import subprocess
 import sys
 import re
 
+PY3 = sys.version_info[0] == 3
+
 class Powerline:
     symbols = {
         'compatible': {
@@ -124,7 +126,8 @@ def get_git_status():
     has_pending_commits = True
     has_untracked_files = False
     origin_position = ""
-    output = subprocess.Popen(['git', 'status'], stdout=subprocess.PIPE).communicate()[0].decode("utf-8")
+    output = subprocess.Popen(['git', 'status'], stdout=subprocess.PIPE).communicate()[0]
+    if PY3: output = output.decode("utf-8")
     for line in output.split('\n'):
         origin_status = re.findall("Your branch is (ahead|behind).*?(\d+) comm", line)
         if len(origin_status) > 0:
@@ -146,7 +149,8 @@ def add_git_segment(powerline, cwd):
     #cmd = "git branch 2> /dev/null | grep -e '\\*'"
     p1 = subprocess.Popen(['git', 'branch'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     p2 = subprocess.Popen(['grep', '-e', '\\*'], stdin=p1.stdout, stdout=subprocess.PIPE)
-    output = p2.communicate()[0].strip().decode("utf-8")
+    output = p2.communicate()[0].strip()
+    if PY3: output = output.decode("utf-8")
     if len(output) == 0:
         return False
     branch = output.rstrip()[2:]
