@@ -7,12 +7,22 @@ import sys
 import re
 
 class Powerline:
-    separator = '⮀'
-    separator_thin='⮁'
+    symbols = {
+        'compatible': {
+            'separator': u'\u25B6',
+            'separator_thin': u'\u276F'
+        },
+        'patched': {
+            'separator': u'\u2B80',
+            'separator_thin': u'\u2B81'
+        }
+    }
     LSQESCRSQ = '\\[\\e%s\\]'
     reset = LSQESCRSQ % '[0m'
 
-    def __init__(self):
+    def __init__(self, mode='compatible'):
+        self.separator = Powerline.symbols[mode]['separator']
+        self.separator_thin = Powerline.symbols[mode]['separator_thin']
         self.segments = []
 
     def color(self, prefix, code):
@@ -28,29 +38,30 @@ class Powerline:
         self.segments.append(segment)
 
     def draw(self):
-        return (''.join((s[0].draw(self, s[1]) for s in zip(self.segments, self.segments[1:]+[None])))
-            + self.reset)
+        return (''.join((s[0].draw(s[1]) for s in zip(self.segments, self.segments[1:]+[None])))
+            + self.reset).encode('utf-8')
 
 class Segment:
-    def __init__(self, content, fg, bg, separator=Powerline.separator, separator_fg=None):
+    def __init__(self, powerline, content, fg, bg, separator=None, separator_fg=None):
+        self.powerline = powerline
         self.content = content
         self.fg = fg
         self.bg = bg
-        self.separator = separator
+        self.separator = separator or powerline.separator
         self.separator_fg = separator_fg or bg
 
-    def draw(self, powerline, next_segment=None):
+    def draw(self, next_segment=None):
         if next_segment:
-            separator_bg = powerline.bgcolor(next_segment.bg)
+            separator_bg = self.powerline.bgcolor(next_segment.bg)
         else:
-            separator_bg = powerline.reset
+            separator_bg = self.powerline.reset
 
         return ''.join((
-            powerline.fgcolor(self.fg),
-            powerline.bgcolor(self.bg),
+            self.powerline.fgcolor(self.fg),
+            self.powerline.bgcolor(self.bg),
             self.content,
             separator_bg,
-            powerline.fgcolor(self.separator_fg),
+            self.powerline.fgcolor(self.separator_fg),
             self.separator))
 
 def add_cwd_segment(powerline, cwd, maxdepth):
@@ -69,8 +80,8 @@ def add_cwd_segment(powerline, cwd, maxdepth):
         names = names[:2] + ['⋯ '] + names[2-maxdepth:]
 
     for n in names[:-1]:
-        powerline.append(Segment(' %s ' % n, 250, 237, Powerline.separator_thin, 244))
-    powerline.append(Segment(' %s ' % names[-1], 254, 237))
+        powerline.append(Segment(powerline, ' %s ' % n, 250, 237, powerline.separator_thin, 244))
+    powerline.append(Segment(powerline, ' %s ' % names[-1], 254, 237))
 
 def is_hg_clean():
     output = os.popen("hg status 2> /dev/null | grep '^?' | tail -n1").read()
@@ -87,7 +98,7 @@ def add_hg_segment(powerline, cwd):
     if is_hg_clean():
         bg = green
         fg = 0
-    powerline.append(Segment(' %s ' % branch, fg, bg))
+    powerline.append(Segment(powerline, ' %s ' % branch, fg, bg))
     return True
 
 def get_git_status():
@@ -100,9 +111,9 @@ def get_git_status():
         if len(origin_status) > 0:
             origin_position = " %d" % int(origin_status[0][1])
             if origin_status[0][0] == 'behind':
-                origin_position += '⇣'
+                origin_position += u'\u21E3'
             if origin_status[0][0] == 'ahead':
-                origin_position += '⇡'
+                origin_position += u'\u21E1'
 
         if line.find('nothing to commit (working directory clean)') >= 0:
             has_pending_commits = False
@@ -129,7 +140,7 @@ def add_git_segment(powerline, cwd):
     if has_pending_commits:
         bg = red
         fg = 15
-    powerline.append(Segment(' %s ' % branch, fg, bg))
+    powerline.append(Segment(powerline, ' %s ' % branch, fg, bg))
     return True
 
 def add_svn_segment(powerline, cwd):
@@ -157,7 +168,7 @@ def add_svn_segment(powerline, cwd):
         output = p2.communicate()[0].strip()
         if len(output) > 0 and int(output) > 0:
             changes = output.strip()
-            powerline.append(Segment(' %s ' % changes, 22, 148))
+            powerline.append(Segment(powerline, ' %s ' % changes, 22, 148))
     except OSError:
         return False
     except subprocess.CalledProcessError:
@@ -180,7 +191,7 @@ def add_virtual_env_segment(powerline, cwd):
     env_name = os.path.basename(env)
     bg = 35
     fg = 22
-    powerline.append(Segment(' %s ' % env_name, fg, bg))
+    powerline.append(Segment(powerline,' %s ' % env_name, fg, bg))
     return True
 
 
@@ -190,14 +201,14 @@ def add_root_indicator(powerline, error):
     if int(error) != 0:
         fg = 15
         bg = 161
-    powerline.append(Segment(' \\$ ', fg, bg))
+    powerline.append(Segment(powerline, ' \\$ ', fg, bg))
 
 if __name__ == '__main__':
-    p = Powerline()
+    p = Powerline(mode='compatible')
     cwd = os.getcwd()
     add_virtual_env_segment(p, cwd)
-    #p.append(Segment(' \\u ', 250, 240))
-    #p.append(Segment(' \\h ', 250, 238))
+    #p.append(Segment(powerline, ' \\u ', 250, 240))
+    #p.append(Segment(powerline, ' \\h ', 250, 238))
     add_cwd_segment(p, cwd, 5)
     add_repo_segment(p, cwd)
     add_root_indicator(p, sys.argv[1] if len(sys.argv) > 1 else 0)
