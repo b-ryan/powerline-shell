@@ -5,6 +5,7 @@ import os
 import subprocess
 import sys
 import re
+import string
 
 class Powerline:
     symbols = {
@@ -17,7 +18,11 @@ class Powerline:
             'separator_thin': u'\u2B81'
         }
     }
-    LSQESCRSQ = '\\[\\e%s\\]'
+    o,_ = (subprocess.Popen(r"ps -p `ps -p $PPID -o ppid | tail -1` | awk '{ print $NF }' | tail -1", shell=True, stdout=subprocess.PIPE)).communicate()
+    if string.strip(o) == 'zsh':
+        LSQESCRSQ = '\x1B%s'
+    else:
+        LSQESCRSQ = '\\[\\e%s\\]'
     reset = LSQESCRSQ % '[0m'
 
     def __init__(self, mode='compatible'):
