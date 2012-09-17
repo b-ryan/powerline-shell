@@ -38,3 +38,12 @@ A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash:
         }
 
         export PROMPT_COMMAND="_update_ps1"
+
+* Or add this to your .zshrc:
+
+        setopt prompt_subst
+        
+        precmd() {
+            PROMPT=$(~/powerline-bash.py $?)
+        }
+
