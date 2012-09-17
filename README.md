@@ -41,8 +41,9 @@ A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash:
 
 * Or add this to your .zshrc:
 
-    setopt prompt_subst
+        setopt prompt_subst
 
-    precmd() {
-        PROMPT=$(~/powerline-bash.py $?)
-    }
+        precmd() {
+            PROMPT=$(~/powerline-bash.py $?)
+        }
+
