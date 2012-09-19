@@ -238,7 +238,7 @@ def add_running_jobs_segment(powerline):
     parent = [l for l in out if l and l.split()[0]==str(ppid)][0].split()[1]
     jobs = len([l for l in out if l and l.split()[1]==str(parent)])-1
     if jobs>0:
-        powerline.append(Segment(powerline, str(jobs)+'J', 161,174))
+        powerline.append(Segment(powerline, str(jobs)+'J', 15,161))
 
 if __name__ == '__main__':
     p = Powerline(mode='patched')
