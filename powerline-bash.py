@@ -231,9 +231,19 @@ def add_root_indicator(powerline, error):
         bg = 161
     powerline.append(Segment(powerline, ' \\$ ', fg, bg))
 
+def add_running_jobs_segment(powerline):
+    p1 = subprocess.Popen(['ps', '-o','pid,ppid,command', '-ax'], stdout=subprocess.PIPE)
+    out = p1.communicate()[0].split('\n')
+    ppid = os.getppid()
+    parent = [l for l in out if l and l.split()[0]==str(ppid)][0].split()[1]
+    jobs = len([l for l in out if l and l.split()[1]==str(parent)])-1
+    if jobs>0:
+        powerline.append(Segment(powerline, str(jobs)+'J', 161,174))
+
 if __name__ == '__main__':
     p = Powerline(mode='patched')
     cwd = os.getcwd()
+    add_running_jobs_segment(p)
     add_virtual_env_segment(p, cwd)
     #p.append(Segment(powerline, ' \\u ', 250, 240))
     #p.append(Segment(powerline, ' \\h ', 250, 238))
