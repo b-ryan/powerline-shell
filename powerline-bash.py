@@ -238,11 +238,27 @@ def add_running_jobs_segment(powerline):
     parent = [l for l in out if l and l.split()[0]==str(ppid)][0].split()[1]
     jobs = len([l for l in out if l and l.split()[1]==str(parent)])-1
     if jobs>0:
-        powerline.append(Segment(powerline, str(jobs)+'J', 15,161))
+        powerline.append(Segment(powerline, str(jobs)+'J', 15, 161))
+
+def add_battery_segment(powerline):
+    chargeRatio = 0
+    if sys.platform == 'darwin':
+        p1 = subprocess.Popen(['ioreg', '-rc', 'AppleSmartBattery'], stdout=subprocess.PIPE)
+        out = p1.communicate()[0]
+        o_max = [l for l in out.splitlines() if 'MaxCapacity' in l][0]
+        o_cur = [l for l in out.splitlines() if 'CurrentCapacity' in l][0]
+        b_max = float(o_max.rpartition('=')[-1].strip())
+        b_cur = float(o_cur.rpartition('=')[-1].strip())
+        chargeRatio = b_cur/b_max
+    elif 'linux' in sys.platform:
+        pass
+    if chargeRatio<0.1:
+        powerline.append(Segment(powerline, 'Battery Low!', 15, 161))
 
 if __name__ == '__main__':
     p = Powerline(mode='patched')
     cwd = os.getcwd()
+    add_battery_segment(p)
     add_running_jobs_segment(p)
     add_virtual_env_segment(p, cwd)
     #p.append(Segment(powerline, ' \\u ', 250, 240))
