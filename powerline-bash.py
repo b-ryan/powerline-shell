@@ -179,7 +179,14 @@ def add_svn_segment(powerline, cwd):
     return True
 
 def add_repo_segment(powerline, cwd):
-    for add_repo_segment in [add_git_segment, add_svn_segment, add_hg_segment]:
+    repos = []
+    if not os.getenv('POWERLINE_DISABLE_GIT'):
+        repos.append(add_git_segment)
+    if not os.getenv('POWERLINE_DISABLE_SVN'):
+        repos.append(add_svn_segment)
+    if not os.getenv('POWERLINE_DISABLE_HG'):
+        repos.append(add_hg_segment)
+    for add_repo_segment in repos:
         try:
             if add_repo_segment(p, cwd): return
         except subprocess.CalledProcessError:
