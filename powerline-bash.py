@@ -1,10 +1,13 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 
-import os
-import subprocess
-import sys
-import re
+try:
+    import os
+    import subprocess
+    import sys
+    import re
+except:
+    os = None
 
 class Powerline:
     symbols = {
@@ -176,7 +179,14 @@ def add_svn_segment(powerline, cwd):
     return True
 
 def add_repo_segment(powerline, cwd):
-    for add_repo_segment in [add_git_segment, add_svn_segment, add_hg_segment]:
+    repos = []
+    if not os.getenv('POWERLINE_DISABLE_GIT'):
+        repos.append(add_git_segment)
+    if not os.getenv('POWERLINE_DISABLE_SVN'):
+        repos.append(add_svn_segment)
+    if not os.getenv('POWERLINE_DISABLE_HG'):
+        repos.append(add_hg_segment)
+    for add_repo_segment in repos:
         try:
             if add_repo_segment(p, cwd): return
         except subprocess.CalledProcessError:
@@ -205,13 +215,17 @@ def add_root_indicator(powerline, error):
 
 if __name__ == '__main__':
     p = Powerline(mode='patched')
-    cwd = os.getcwd()
-    add_virtual_env_segment(p, cwd)
-    #p.append(Segment(powerline, ' \\u ', 250, 240))
-    #p.append(Segment(powerline, ' \\h ', 250, 238))
-    add_cwd_segment(p, cwd, 5)
-    add_repo_segment(p, cwd)
-    add_root_indicator(p, sys.argv[1] if len(sys.argv) > 1 else 0)
-    sys.stdout.write(p.draw())
+    if os is not None:
+        cwd = os.getcwd()
+        add_virtual_env_segment(p, cwd)
+        #p.append(Segment(powerline, ' \\u ', 250, 240))
+        #p.append(Segment(powerline, ' \\h ', 250, 238))
+        add_cwd_segment(p, cwd, 5)
+        add_repo_segment(p, cwd)
+        add_root_indicator(p, sys.argv[1] if len(sys.argv) > 1 else 0)
+    else:
+        add_cwd_segment(p, cwd, 5)
+        add_root_indicator(p, 1)
+    print p.draw()
 
 # vim: set expandtab:
