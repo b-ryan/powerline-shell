@@ -5,7 +5,6 @@ import os
 import subprocess
 import sys
 import re
-import string
 
 PY3 = sys.version_info[0] == 3
 
@@ -83,7 +82,7 @@ def add_cwd_segment(powerline, cwd, maxdepth):
 
     names = cwd.split('/')
     if len(names) > maxdepth:
-        names = names[:2] + [u'\u2026'] + names[2-maxdepth:]
+        names = names[:2] + [u'\u2026 '] + names[2-maxdepth:]
 
     for n in names[:-1]:
         powerline.append(Segment(powerline, ' %s ' % n, 250, 237, powerline.separator_thin, 244))
