@@ -18,8 +18,7 @@ class Powerline:
             'separator_thin': u'\u2B81'
         }
     }
-    o,_ = (subprocess.Popen(r"ps -p `ps -p $PPID -o ppid | tail -1` | awk '{ print $NF }' | tail -1", shell=True, stdout=subprocess.PIPE)).communicate()
-    if string.strip(o) == 'zsh':
+    if os.environ['SHELL'].split('/')[-1] == 'zsh':
         LSQESCRSQ = '\x1B%s'
     else:
         LSQESCRSQ = '\\[\\e%s\\]'
