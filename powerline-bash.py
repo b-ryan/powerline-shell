@@ -8,6 +8,15 @@ import re
 
 PY3 = sys.version_info[0] == 3
 
+def isZSH():
+    p1 = subprocess.Popen(['ps', '-o','pid,ppid,command', '-ax'], stdout=subprocess.PIPE)
+    out = p1.communicate()[0].split('\n')
+    ppid = os.getppid()
+    if [l for l in out if l and l.split()[0]==str(ppid)][0].split()[2] == '/bin/zsh':
+        return True
+    else:
+        return False
+
 class Powerline:
     symbols = {
         'compatible': {
@@ -19,7 +28,7 @@ class Powerline:
             'separator_thin': u'\u2B81'
         }
     }
-    if os.environ['SHELL'].split('/')[-1] == 'zsh':
+    if isZSH():
         LSQESCRSQ = '\x1B%s'
     else:
         LSQESCRSQ = '\\[\\e%s\\]'
