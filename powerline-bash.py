@@ -242,8 +242,7 @@ def add_running_jobs_segment(powerline):
     p1 = subprocess.Popen(['ps', '-o','pid,ppid,command', '-ax'], stdout=subprocess.PIPE)
     out = p1.communicate()[0].split('\n')
     ppid = os.getppid()
-    parent = [l for l in out if l and l.split()[0]==str(ppid)][0].split()[1]
-    jobs = len([l for l in out if l and l.split()[1]==str(parent)])-1
+    jobs = len([l for l in out if l and l.split()[1]==str(ppid)])-1
     if jobs>0:
         powerline.append(Segment(powerline, str(jobs)+'J', 15, 161))
 
