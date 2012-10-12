@@ -272,7 +272,7 @@ def add_battery_segment(powerline):
         b_cur = float(o_cur.rpartition('=')[-1].strip())
         chargeRatio = b_cur/b_max
     elif 'linux' in sys.platform:
-        pass
+        chargeRatio = 1; # Put in the code to caclulate this correctly!
     if chargeRatio<0.1:
         powerline.append(Segment(powerline, 'Battery Low!', 15, 161))
 
