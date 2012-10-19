@@ -10,19 +10,29 @@ class Powerline:
     symbols = {
         'compatible': {
             'separator': u'\u25B6',
-            'separator_thin': u'\u276F'
+            'separator_thin': u'\u276F',
+            'lseparator': u'\u25c2',
+            'lseparator_thin': u'\u276e'
         },
         'patched': {
             'separator': u'\u2B80',
-            'separator_thin': u'\u2B81'
+            'separator_thin': u'\u2B81',
+            'lseparator': u'\u2B82',
+            'lseparator_thin': u'\u2B83'
         }
     }
     LSQESCRSQ = '\\[\\e%s\\]'
     reset = LSQESCRSQ % '[0m'
 
-    def __init__(self, mode='compatible'):
-        self.separator = Powerline.symbols[mode]['separator']
-        self.separator_thin = Powerline.symbols[mode]['separator_thin']
+    def __init__(self, mode='compatible', direction='right'):
+        if direction == 'right':
+            self.separator = Powerline.symbols[mode]['separator']
+            self.separator_thin = Powerline.symbols[mode]['separator_thin']
+        elif direction == 'left':
+            self.separator = Powerline.symbols[mode]['lseparator']
+            self.separator_thin = Powerline.symbols[mode]['lseparator_thin']
+        else:
+            raise Exception('direction can be "left" or "right"')
         self.segments = []
 
     def color(self, prefix, code):
