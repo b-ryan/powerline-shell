@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 import os
@@ -216,7 +216,10 @@ if __name__ == '__main__':
     #p.append(Segment(' \\u ', 250, 240))
     p.append(Segment(' \\h ', 250, 238))
     add_cwd_segment(p, cwd, 5)
-    add_repo_segment(p, cwd)
+    if 'volume' in cwd or 'Volume' in cwd:
+        pass  
+    else:
+        add_repo_segment(p, cwd)
     add_root_indicator(p, sys.argv[1] if len(sys.argv) > 1 else 0)
     sys.stdout.write(p.draw())
 
