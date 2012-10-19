@@ -79,8 +79,7 @@ def add_cwd_segment(powerline, cwd, maxdepth):
         cwd = cwd[1:]
 
     names = cwd.split('/')
-    if len(names) > maxdepth:
-        names = names[:2] + [u'\u2026'] + names[2-maxdepth:]
+    if len(names) > maxdepth: names[2:(2-maxdepth)] = u'\u2026'
 
     for n in names[:-1]:
         powerline.append(Segment(powerline, ' %s ' % n, 250, 237, powerline.separator_thin, 244))
