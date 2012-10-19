@@ -269,10 +269,6 @@ def add_root_indicator(error):
     return [Segment(r' \$', fg, bg)]
 
 
-def add_newline():
-    return NewLineSegment()
-
-
 if __name__ == '__main__':
     p = Powerline(mode='patched')
     cwd = os.getcwd()
@@ -281,7 +277,12 @@ if __name__ == '__main__':
     #p.append(Segment('\\h', 250, 238))
     p.append(add_cwd_segment(cwd, 5))
     p.append(add_repo_segment(cwd))
-    p.append(add_root_indicator(sys.argv[1] if len(sys.argv) > 1 else 0))
-    sys.stdout.write(p.draw())
+    if os.getenv('POWERLINE_MULTILINE', None):
+        p.append(NewLineSegment())
+        p.append(add_root_indicator(sys.argv[1] if len(sys.argv) > 1 else 0))
+        sys.stdout.write(p.draw())
+    else:
+        p.append(add_root_indicator(sys.argv[1] if len(sys.argv) > 1 else 0))
+        sys.stdout.write(p.draw())
 
 # vim: set expandtab:
