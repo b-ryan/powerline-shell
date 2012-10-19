@@ -6,6 +6,16 @@ import subprocess
 import sys
 import re
 
+class Palette:
+    black=30
+    red=31
+    green=32
+    yellow=33
+    blue=34
+    purple=35
+    cyan=36
+    white=37
+
 class Powerline:
     symbols = {
         'compatible': {
@@ -24,7 +34,7 @@ class Powerline:
     LSQESCRSQ = '\\[\\e%s\\]'
     reset = LSQESCRSQ % '[0m'
 
-    def __init__(self, mode='compatible', direction='right'):
+    def __init__(self, mode='compatible', direction='right', palette=Palette):
         if direction == 'right':
             self.separator = Powerline.symbols[mode]['separator']
             self.separator_thin = Powerline.symbols[mode]['separator_thin']
@@ -34,15 +44,27 @@ class Powerline:
         else:
             raise Exception('direction can be "left" or "right"')
         self.segments = []
+        self.palette = palette
+
+    def translate_color(self, color):
+        if isinstance(color, int):
+            return color
+        elif isinstance(color, basestring):
+            try:
+                return getattr(self.palette, color)
+            except AttributeError:
+                raise Exception("There is no '%s' color defined in palette."%color)
+        else:
+            raise Exception("You can pick colors using ints or names defined in palette.")
 
     def color(self, prefix, code):
         return self.LSQESCRSQ % ('[%s;5;%sm' % (prefix, code))
 
     def fgcolor(self, code):
-        return self.color('38', code)
+        return self.color('38', self.translate_color(code))
 
     def bgcolor(self, code):
-        return self.color('48', code)
+        return self.color('48', self.translate_color(code))
 
     def append(self, segment):
         self.segments.append(segment)
