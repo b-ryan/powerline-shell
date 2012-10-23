@@ -9,9 +9,9 @@ import re
 class Palette:
     black=30
     red=31
-    green=32
+    blue=32
     yellow=33
-    blue=34
+    green=34
     purple=35
     cyan=36
     white=37
@@ -104,13 +104,21 @@ class Segment(object):
         else:
             separator_bg = powerline.reset
 
+        def get_separator(sep):
+            if sep=='thin':
+                return powerline.separator_thin
+            elif sep in ('full', None):
+                return powerline.separator
+            else:
+                return sep
+
         return ''.join((
             powerline.fgcolor(self.fg),
             powerline.bgcolor(self.bg),
             self.content,
             separator_bg,
             powerline.fgcolor(self.separator_fg),
-            self.separator or powerline.separator))
+            get_separator(self.separator)))
 
 
 class NewLineSegment(Segment):
@@ -141,9 +149,10 @@ def add_cwd_segment(cwd, maxdepth):
         names = names[:2] + [u'\u2026'] + names[2-maxdepth:]
 
     segments = []
+    segments.append(Segment(' ' , 39, 24))
     for n in names[:-1]:
-        segments.append(Segment('%s' % n, 250, 237, '/', 254))
-    segments.append(Segment('%s' % names[-1], 254, 237))
+        segments.append(Segment('%s' % n, 39, 24, '/', 190))
+    segments.append(Segment('%s ' % names[-1], 7, 24))
     return segments
 
 
@@ -166,7 +175,8 @@ def add_hg_segment(cwd):
     return Segment(' %s ' % branch, fg, bg)
 
 def get_git_status():
-    has_pending_commits = True
+    has_pending_commits = False
+    has_not_staged = False
     has_untracked_files = False
     origin_position = ""
     output = subprocess.Popen(['git', 'status'], stdout=subprocess.PIPE).communicate()[0]
@@ -181,30 +191,35 @@ def get_git_status():
 
         if line.find('nothing to commit (working directory clean)') >= 0:
             has_pending_commits = False
+            has_not_staged = False
+        if line.find('Changes not staged for commit:') >= 0:
+            has_not_staged = True
+        if line.find('Changes to be committed:') >= 0:
+            has_pending_commits = True
         if line.find('Untracked files') >= 0:
             has_untracked_files = True
-    return has_pending_commits, has_untracked_files, origin_position
+    return has_not_staged, has_pending_commits, has_untracked_files, origin_position
 
 def add_git_segment(cwd):
-    green = 148
-    red = 161
-    #cmd = "git branch 2> /dev/null | grep -e '\\*'"
-    p1 = subprocess.Popen(['git', 'branch'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    p2 = subprocess.Popen(['grep', '-e', '\\*'], stdin=p1.stdout, stdout=subprocess.PIPE)
-    output = p2.communicate()[0].strip()
+    bg = 148
+    fg = 8
+    p1 = subprocess.Popen(['git', 'status'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    output = p1.communicate()[0].strip()
     if len(output) == 0:
-        return False
-    branch = output.rstrip()[2:]
-    has_pending_commits, has_untracked_files, origin_position = get_git_status()
-    branch += origin_position
-    if has_untracked_files:
-        branch += ' +'
-    bg = green
-    fg = 0
-    if has_pending_commits:
-        bg = red
-        fg = 15
-    return Segment(' %s ' % branch, fg, bg)
+        fg=34
+        bg=22
+        return Segment(' git ', fg, bg)
+    else:
+        branch = output.splitlines()[0].rstrip()[12:]
+        has_not_staged, has_pending_commits, has_untracked_files, origin_position = get_git_status()
+
+    segments = [
+            Segment(' git ' , fg, bg, 'thin', fg),
+            Segment(' w:%s ' % ('+' if has_not_staged else u'✔') , fg, bg, 'thin',fg),
+            Segment(' i:%s ' % ('+' if has_pending_commits else u'✔'), fg, bg, 'thin',fg),
+            Segment(' r:%s ' % branch, fg, bg),
+    ]
+    return segments
 
 def add_svn_segment(cwd):
     if not os.path.exists(os.path.join(cwd,'.svn')):
@@ -253,36 +268,96 @@ def add_virtual_env_segment(cwd):
     env = os.getenv("VIRTUAL_ENV")
     if env == None:
         env_name = '-'
+        bg = 23
+        fg = 35
     else:
         env_name = os.path.basename(env)
-    bg = 35
-    fg = 22
-    return Segment('VE:%s' % env_name, fg, bg)
+        bg = 35
+        fg = 51
+    return Segment(' VE ', fg, bg, 'thin', fg),  Segment(' %s ' % env_name, fg, bg)
 
-
-def add_root_indicator(error):
+def add_error_code(error):
     bg = 236
     fg = 15
     if int(error) != 0:
         fg = 15
         bg = 161
-    return [Segment(r' \$', fg, bg)]
+        return Segment(' %s '%error, fg, bg)
+    return Segment(' %s '%error, fg, bg, 'thin',fg)
+
+def add_root_indicator():
+    bg = 236
+    fg = 15
+    #TODO
+    return Segment(r' \$', fg, bg,)
+
+
+def developer_powerline():
+    p = Powerline(mode='patched')
+    cwd = os.getcwd()
+    p.append(Segment(" - dev mode -",7,1))
+    p.append(add_virtual_env_segment(cwd))
+    p.append(add_repo_segment(cwd))
+    p.append(NewLineSegment())
+    sys.stdout.write(p.draw())
+
+def add_time():
+    from datetime import datetime
+    return Segment(datetime.now().strftime(' %H:%M:%S '),228,34)
+
+def add_timer(min_time=5):
+    #TODO: eh, bash and its signals ;]
+    return
+    last = os.getenv('LAST_CMD_TIME', None)
+    fg = 99
+    bg = 89
+    if not last:
+        return
+    else:
+        segments = [Segment(' Last cmd ',bg,fg, )]
+        from datetime import datetime, timedelta
+        try:
+            start = int(os.getenv('LAST_CMD_TIME'))
+            start = datetime.fromtimestamp(start)
+        except Exception as error:
+            return segments + [Segment(' Error while parsing date from LAST_CMD_TIME: %s '%error, fg, bg)]
+        now = int(os.getenv('LAST_CMD_TIME'))
+        now = datetime.fromtimestamp(now)
+        if now - start < timedelta(seconds=min_time):
+            return
+        segments.extend((
+                Segment(' start:%s '%start,fg, bg,'thin', fg),
+                Segment(' stop:%s '%now,fg, bg, 'thin', fg),
+                Segment(' time:%s '%(now-start,),fg, bg)
+                ))
+        return segments
 
 
 if __name__ == '__main__':
-    p = Powerline(mode='patched')
-    cwd = os.getcwd()
-    p.append(add_virtual_env_segment(cwd))
-    #p.append(Segment(' \\u', 250, 240))
-    #p.append(Segment('\\h', 250, 238))
-    p.append(add_cwd_segment(cwd, 5))
-    p.append(add_repo_segment(cwd))
-    if os.getenv('POWERLINE_MULTILINE', None):
+    print 
+
+    timer = add_timer()
+    if timer:
+        p = Powerline(mode='patched')
+        p.append(timer)
         p.append(NewLineSegment())
-        p.append(add_root_indicator(sys.argv[1] if len(sys.argv) > 1 else 0))
         sys.stdout.write(p.draw())
-    else:
-        p.append(add_root_indicator(sys.argv[1] if len(sys.argv) > 1 else 0))
-        sys.stdout.write(p.draw())
+
+    cwd = os.getcwd()
+    if os.getenv('POWERLINE_DEVELMODE',None):
+        developer_powerline()
+    p = Powerline(mode='patched')
+    p.append(add_time())
+    p.append(Segment(' \\u', 9, 185, ''))
+    p.append(Segment('@', 17, 185, ''))
+    p.append(Segment('\\h', 9, 185))
+    p.append(add_cwd_segment(cwd, 5))
+    p.append(NewLineSegment())
+    sys.stdout.write(p.draw())
+
+    p = Powerline(mode='patched')
+    p.append(add_error_code(sys.argv[1] if len(sys.argv) > 1 else 0))
+    p.append(add_root_indicator())
+    sys.stdout.write(p.draw())
 
 # vim: set expandtab:
