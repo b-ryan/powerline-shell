@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import os
@@ -78,8 +78,7 @@ def add_cwd_segment(powerline, cwd, maxdepth):
         cwd = cwd[1:]
 
     names = cwd.split('/')
-    if len(names) > maxdepth:
-        names = names[:2] + [u'\u2026'] + names[2-maxdepth:]
+    if len(names) > maxdepth: names[2:(2-maxdepth)] = u'\u2026'
 
     for n in names[:-1]:
         powerline.append(Segment(powerline, ' %s ' % n, 250, 237, powerline.separator_thin, 244))
@@ -224,7 +223,7 @@ if __name__ == '__main__':
     p = Powerline()
     cwd = os.getcwd()
     add_virtual_env_segment(p, cwd)
-    #p.append(Segment(' \\u ', 250, 240))
+    #p.append(Segment(p, ' \\u ', 250, 240))
     p.append(Segment(p, ' \\h ', 250, 238))
     add_cwd_segment(p, cwd, 5)
     if 'volume' in cwd or 'Volume' in cwd:
