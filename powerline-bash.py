@@ -83,9 +83,21 @@ def add_cwd_segment(powerline, cwd, maxdepth):
         powerline.append(Segment(powerline, ' %s ' % n, 250, 237, powerline.separator_thin, 244))
     powerline.append(Segment(powerline, ' %s ' % names[-1], 254, 237))
 
-def is_hg_clean():
-    output = os.popen("hg status 2> /dev/null | grep '^?' | tail -n1").read()
-    return len(output) == 0
+def get_hg_status():
+    has_modified_files = False
+    has_untracked_files = False
+    has_missing_files = False
+    output = subprocess.Popen(['hg', 'status'], stdout=subprocess.PIPE).communicate()[0]
+    for line in output.split('\n'):
+        if line == '':
+            continue
+        elif line[0] == '?':
+            has_untracked_files = True
+        elif line[0] == '!':
+            has_missing_files = True
+        else:
+            has_modified_files = True
+    return has_modified_files, has_untracked_files, has_missing_files
 
 def add_hg_segment(powerline, cwd):
     green = 148
@@ -93,11 +105,18 @@ def add_hg_segment(powerline, cwd):
     branch = os.popen('hg branch 2> /dev/null').read().rstrip()
     if len(branch) == 0:
         return False
-    bg = red
-    fg = 15
-    if is_hg_clean():
-        bg = green
-        fg = 0
+    bg = green
+    fg = 0
+    has_modified_files, has_untracked_files, has_missing_files = get_hg_status()
+    if has_modified_files or has_untracked_files or has_missing_files:
+        bg = red
+        fg = 15
+        extra = ''
+        if has_untracked_files:
+            extra += '+'
+        if has_missing_files:
+            extra += '!'
+        branch += (' ' + extra if extra != '' else '')
     powerline.append(Segment(powerline, ' %s ' % branch, fg, bg))
     return True
 
