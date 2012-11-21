@@ -6,6 +6,17 @@ import subprocess
 import sys
 import re
 
+PY3 = sys.version_info[0] == 3
+
+def isZSH():
+    p1 = subprocess.Popen(['ps', '-o','pid,ppid,command', '-ax'], stdout=subprocess.PIPE)
+    out = p1.communicate()[0].split('\n')
+    ppid = os.getppid()
+    if [l for l in out if l and l.split()[0]==str(ppid)][0].split()[2] == '/bin/zsh':
+        return True
+    else:
+        return False
+
 class Powerline:
     symbols = {
         'compatible': {
@@ -17,7 +28,10 @@ class Powerline:
             'separator_thin': u'\u2B81'
         }
     }
-    LSQESCRSQ = '\\[\\e%s\\]'
+    if isZSH():
+        LSQESCRSQ = '\x1B%s'
+    else:
+        LSQESCRSQ = '\\[\\e%s\\]'
     reset = LSQESCRSQ % '[0m'
 
     def __init__(self, mode='compatible'):
@@ -38,8 +52,8 @@ class Powerline:
         self.segments.append(segment)
 
     def draw(self):
-        return (''.join((s[0].draw(s[1]) for s in zip(self.segments, self.segments[1:]+[None])))
-            + self.reset).encode('utf-8')
+        output = ''.join((s[0].draw(self, s[1]) for s in zip(self.segments, self.segments[1:]+[None]))) + self.reset
+        return output
 
 class Segment:
     def __init__(self, powerline, content, fg, bg, separator=None, separator_fg=None):
@@ -77,7 +91,7 @@ def add_cwd_segment(powerline, cwd, maxdepth):
 
     names = cwd.split('/')
     if len(names) > maxdepth:
-        names = names[:2] + [u'\u2026'] + names[2-maxdepth:]
+        names = names[:2] + [u'\u2026 '] + names[2-maxdepth:]
 
     for n in names[:-1]:
         powerline.append(Segment(powerline, ' %s ' % n, 250, 237, powerline.separator_thin, 244))
@@ -124,7 +138,8 @@ def get_git_status():
     has_pending_commits = True
     has_untracked_files = False
     origin_position = ""
-    output = subprocess.Popen(['git', 'status', '--ignore-submodules'], stdout=subprocess.PIPE).communicate()[0]
+    output = subprocess.Popen(['git', 'status'], stdout=subprocess.PIPE).communicate()[0]
+    if PY3: output = output.decode("utf-8")
     for line in output.split('\n'):
         origin_status = re.findall("Your branch is (ahead|behind).*?(\d+) comm", line)
         if len(origin_status) > 0:
@@ -147,6 +162,7 @@ def add_git_segment(powerline, cwd):
     p1 = subprocess.Popen(['git', 'branch'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     p2 = subprocess.Popen(['grep', '-e', '\\*'], stdin=p1.stdout, stdout=subprocess.PIPE)
     output = p2.communicate()[0].strip()
+    if PY3: output = output.decode("utf-8")
     if len(output) == 0:
         return False
     branch = output.rstrip()[2:]
@@ -163,8 +179,6 @@ def add_git_segment(powerline, cwd):
     return True
 
 def add_svn_segment(powerline, cwd):
-    if not os.path.exists(os.path.join(cwd,'.svn')):
-        return
     '''svn info:
         First column: Says if item was added, deleted, or otherwise changed
         ' ' no modifications
@@ -194,14 +208,31 @@ def add_svn_segment(powerline, cwd):
         return False
     return True
 
+def walk_up(path_):
+    path = path_
+    while (path != os.environ['HOME'] and path != '/'):
+        yield path
+        path = os.path.dirname(path)
+
+def check_repo(path):
+    if os.path.exists(os.path.join(path, '.svn')): return 'svn'
+    else:
+        for path_up in walk_up(path):
+            if os.path.exists(os.path.join(path_up, '.git')): return 'git'
+            if os.path.exists(os.path.join(path_up, '.hg')): return 'hg'
+    return ''
+
+def add__segment(powerline, cwd):
+    return True
+
 def add_repo_segment(powerline, cwd):
-    for add_repo_segment in [add_git_segment, add_svn_segment, add_hg_segment]:
-        try:
-            if add_repo_segment(p, cwd): return
-        except subprocess.CalledProcessError:
-            pass
-        except OSError:
-            pass
+    repo_kind = check_repo(cwd)
+    try:
+        if eval('add_%s_segment(p, cwd)' % repo_kind): return
+    except subprocess.CalledProcessError:
+        pass
+    except OSError:
+        pass
 
 def add_virtual_env_segment(powerline, cwd):
     env = os.getenv("VIRTUAL_ENV")
@@ -222,9 +253,34 @@ def add_root_indicator(powerline, error):
         bg = 161
     powerline.append(Segment(powerline, ' \\$ ', fg, bg))
 
+def add_running_jobs_segment(powerline):
+    p1 = subprocess.Popen(['ps', '-o','pid,ppid,command', '-ax'], stdout=subprocess.PIPE)
+    out = p1.communicate()[0].split('\n')
+    ppid = os.getppid()
+    jobs = len([l for l in out if l and l.split()[1]==str(ppid)])-1
+    if jobs>0:
+        powerline.append(Segment(powerline, str(jobs)+'J', 15, 161))
+
+def add_battery_segment(powerline):
+    chargeRatio = 0
+    if sys.platform == 'darwin':
+        p1 = subprocess.Popen(['ioreg', '-rc', 'AppleSmartBattery'], stdout=subprocess.PIPE)
+        out = p1.communicate()[0]
+        o_max = [l for l in out.splitlines() if 'MaxCapacity' in l][0]
+        o_cur = [l for l in out.splitlines() if 'CurrentCapacity' in l][0]
+        b_max = float(o_max.rpartition('=')[-1].strip())
+        b_cur = float(o_cur.rpartition('=')[-1].strip())
+        chargeRatio = b_cur/b_max
+    elif 'linux' in sys.platform:
+        chargeRatio = 1; # Put in the code to caclulate this correctly!
+    if chargeRatio<0.1:
+        powerline.append(Segment(powerline, 'Battery Low!', 15, 161))
+
 if __name__ == '__main__':
     p = Powerline(mode='patched')
     cwd = os.getcwd()
+    add_battery_segment(p)
+    add_running_jobs_segment(p)
     add_virtual_env_segment(p, cwd)
     #p.append(Segment(powerline, ' \\u ', 250, 240))
     #p.append(Segment(powerline, ' \\h ', 250, 238))
