@@ -6,6 +6,31 @@ import subprocess
 import sys
 import re
 
+class Color:
+    # The following link is a pretty good resources for color values:
+    # http://www.calmar.ws/vim/color-output.png
+
+    PATH_BG = 237 # dark grey
+    PATH_FG = 250 # light grey
+    CWD_FG = 254 # nearly-white grey
+    SEPARATOR_FG = 244
+
+    REPO_CLEAN_BG = 148 # a light green color
+    REPO_CLEAN_FG = 0 # black
+    REPO_DIRTY_BG = 161 # pink/red
+    REPO_DIRTY_FG = 15 # white
+
+    CMD_PASSED_BG = 236
+    CMD_PASSED_FG = 15
+    CMD_FAILED_BG = 161
+    CMD_FAILED_FG = 15
+
+    SVN_CHANGES_BG = 148
+    SVN_CHANGES_FG = 22 # dark green
+
+    VIRTUAL_ENV_BG = 35 # a mid-tone green
+    VIRTUAL_ENV_FG = 22
+
 class Powerline:
     symbols = {
         'compatible': {
@@ -80,8 +105,8 @@ def add_cwd_segment(powerline, cwd, maxdepth):
         names = names[:2] + [u'\u2026'] + names[2-maxdepth:]
 
     for n in names[:-1]:
-        powerline.append(Segment(powerline, ' %s ' % n, 250, 237, powerline.separator_thin, 244))
-    powerline.append(Segment(powerline, ' %s ' % names[-1], 254, 237))
+        powerline.append(Segment(powerline, ' %s ' % n, Color.PATH_FG, Color.PATH_BG, powerline.separator_thin, Color.SEPARATOR_FG))
+    powerline.append(Segment(powerline, ' %s ' % names[-1], Color.CWD_FG, Color.PATH_BG))
 
 def get_hg_status():
     has_modified_files = False
@@ -100,17 +125,15 @@ def get_hg_status():
     return has_modified_files, has_untracked_files, has_missing_files
 
 def add_hg_segment(powerline, cwd):
-    green = 148
-    red = 161
     branch = os.popen('hg branch 2> /dev/null').read().rstrip()
     if len(branch) == 0:
         return False
-    bg = green
-    fg = 0
+    bg = Color.REPO_CLEAN_BG
+    fg = Color.REPO_CLEAN_FG
     has_modified_files, has_untracked_files, has_missing_files = get_hg_status()
     if has_modified_files or has_untracked_files or has_missing_files:
-        bg = red
-        fg = 15
+        bg = Color.REPO_DIRTY_BG
+        fg = Color.REPO_DIRTY_FG
         extra = ''
         if has_untracked_files:
             extra += '+'
@@ -141,8 +164,6 @@ def get_git_status():
     return has_pending_commits, has_untracked_files, origin_position
 
 def add_git_segment(powerline, cwd):
-    green = 148
-    red = 161
     #cmd = "git branch 2> /dev/null | grep -e '\\*'"
     p1 = subprocess.Popen(['git', 'branch'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     p2 = subprocess.Popen(['grep', '-e', '\\*'], stdin=p1.stdout, stdout=subprocess.PIPE)
@@ -154,11 +175,11 @@ def add_git_segment(powerline, cwd):
     branch += origin_position
     if has_untracked_files:
         branch += ' +'
-    bg = green
-    fg = 0
+    bg = Color.REPO_CLEAN_BG
+    fg = Color.REPO_CLEAN_FG
     if has_pending_commits:
-        bg = red
-        fg = 15
+        bg = Color.REPO_DIRTY_BG
+        fg = Color.REPO_DIRTY_FG
     powerline.append(Segment(powerline, ' %s ' % branch, fg, bg))
     return True
 
@@ -187,7 +208,7 @@ def add_svn_segment(powerline, cwd):
         output = p2.communicate()[0].strip()
         if len(output) > 0 and int(output) > 0:
             changes = output.strip()
-            powerline.append(Segment(powerline, ' %s ' % changes, 22, 148))
+            powerline.append(Segment(powerline, ' %s ' % changes, Color.SVN_CHANGES_FG, Color.SVN_CHANGES_BG))
     except OSError:
         return False
     except subprocess.CalledProcessError:
@@ -208,18 +229,18 @@ def add_virtual_env_segment(powerline, cwd):
     if env == None:
         return False
     env_name = os.path.basename(env)
-    bg = 35
-    fg = 22
+    bg = Color.VIRTUAL_ENV_BG
+    fg = Color.VIRTUAL_ENV_FG
     powerline.append(Segment(powerline,' %s ' % env_name, fg, bg))
     return True
 
 
 def add_root_indicator(powerline, error):
-    bg = 236
-    fg = 15
+    bg = Color.CMD_PASSED_BG
+    fg = Color.CMD_PASSED_FG
     if int(error) != 0:
-        fg = 15
-        bg = 161
+        fg = Color.CMD_FAILED_FG
+        bg = Color.CMD_FAILED_BG
     powerline.append(Segment(powerline, ' \\$ ', fg, bg))
 
 if __name__ == '__main__':
