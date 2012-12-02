@@ -7,9 +7,14 @@ import sys
 import re
 
 class Color:
-    GREEN = 148
-    RED = 161
-    WHITE = 15
+    REPO_CLEAN_BG = 148 # a light green color
+    REPO_CLEAN_FG = 0 # black
+    REPO_DIRTY_BG = 161 # pink/red
+    REPO_DIRTY_FG = 15 # white
+    CMD_PASSED_BG = 236
+    CMD_PASSED_FG = 15
+    CMD_FAILED_BG = 161
+    CMD_FAILED_FG = 15
 
 class Powerline:
     symbols = {
@@ -70,7 +75,7 @@ class Segment:
             self.separator))
 
 def add_cwd_segment(powerline, cwd, maxdepth):
-    #powerline.append(' \\w ', Color.WHITE, 237)
+    #powerline.append(' \\w ', 15, 237)
     home = os.getenv('HOME')
     cwd = os.getenv('PWD')
 
@@ -108,12 +113,12 @@ def add_hg_segment(powerline, cwd):
     branch = os.popen('hg branch 2> /dev/null').read().rstrip()
     if len(branch) == 0:
         return False
-    bg = Color.GREEN
+    bg = Color.REPO_CLEAN_BG
     fg = 0
     has_modified_files, has_untracked_files, has_missing_files = get_hg_status()
     if has_modified_files or has_untracked_files or has_missing_files:
-        bg = Color.RED
-        fg = Color.WHITE
+        bg = Color.REPO_DIRTY_BG
+        fg = Color.REPO_DIRTY_FG
         extra = ''
         if has_untracked_files:
             extra += '+'
@@ -155,11 +160,11 @@ def add_git_segment(powerline, cwd):
     branch += origin_position
     if has_untracked_files:
         branch += ' +'
-    bg = Color.GREEN
+    bg = Color.REPO_CLEAN_BG
     fg = 0
     if has_pending_commits:
-        bg = Color.RED
-        fg = Color.WHITE
+        bg = Color.REPO_DIRTY_BG
+        fg = Color.REPO_DIRTY_FG
     powerline.append(Segment(powerline, ' %s ' % branch, fg, bg))
     return True
 
@@ -188,7 +193,7 @@ def add_svn_segment(powerline, cwd):
         output = p2.communicate()[0].strip()
         if len(output) > 0 and int(output) > 0:
             changes = output.strip()
-            powerline.append(Segment(powerline, ' %s ' % changes, 22, Color.GREEN))
+            powerline.append(Segment(powerline, ' %s ' % changes, 22, Color.REPO_CLEAN_BG))
     except OSError:
         return False
     except subprocess.CalledProcessError:
@@ -216,11 +221,11 @@ def add_virtual_env_segment(powerline, cwd):
 
 
 def add_root_indicator(powerline, error):
-    bg = 236
-    fg = Color.WHITE
+    bg = Color.CMD_PASSED_BG
+    fg = Color.CMD_PASSED_FG
     if int(error) != 0:
-        fg = Color.WHITE
-        bg = Color.RED
+        fg = Color.CMD_FAILED_FG
+        bg = Color.CMD_FAILED_BG
     powerline.append(Segment(powerline, ' \\$ ', fg, bg))
 
 if __name__ == '__main__':
