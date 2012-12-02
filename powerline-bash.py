@@ -25,6 +25,9 @@ class Color:
 
     SVN_CHANGES_FG = 22 # dark green
 
+    VIRTUAL_ENV_BG = 35 # a mid-tone green
+    VIRTUAL_ENV_FG = 22
+
 class Powerline:
     symbols = {
         'compatible': {
@@ -223,8 +226,8 @@ def add_virtual_env_segment(powerline, cwd):
     if env == None:
         return False
     env_name = os.path.basename(env)
-    bg = 35
-    fg = 22
+    bg = Color.VIRTUAL_ENV_BG
+    fg = Color.VIRTUAL_ENV_FG
     powerline.append(Segment(powerline,' %s ' % env_name, fg, bg))
     return True
 
