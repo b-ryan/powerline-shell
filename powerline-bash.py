@@ -7,10 +7,17 @@ import sys
 import re
 
 class Color:
+    PATH_BG = 237
+    PATH_FG = 250
+    CWD_BG = 237
+    CWD_FG = 254
+    SEPARATOR_FG = 244
+
     REPO_CLEAN_BG = 148 # a light green color
     REPO_CLEAN_FG = 0 # black
     REPO_DIRTY_BG = 161 # pink/red
     REPO_DIRTY_FG = 15 # white
+
     CMD_PASSED_BG = 236
     CMD_PASSED_FG = 15
     CMD_FAILED_BG = 161
@@ -90,8 +97,8 @@ def add_cwd_segment(powerline, cwd, maxdepth):
         names = names[:2] + [u'\u2026'] + names[2-maxdepth:]
 
     for n in names[:-1]:
-        powerline.append(Segment(powerline, ' %s ' % n, 250, 237, powerline.separator_thin, 244))
-    powerline.append(Segment(powerline, ' %s ' % names[-1], 254, 237))
+        powerline.append(Segment(powerline, ' %s ' % n, Color.PATH_FG, Color.PATH_BG, powerline.separator_thin, Color.SEPARATOR_FG))
+    powerline.append(Segment(powerline, ' %s ' % names[-1], Color.CWD_FG, Color.CWD_BG))
 
 def get_hg_status():
     has_modified_files = False
