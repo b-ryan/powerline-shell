@@ -26,6 +26,7 @@ class Color:
     CMD_FAILED_BG = 161
     CMD_FAILED_FG = 15
 
+    SVN_CHANGES_BG = 148
     SVN_CHANGES_FG = 22 # dark green
 
     VIRTUAL_ENV_BG = 35 # a mid-tone green
@@ -208,7 +209,7 @@ def add_svn_segment(powerline, cwd):
         output = p2.communicate()[0].strip()
         if len(output) > 0 and int(output) > 0:
             changes = output.strip()
-            powerline.append(Segment(powerline, ' %s ' % changes, Color.SVN_CHANGES_FG, Color.REPO_CLEAN_BG))
+            powerline.append(Segment(powerline, ' %s ' % changes, Color.SVN_CHANGES_FG, Color.SVN_CHANGES_BG))
     except OSError:
         return False
     except subprocess.CalledProcessError:
