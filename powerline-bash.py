@@ -9,6 +9,7 @@ import re
 class Color:
     GREEN = 148
     RED = 161
+    WHITE = 15
 
 class Powerline:
     symbols = {
@@ -69,7 +70,7 @@ class Segment:
             self.separator))
 
 def add_cwd_segment(powerline, cwd, maxdepth):
-    #powerline.append(' \\w ', 15, 237)
+    #powerline.append(' \\w ', Color.WHITE, 237)
     home = os.getenv('HOME')
     cwd = os.getenv('PWD')
 
@@ -112,7 +113,7 @@ def add_hg_segment(powerline, cwd):
     has_modified_files, has_untracked_files, has_missing_files = get_hg_status()
     if has_modified_files or has_untracked_files or has_missing_files:
         bg = Color.RED
-        fg = 15
+        fg = Color.WHITE
         extra = ''
         if has_untracked_files:
             extra += '+'
@@ -158,7 +159,7 @@ def add_git_segment(powerline, cwd):
     fg = 0
     if has_pending_commits:
         bg = Color.RED
-        fg = 15
+        fg = Color.WHITE
     powerline.append(Segment(powerline, ' %s ' % branch, fg, bg))
     return True
 
@@ -216,9 +217,9 @@ def add_virtual_env_segment(powerline, cwd):
 
 def add_root_indicator(powerline, error):
     bg = 236
-    fg = 15
+    fg = Color.WHITE
     if int(error) != 0:
-        fg = 15
+        fg = Color.WHITE
         bg = Color.RED
     powerline.append(Segment(powerline, ' \\$ ', fg, bg))
 
