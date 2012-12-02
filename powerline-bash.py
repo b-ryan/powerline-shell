@@ -121,7 +121,7 @@ def add_hg_segment(powerline, cwd):
     if len(branch) == 0:
         return False
     bg = Color.REPO_CLEAN_BG
-    fg = 0
+    fg = Color.REPO_CLEAN_FG
     has_modified_files, has_untracked_files, has_missing_files = get_hg_status()
     if has_modified_files or has_untracked_files or has_missing_files:
         bg = Color.REPO_DIRTY_BG
@@ -168,7 +168,7 @@ def add_git_segment(powerline, cwd):
     if has_untracked_files:
         branch += ' +'
     bg = Color.REPO_CLEAN_BG
-    fg = 0
+    fg = Color.REPO_CLEAN_FG
     if has_pending_commits:
         bg = Color.REPO_DIRTY_BG
         fg = Color.REPO_DIRTY_FG
