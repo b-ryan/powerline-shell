@@ -7,6 +7,9 @@ import sys
 import re
 
 class Color:
+    # The following link is a pretty good resources for color values:
+    # http://www.calmar.ws/vim/color-output.png
+
     PATH_BG = 237 # dark grey
     PATH_FG = 250 # light grey
     CWD_BG = 237
