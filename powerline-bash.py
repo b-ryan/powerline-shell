@@ -6,6 +6,10 @@ import subprocess
 import sys
 import re
 
+class Color:
+    GREEN = 148
+    RED = 161
+
 class Powerline:
     symbols = {
         'compatible': {
@@ -100,16 +104,14 @@ def get_hg_status():
     return has_modified_files, has_untracked_files, has_missing_files
 
 def add_hg_segment(powerline, cwd):
-    green = 148
-    red = 161
     branch = os.popen('hg branch 2> /dev/null').read().rstrip()
     if len(branch) == 0:
         return False
-    bg = green
+    bg = Color.GREEN
     fg = 0
     has_modified_files, has_untracked_files, has_missing_files = get_hg_status()
     if has_modified_files or has_untracked_files or has_missing_files:
-        bg = red
+        bg = Color.RED
         fg = 15
         extra = ''
         if has_untracked_files:
@@ -141,8 +143,6 @@ def get_git_status():
     return has_pending_commits, has_untracked_files, origin_position
 
 def add_git_segment(powerline, cwd):
-    green = 148
-    red = 161
     #cmd = "git branch 2> /dev/null | grep -e '\\*'"
     p1 = subprocess.Popen(['git', 'branch'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     p2 = subprocess.Popen(['grep', '-e', '\\*'], stdin=p1.stdout, stdout=subprocess.PIPE)
@@ -154,10 +154,10 @@ def add_git_segment(powerline, cwd):
     branch += origin_position
     if has_untracked_files:
         branch += ' +'
-    bg = green
+    bg = Color.GREEN
     fg = 0
     if has_pending_commits:
-        bg = red
+        bg = Color.RED
         fg = 15
     powerline.append(Segment(powerline, ' %s ' % branch, fg, bg))
     return True
@@ -187,7 +187,7 @@ def add_svn_segment(powerline, cwd):
         output = p2.communicate()[0].strip()
         if len(output) > 0 and int(output) > 0:
             changes = output.strip()
-            powerline.append(Segment(powerline, ' %s ' % changes, 22, 148))
+            powerline.append(Segment(powerline, ' %s ' % changes, 22, Color.GREEN))
     except OSError:
         return False
     except subprocess.CalledProcessError:
@@ -219,7 +219,7 @@ def add_root_indicator(powerline, error):
     fg = 15
     if int(error) != 0:
         fg = 15
-        bg = 161
+        bg = Color.RED
     powerline.append(Segment(powerline, ' \\$ ', fg, bg))
 
 if __name__ == '__main__':
