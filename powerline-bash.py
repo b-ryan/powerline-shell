@@ -7,10 +7,10 @@ import sys
 import re
 
 class Color:
-    PATH_BG = 237
-    PATH_FG = 250
+    PATH_BG = 237 # dark grey
+    PATH_FG = 250 # light grey
     CWD_BG = 237
-    CWD_FG = 254
+    CWD_FG = 254 # nearly-white grey
     SEPARATOR_FG = 244
 
     REPO_CLEAN_BG = 148 # a light green color
