@@ -5,6 +5,7 @@ import os
 import subprocess
 import sys
 import re
+import argparse
 
 class Powerline:
     symbols = {
@@ -64,7 +65,7 @@ class Segment:
             self.powerline.fgcolor(self.separator_fg),
             self.separator))
 
-def add_cwd_segment(powerline, cwd, maxdepth):
+def add_cwd_segment(powerline, cwd, maxdepth, cwd_only = False):
     #powerline.append(' \\w ', 15, 237)
     home = os.getenv('HOME')
     cwd = os.getenv('PWD')
@@ -79,8 +80,9 @@ def add_cwd_segment(powerline, cwd, maxdepth):
     if len(names) > maxdepth:
         names = names[:2] + [u'\u2026'] + names[2-maxdepth:]
 
-    for n in names[:-1]:
-        powerline.append(Segment(powerline, ' %s ' % n, 250, 237, powerline.separator_thin, 244))
+    if not cwd_only:
+        for n in names[:-1]:
+            powerline.append(Segment(powerline, ' %s ' % n, 250, 237, powerline.separator_thin, 244))
     powerline.append(Segment(powerline, ' %s ' % names[-1], 254, 237))
 
 def get_hg_status():
@@ -223,14 +225,19 @@ def add_root_indicator(powerline, error):
     powerline.append(Segment(powerline, ' \\$ ', fg, bg))
 
 if __name__ == '__main__':
+    arg_parser = argparse.ArgumentParser()
+    arg_parser.add_argument('--cwd-only', action="store_true")
+    arg_parser.add_argument('prev_error', nargs='?', default=0)
+    args = arg_parser.parse_args()
+
     p = Powerline(mode='patched')
     cwd = os.getcwd()
     add_virtual_env_segment(p, cwd)
     #p.append(Segment(powerline, ' \\u ', 250, 240))
     #p.append(Segment(powerline, ' \\h ', 250, 238))
-    add_cwd_segment(p, cwd, 5)
+    add_cwd_segment(p, cwd, 5, args.cwd_only)
     add_repo_segment(p, cwd)
-    add_root_indicator(p, sys.argv[1] if len(sys.argv) > 1 else 0)
+    add_root_indicator(p, args.prev_error)
     sys.stdout.write(p.draw())
 
 # vim: set expandtab:
