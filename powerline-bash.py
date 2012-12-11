@@ -260,9 +260,9 @@ def get_valid_cwd():
         except:
             warn("Unable to find a valid directory")
             sys.exit(1)
-        currdir = pardir
+        cwd = pardir
         warn("Your current working directory is invalid.")
-    return currdir
+    return cwd
 
 if __name__ == '__main__':
     arg_parser = argparse.ArgumentParser()
