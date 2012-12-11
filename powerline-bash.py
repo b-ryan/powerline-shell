@@ -245,6 +245,30 @@ def add_root_indicator(powerline, error):
         bg = Color.CMD_FAILED_BG
     powerline.append(Segment(powerline, ' \\$ ', fg, bg))
 
+def find_dir():
+    ''' () -> str
+
+    Find the current dir, or the first one above that exists, if the current doesn't
+    '''
+    try:
+        currdir = os.getcwd()
+    except:
+        currdir = os.getenv('PWD') # This is where the OS thinks we are
+        pardir = currdir
+        while not os.path.exists(pardir):
+            pardir_parts = pardir.split(os.sep)
+            pardir = os.sep.join(pardir_parts[:-1])
+        try:
+            os.chdir(pardir)
+        except:
+            print("ERROR - unable to find a valid directory")
+            sys.exit(1)
+        currdir = pardir
+        print("ERROR - your current working directory is invalid, suggest you 'cd %s'" % pardir)
+    return currdir
+
+
+
 if __name__ == '__main__':
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument('--cwd-only', action="store_true")
@@ -252,7 +276,7 @@ if __name__ == '__main__':
     args = arg_parser.parse_args()
 
     p = Powerline(mode='patched')
-    cwd = os.getcwd()
+    cwd = find_dir()
     add_virtual_env_segment(p, cwd)
     #p.append(Segment(powerline, ' \\u ', 250, 240))
     #p.append(Segment(powerline, ' \\h ', 250, 238))
