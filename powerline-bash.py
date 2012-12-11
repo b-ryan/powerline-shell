@@ -7,6 +7,9 @@ import sys
 import re
 import argparse
 
+def warn(msg):
+    print '[powerline-bash] ', msg
+
 class Color:
     # The following link is a pretty good resources for color values:
     # http://www.calmar.ws/vim/color-output.png
@@ -236,7 +239,6 @@ def add_virtual_env_segment(powerline, cwd):
     powerline.append(Segment(powerline,' %s ' % env_name, fg, bg))
     return True
 
-
 def add_root_indicator(powerline, error):
     bg = Color.CMD_PASSED_BG
     fg = Color.CMD_PASSED_FG
@@ -245,29 +247,22 @@ def add_root_indicator(powerline, error):
         bg = Color.CMD_FAILED_BG
     powerline.append(Segment(powerline, ' \\$ ', fg, bg))
 
-def find_dir():
-    ''' () -> str
-
-    Find the current dir, or the first one above that exists, if the current doesn't
-    '''
+def get_valid_cwd():
     try:
-        currdir = os.getcwd()
+        cwd = os.getcwd()
     except:
-        currdir = os.getenv('PWD') # This is where the OS thinks we are
-        pardir = currdir
-        while not os.path.exists(pardir):
-            pardir_parts = pardir.split(os.sep)
-            pardir = os.sep.join(pardir_parts[:-1])
+        cwd = os.getenv('PWD') # This is where the OS thinks we are
+        parts = cwd.split(os.sep)
+        while parts and not os.path.exists(os.sep.join(parts)):
+            parts.pop()
         try:
             os.chdir(pardir)
         except:
-            print("ERROR - unable to find a valid directory")
+            warn("Unable to find a valid directory")
             sys.exit(1)
         currdir = pardir
-        print("ERROR - your current working directory is invalid, suggest you 'cd %s'" % pardir)
+        warn("Your current working directory is invalid.")
     return currdir
-
-
 
 if __name__ == '__main__':
     arg_parser = argparse.ArgumentParser()
@@ -276,7 +271,7 @@ if __name__ == '__main__':
     args = arg_parser.parse_args()
 
     p = Powerline(mode='patched')
-    cwd = find_dir()
+    cwd = get_valid_cwd()
     add_virtual_env_segment(p, cwd)
     #p.append(Segment(powerline, ' \\u ', 250, 240))
     #p.append(Segment(powerline, ' \\h ', 250, 238))
