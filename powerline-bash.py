@@ -52,7 +52,7 @@ class Powerline:
     LSQESCRSQ = '\\[\\e%s\\]'
     reset = LSQESCRSQ % '[0m'
 
-    def __init__(self, mode='compatible'):
+    def __init__(self, mode):
         self.separator = Powerline.symbols[mode]['separator']
         self.separator_thin = Powerline.symbols[mode]['separator_thin']
         self.segments = []
@@ -302,11 +302,12 @@ def get_valid_cwd():
 
 if __name__ == '__main__':
     arg_parser = argparse.ArgumentParser()
-    arg_parser.add_argument('--cwd-only', action="store_true")
+    arg_parser.add_argument('--cwd-only', action='store_true')
+    arg_parser.add_argument('--mode', action='store', default='patched')
     arg_parser.add_argument('prev_error', nargs='?', default=0)
     args = arg_parser.parse_args()
 
-    p = Powerline(mode='patched')
+    p = Powerline(mode=args.mode)
     cwd = get_valid_cwd()
     add_virtual_env_segment(p, cwd)
     #p.append(Segment(powerline, ' \\u ', 250, 240))
