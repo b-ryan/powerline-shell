@@ -67,11 +67,13 @@ class Powerline:
         self.segments.append(segment)
 
     def draw(self):
-        return (''.join((s[0].draw(s[1]) for s in zip(self.segments, self.segments[1:]+[None])))
+        return (''.join((s[0].draw(s[1])
+            for s in zip(self.segments, self.segments[1:]+[None])))
             + self.reset).encode('utf-8')
 
 class Segment:
-    def __init__(self, powerline, content, fg, bg, separator=None, separator_fg=None):
+    def __init__(self, powerline, content, fg, bg, separator=None,
+            separator_fg=None):
         self.powerline = powerline
         self.content = content
         self.fg = fg
@@ -96,7 +98,7 @@ class Segment:
 def add_cwd_segment(powerline, cwd, maxdepth, cwd_only = False):
     #powerline.append(' \\w ', 15, 237)
     home = os.getenv('HOME')
-    cwd = os.getenv('PWD')
+    cwd = cwd or os.getenv('PWD')
 
     if cwd.find(home) == 0:
         cwd = cwd.replace(home, '~', 1)
@@ -110,14 +112,17 @@ def add_cwd_segment(powerline, cwd, maxdepth, cwd_only = False):
 
     if not cwd_only:
         for n in names[:-1]:
-            powerline.append(Segment(powerline, ' %s ' % n, Color.PATH_FG, Color.PATH_BG, powerline.separator_thin, Color.SEPARATOR_FG))
-    powerline.append(Segment(powerline, ' %s ' % names[-1], Color.CWD_FG, Color.PATH_BG))
+            powerline.append(Segment(powerline, ' %s ' % n, Color.PATH_FG,
+                Color.PATH_BG, powerline.separator_thin, Color.SEPARATOR_FG))
+    powerline.append(Segment(powerline, ' %s ' % names[-1], Color.CWD_FG,
+        Color.PATH_BG))
 
 def get_hg_status():
     has_modified_files = False
     has_untracked_files = False
     has_missing_files = False
-    output = subprocess.Popen(['hg', 'status'], stdout=subprocess.PIPE).communicate()[0]
+    output = subprocess.Popen(['hg', 'status'],
+            stdout=subprocess.PIPE).communicate()[0]
     for line in output.split('\n'):
         if line == '':
             continue
@@ -152,9 +157,11 @@ def get_git_status():
     has_pending_commits = True
     has_untracked_files = False
     origin_position = ""
-    output = subprocess.Popen(['git', 'status', '--ignore-submodules'], stdout=subprocess.PIPE).communicate()[0]
+    output = subprocess.Popen(['git', 'status', '--ignore-submodules'],
+            stdout=subprocess.PIPE).communicate()[0]
     for line in output.split('\n'):
-        origin_status = re.findall("Your branch is (ahead|behind).*?(\d+) comm", line)
+        origin_status = re.findall(
+                r"Your branch is (ahead|behind).*?(\d+) comm", line)
         if len(origin_status) > 0:
             origin_position = " %d" % int(origin_status[0][1])
             if origin_status[0][0] == 'behind':
@@ -170,8 +177,10 @@ def get_git_status():
 
 def add_git_segment(powerline, cwd):
     #cmd = "git branch 2> /dev/null | grep -e '\\*'"
-    p1 = subprocess.Popen(['git', 'branch'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    p2 = subprocess.Popen(['grep', '-e', '\\*'], stdin=p1.stdout, stdout=subprocess.PIPE)
+    p1 = subprocess.Popen(['git', 'branch'], stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE)
+    p2 = subprocess.Popen(['grep', '-e', '\\*'], stdin=p1.stdout,
+            stdout=subprocess.PIPE)
     output = p2.communicate()[0].strip()
     if len(output) == 0:
         return False
@@ -208,12 +217,15 @@ def add_svn_segment(powerline, cwd):
     #TODO: Color segment based on above status codes
     try:
         #cmd = '"svn status | grep -c "^[ACDIMRX\\!\\~]"'
-        p1 = subprocess.Popen(['svn', 'status'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        p2 = subprocess.Popen(['grep', '-c', '^[ACDIMRX\\!\\~]'], stdin=p1.stdout, stdout=subprocess.PIPE)
+        p1 = subprocess.Popen(['svn', 'status'], stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE)
+        p2 = subprocess.Popen(['grep', '-c', '^[ACDIMRX\\!\\~]'],
+                stdin=p1.stdout, stdout=subprocess.PIPE)
         output = p2.communicate()[0].strip()
         if len(output) > 0 and int(output) > 0:
             changes = output.strip()
-            powerline.append(Segment(powerline, ' %s ' % changes, Color.SVN_CHANGES_FG, Color.SVN_CHANGES_BG))
+            powerline.append(Segment(powerline, ' %s ' % changes,
+                Color.SVN_CHANGES_FG, Color.SVN_CHANGES_BG))
     except OSError:
         return False
     except subprocess.CalledProcessError:
@@ -248,20 +260,27 @@ def add_root_indicator(powerline, error):
     powerline.append(Segment(powerline, ' \\$ ', fg, bg))
 
 def get_valid_cwd():
+    """ We check if the current working directory is valid or not. Typically
+        happens when you checkout a different branch on git that doesn't have
+        this directory.
+        We return the original cwd because the shell still considers that to be
+        the working directory, so returning our guess will confuse people
+    """
     try:
         cwd = os.getcwd()
     except:
         cwd = os.getenv('PWD') # This is where the OS thinks we are
         parts = cwd.split(os.sep)
-        while parts and not os.path.exists(os.sep.join(parts)):
+        up = cwd
+        while parts and not os.path.exists(up):
             parts.pop()
+            up = os.sep.join(parts)
         try:
-            os.chdir(pardir)
+            os.chdir(up)
         except:
-            warn("Unable to find a valid directory")
+            warn("Your current directory is invalid.")
             sys.exit(1)
-        cwd = pardir
-        warn("Your current working directory is invalid.")
+        warn("Your current directory is invalid. Lowest valid directory: " + up)
     return cwd
 
 if __name__ == '__main__':
