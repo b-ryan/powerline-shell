@@ -104,6 +104,7 @@ def add_cwd_segment(powerline, cwd, maxdepth, cwd_only=False):
     #powerline.append(' \\w ', 15, 237)
     home = os.getenv('HOME')
     cwd = cwd or os.getenv('PWD')
+    cwd = cwd.decode('utf-8')
 
     if cwd.find(home) == 0:
         cwd = cwd.replace(home, '~', 1)
