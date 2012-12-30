@@ -51,6 +51,7 @@ class Powerline:
     }
     LSQESCRSQ = '\\[\\e%s\\]'
     reset = LSQESCRSQ % '[0m'
+    bold = LSQESCRSQ % '[1m'
 
     def __init__(self, mode):
         self.separator = Powerline.symbols[mode]['separator']
@@ -76,7 +77,7 @@ class Powerline:
 
 
 class Segment:
-    def __init__(self, powerline, content, fg, bg, separator=None,
+    def __init__(self, powerline, content, fg, bg, bold=False, separator=None,
             separator_fg=None):
         self.powerline = powerline
         self.content = content
@@ -84,6 +85,7 @@ class Segment:
         self.bg = bg
         self.separator = separator or powerline.separator
         self.separator_fg = separator_fg or bg
+        self.bold = bold
 
     def draw(self, next_segment=None):
         if next_segment:
@@ -94,7 +96,7 @@ class Segment:
         return ''.join((
             self.powerline.fgcolor(self.fg),
             self.powerline.bgcolor(self.bg),
-            self.content,
+            ''.join((self.powerline.bold, self.content, self.powerline.reset)) if self.bold else self.content,
             separator_bg,
             self.powerline.fgcolor(self.separator_fg),
             self.separator))
@@ -119,9 +121,9 @@ def add_cwd_segment(powerline, cwd, maxdepth, cwd_only=False):
     if not cwd_only:
         for n in names[:-1]:
             powerline.append(Segment(powerline, ' %s ' % n, Color.PATH_FG,
-                Color.PATH_BG, powerline.separator_thin, Color.SEPARATOR_FG))
+                Color.PATH_BG, False, powerline.separator_thin, Color.SEPARATOR_FG))
     powerline.append(Segment(powerline, ' %s ' % names[-1], Color.CWD_FG,
-        Color.PATH_BG))
+        Color.PATH_BG, True))
 
 
 def get_hg_status():
