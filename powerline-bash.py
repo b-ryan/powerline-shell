@@ -49,16 +49,22 @@ class Powerline:
             'separator_thin': u'\u2B81'
         }
     }
-    LSQESCRSQ = '\\[\\e%s\\]'
-    reset = LSQESCRSQ % '[0m'
 
-    def __init__(self, mode):
+    color_templates = {
+        'bash': '\\[\\e%s\\]',
+        'zsh': '%%{%s%%}'
+    }
+
+    def __init__(self, mode, shell):
+        self.shell = shell
+        self.color_template = self.color_templates[shell]
+        self.reset = self.color_template % '[0m'
         self.separator = Powerline.symbols[mode]['separator']
         self.separator_thin = Powerline.symbols[mode]['separator_thin']
         self.segments = []
 
     def color(self, prefix, code):
-        return self.LSQESCRSQ % ('[%s;5;%sm' % (prefix, code))
+        return self.color_template % ('[%s;5;%sm' % (prefix, code))
 
     def fgcolor(self, code):
         return self.color('38', code)
@@ -305,10 +311,11 @@ if __name__ == '__main__':
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument('--cwd-only', action='store_true')
     arg_parser.add_argument('--mode', action='store', default='patched')
+    arg_parser.add_argument('--shell', action='store', default='bash')
     arg_parser.add_argument('prev_error', nargs='?', default=0)
     args = arg_parser.parse_args()
 
-    p = Powerline(mode=args.mode)
+    p = Powerline(mode=args.mode, shell=args.shell)
     cwd = get_valid_cwd()
     add_virtual_env_segment(p, cwd)
     #p.append(Segment(powerline, ' \\u ', 250, 240))

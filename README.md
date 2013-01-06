@@ -1,7 +1,7 @@
-Powerline style prompt for Bash
-===============================
+Powerline style prompt for Bash (and now, ZSH)
+==============================================
 
-A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash:
+A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash/ZSH:
 
 ![MacVim+Solarized+Powerline+CtrlP](https://raw.github.com/milkbikis/dotfiles-mac/master/bash-powerline-screenshot.png)
 
@@ -28,13 +28,22 @@ A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash:
 
         ln -s <path/to/powerline-bash.py> ~/powerline-bash.py
 
-  If you don't want the symlink, just modify the path in the .bashrc command below
+  If you don't want the symlink, just modify the path in the commands below
 
 * Now add the following to your .bashrc:
 
         function _update_ps1()
         {
            export PS1="$(~/powerline-bash.py $?)"
+        }
+
+        export PROMPT_COMMAND="_update_ps1"
+
+* ZSH fans, add the following to your .zshrc:
+
+        function _update_ps1()
+        {
+           export PS1="$(~/powerline-bash.py $? --shell zsh)"
         }
 
         export PROMPT_COMMAND="_update_ps1"
