@@ -41,9 +41,9 @@ A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash/ZS
 
 * ZSH fans, add the following to your .zshrc:
 
-        function _update_ps1()
+        function powerline_precmd()
         {
            export PS1="$(~/powerline-bash.py $? --shell zsh)"
         }
 
-        export PROMPT_COMMAND="_update_ps1"
+        precmd_functions+=(powerline_precmd)
