@@ -56,15 +56,16 @@ class Powerline:
         'bare': '%s',
     }
 
-    dollars = {
-        'bash': '\\$',
-        'zsh': '\\$',
-        'bare': '$',
+    root_indicators = {
+        'bash': ' \\$ ',
+        'zsh': ' \\$ ',
+        'bare': ' $ ',
     }
 
     def __init__(self, mode, shell):
         self.shell = shell
         self.color_template = self.color_templates[shell]
+        self.root_indicator = self.root_indicators[shell]
         self.reset = self.color_template % '[0m'
         self.separator = Powerline.symbols[mode]['separator']
         self.separator_thin = Powerline.symbols[mode]['separator_thin']
@@ -287,7 +288,7 @@ def add_root_indicator(powerline, error):
     if int(error) != 0:
         fg = Color.CMD_FAILED_FG
         bg = Color.CMD_FAILED_BG
-    powerline.append(Segment(powerline, powerline.dollars[powerline.shell], fg, bg))
+    powerline.append(Segment(powerline, powerline.root_indicator, fg, bg))
 
 
 def get_valid_cwd():
