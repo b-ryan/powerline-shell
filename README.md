@@ -54,3 +54,9 @@ A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash/ZS
         }
 
         install_powerline_precmd
+
+* Fish users, redefine `fish_prompt` in ~/.config/fish/config.fish:
+
+        function fish_prompt
+            ~/powerline-bash.py $status --shell bare
+        end

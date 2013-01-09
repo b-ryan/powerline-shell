@@ -52,7 +52,14 @@ class Powerline:
 
     color_templates = {
         'bash': '\\[\\e%s\\]',
-        'zsh': '%%{%s%%}'
+        'zsh': '%%{%s%%}',
+        'bare': '%s',
+    }
+
+    dollars = {
+        'bash': '\\$',
+        'zsh': '\\$',
+        'bare': '$',
     }
 
     def __init__(self, mode, shell):
@@ -280,7 +287,7 @@ def add_root_indicator(powerline, error):
     if int(error) != 0:
         fg = Color.CMD_FAILED_FG
         bg = Color.CMD_FAILED_BG
-    powerline.append(Segment(powerline, ' \\$ ', fg, bg))
+    powerline.append(Segment(powerline, powerline.dollars[powerline.shell], fg, bg))
 
 
 def get_valid_cwd():
