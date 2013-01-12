@@ -62,7 +62,8 @@ class Powerline:
         'bare': ' $ ',
     }
 
-    def __init__(self, mode, shell):
+    def __init__(self, lang, mode, shell):
+        self.lang = lang
         self.shell = shell
         self.color_template = self.color_templates[shell]
         self.root_indicator = self.root_indicators[shell]
@@ -138,12 +139,14 @@ def add_cwd_segment(powerline, cwd, maxdepth, cwd_only=False):
         Color.PATH_BG))
 
 
-def get_hg_status():
+def get_hg_status(lang=None):
     has_modified_files = False
     has_untracked_files = False
     has_missing_files = False
-    output = subprocess.Popen(['hg', 'status'],
-            stdout=subprocess.PIPE).communicate()[0]
+
+    env_lang = get_env_lang(lang=lang)
+    output = subprocess.Popen(['hg', 'status'], stdout=subprocess.PIPE,
+                              env=env_lang).communicate()[0]
     for line in output.split('\n'):
         if line == '':
             continue
@@ -156,13 +159,15 @@ def get_hg_status():
     return has_modified_files, has_untracked_files, has_missing_files
 
 
-def add_hg_segment(powerline, cwd):
-    branch = os.popen('hg branch 2> /dev/null').read().rstrip()
+def add_hg_segment(powerline, cwd, lang=None):
+    env_lang = get_env_lang(lang=lang)
+    branch = os.popen('hg branch 2> /dev/null', env=env_lang).read().rstrip()
     if len(branch) == 0:
         return False
     bg = Color.REPO_CLEAN_BG
     fg = Color.REPO_CLEAN_FG
-    has_modified_files, has_untracked_files, has_missing_files = get_hg_status()
+    has_modified_files, has_untracked_files, has_missing_files = \
+            get_hg_status(lang=lang)
     if has_modified_files or has_untracked_files or has_missing_files:
         bg = Color.REPO_DIRTY_BG
         fg = Color.REPO_DIRTY_FG
@@ -176,12 +181,15 @@ def add_hg_segment(powerline, cwd):
     return True
 
 
-def get_git_status():
+def get_git_status(lang=None):
     has_pending_commits = True
     has_untracked_files = False
     origin_position = ""
+
+    env_lang = get_env_lang(lang=lang)
     output = subprocess.Popen(['git', 'status', '--ignore-submodules'],
-            stdout=subprocess.PIPE).communicate()[0]
+                              env=env_lang, stdout=subprocess.PIPE
+                             ).communicate()[0]
     for line in output.split('\n'):
         origin_status = re.findall(
                 r"Your branch is (ahead|behind).*?(\d+) comm", line)
@@ -199,16 +207,20 @@ def get_git_status():
     return has_pending_commits, has_untracked_files, origin_position
 
 
-def add_git_segment(powerline, cwd):
+def add_git_segment(powerline, cwd, lang=None):
     #cmd = "git branch 2> /dev/null | grep -e '\\*'"
-    p1 = subprocess.Popen(['git', 'branch'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    p2 = subprocess.Popen(['grep', '-e', '\\*'], stdin=p1.stdout, stdout=subprocess.PIPE)
+    env_lang = get_env_lang(lang=lang)
+    p1 = subprocess.Popen(['git', 'branch'], env=env_lang,
+                          stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p2 = subprocess.Popen(['grep', '-e', '\\*'], env=env_lang, stdin=p1.stdout,
+                          stdout=subprocess.PIPE)
     output = p2.communicate()[0].strip()
     if not output:
         return False
 
     branch = output.rstrip()[2:]
-    has_pending_commits, has_untracked_files, origin_position = get_git_status()
+    has_pending_commits, has_untracked_files, origin_position = \
+            get_git_status(lang=lang)
     branch += origin_position
     if has_untracked_files:
         branch += ' +'
@@ -223,7 +235,7 @@ def add_git_segment(powerline, cwd):
     return True
 
 
-def add_svn_segment(powerline, cwd):
+def add_svn_segment(powerline, cwd, lang=None):
     if not os.path.exists(os.path.join(cwd, '.svn')):
         return
     '''svn info:
@@ -243,10 +255,12 @@ def add_svn_segment(powerline, cwd):
     #TODO: Color segment based on above status codes
     try:
         #cmd = '"svn status | grep -c "^[ACDIMRX\\!\\~]"'
-        p1 = subprocess.Popen(['svn', 'status'], stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE)
+        env_lang = get_env_lang(lang=lang)
+        p1 = subprocess.Popen(['svn', 'status'], env=env_lang,
+                              stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         p2 = subprocess.Popen(['grep', '-c', '^[ACDIMRX\\!\\~]'],
-                stdin=p1.stdout, stdout=subprocess.PIPE)
+                              env=env_lang, stdin=p1.stdout,
+                              stdout=subprocess.PIPE)
         output = p2.communicate()[0].strip()
         if len(output) > 0 and int(output) > 0:
             changes = output.strip()
@@ -259,10 +273,10 @@ def add_svn_segment(powerline, cwd):
     return True
 
 
-def add_repo_segment(powerline, cwd):
+def add_repo_segment(powerline, cwd, lang=None):
     for add_repo_segment in (add_git_segment, add_svn_segment, add_hg_segment):
         try:
-            if add_repo_segment(p, cwd):
+            if add_repo_segment(p, cwd, lang=lang):
                 return
         except subprocess.CalledProcessError:
             pass
@@ -315,21 +329,30 @@ def get_valid_cwd():
         warn("Your current directory is invalid. Lowest valid directory: " + up)
     return cwd
 
+def get_env_lang(lang=None):
+    """Gets the current environment with LANG set to the given language."""
+    env_lang = None
+    if lang:
+        env_lang = dict(os.environ)
+        env_lang['LANG'] = lang
+    return env_lang
+
 if __name__ == '__main__':
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument('--cwd-only', action='store_true')
+    arg_parser.add_argument('--lang', action='store', default=None)
     arg_parser.add_argument('--mode', action='store', default='patched')
     arg_parser.add_argument('--shell', action='store', default='bash')
     arg_parser.add_argument('prev_error', nargs='?', default=0)
     args = arg_parser.parse_args()
 
-    p = Powerline(mode=args.mode, shell=args.shell)
+    p = Powerline(lang=args.lang, mode=args.mode, shell=args.shell)
     cwd = get_valid_cwd()
     add_virtual_env_segment(p, cwd)
     #p.append(Segment(p, ' \\u ', 250, 240))
     #p.append(Segment(p, ' \\h ', 250, 238))
     add_cwd_segment(p, cwd, 5, args.cwd_only)
-    add_repo_segment(p, cwd)
+    add_repo_segment(p, cwd, lang=args.lang)
     add_root_indicator(p, args.prev_error)
     sys.stdout.write(p.draw())
 
