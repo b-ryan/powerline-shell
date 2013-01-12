@@ -144,13 +144,9 @@ def get_hg_status(lang=None):
     has_untracked_files = False
     has_missing_files = False
 
-    new_env = None
-    if lang:
-        new_env = dict(os.environ)
-        new_env['LANG'] = lang
-
+    env_lang = get_env_lang(lang=lang)
     output = subprocess.Popen(['hg', 'status'], stdout=subprocess.PIPE,
-                              env=new_env).communicate()[0]
+                              env=env_lang).communicate()[0]
     for line in output.split('\n'):
         if line == '':
             continue
@@ -164,12 +160,8 @@ def get_hg_status(lang=None):
 
 
 def add_hg_segment(powerline, cwd, lang=None):
-    new_env = None
-    if lang:
-        new_env = dict(os.environ)
-        new_env['LANG'] = lang
-
-    branch = os.popen('hg branch 2> /dev/null', env=new_env).read().rstrip()
+    env_lang = get_env_lang(lang=lang)
+    branch = os.popen('hg branch 2> /dev/null', env=env_lang).read().rstrip()
     if len(branch) == 0:
         return False
     bg = Color.REPO_CLEAN_BG
@@ -194,13 +186,9 @@ def get_git_status(lang=None):
     has_untracked_files = False
     origin_position = ""
 
-    new_env = None
-    if lang:
-        new_env = dict(os.environ)
-        new_env['LANG'] = lang
-
+    env_lang = get_env_lang(lang=lang)
     output = subprocess.Popen(['git', 'status', '--ignore-submodules'],
-                              env=new_env, stdout=subprocess.PIPE
+                              env=env_lang, stdout=subprocess.PIPE
                              ).communicate()[0]
     for line in output.split('\n'):
         origin_status = re.findall(
@@ -220,15 +208,11 @@ def get_git_status(lang=None):
 
 
 def add_git_segment(powerline, cwd, lang=None):
-    new_env = None
-    if lang:
-        new_env = dict(os.environ)
-        new_env['LANG'] = lang
-
     #cmd = "git branch 2> /dev/null | grep -e '\\*'"
-    p1 = subprocess.Popen(['git', 'branch'], env=new_env,
+    env_lang = get_env_lang(lang=lang)
+    p1 = subprocess.Popen(['git', 'branch'], env=env_lang,
                           stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    p2 = subprocess.Popen(['grep', '-e', '\\*'], env=new_env, stdin=p1.stdout,
+    p2 = subprocess.Popen(['grep', '-e', '\\*'], env=env_lang, stdin=p1.stdout,
                           stdout=subprocess.PIPE)
     output = p2.communicate()[0].strip()
     if not output:
@@ -252,10 +236,6 @@ def add_git_segment(powerline, cwd, lang=None):
 
 
 def add_svn_segment(powerline, cwd, lang=None):
-    new_env = None
-    if lang:
-        new_env = dict(os.environ)['LANG'] = lang
-
     if not os.path.exists(os.path.join(cwd, '.svn')):
         return
     '''svn info:
@@ -275,10 +255,11 @@ def add_svn_segment(powerline, cwd, lang=None):
     #TODO: Color segment based on above status codes
     try:
         #cmd = '"svn status | grep -c "^[ACDIMRX\\!\\~]"'
-        p1 = subprocess.Popen(['svn', 'status'], env=new_env,
+        env_lang = get_env_lang(lang=lang)
+        p1 = subprocess.Popen(['svn', 'status'], env=env_lang,
                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         p2 = subprocess.Popen(['grep', '-c', '^[ACDIMRX\\!\\~]'],
-                              env=new_env, stdin=p1.stdout,
+                              env=env_lang, stdin=p1.stdout,
                               stdout=subprocess.PIPE)
         output = p2.communicate()[0].strip()
         if len(output) > 0 and int(output) > 0:
@@ -347,6 +328,14 @@ def get_valid_cwd():
             sys.exit(1)
         warn("Your current directory is invalid. Lowest valid directory: " + up)
     return cwd
+
+def get_env_lang(lang=None):
+    """Gets the current environment with LANG set to the given language."""
+    env_lang = None
+    if lang:
+        env_lang = dict(os.environ)
+        env_lang['LANG'] = lang
+    return env_lang
 
 if __name__ == '__main__':
     arg_parser = argparse.ArgumentParser()
