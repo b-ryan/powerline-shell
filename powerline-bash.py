@@ -117,7 +117,6 @@ class Powerline:
                 + self.reset)
         return native_string(ret)
 
-
 class Segment:
     def __init__(self, powerline, content, fg, bg, separator=None,
             separator_fg=None):
@@ -204,12 +203,21 @@ def add_hg_segment(powerline, cwd):
     powerline.append(Segment(powerline, ' %s ' % branch, fg, bg))
     return True
 
+def get_git_directory(cwd):
+    d = cwd
+    while True:
+        git_dir = os.path.join(d, '.git')
+        if os.path.isdir(git_dir):
+            return d
+        elif d == '/':
+            return None
+        d = os.path.normpath(os.path.join(d, os.pardir))
 
-def get_git_status():
+def get_git_status(work_tree):
     has_pending_commits = True
     has_untracked_files = False
     origin_position = ""
-    output = subprocess.Popen(['git', 'status', '--ignore-submodules'],
+    output = subprocess.Popen(['git','--work-tree=%s' % work_tree, 'status', '--ignore-submodules'],
             stdout=subprocess.PIPE).communicate()[0]
     output = smart_unicode(output)
     for line in output.split('\n'):
@@ -231,6 +239,9 @@ def get_git_status():
 
 def add_git_segment(powerline, cwd):
     #cmd = "git branch 2> /dev/null | grep -e '\\*'"
+    work_tree = get_git_directory(cwd)
+    if not work_tree:
+        return False
     p1 = subprocess.Popen(['git', 'branch'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     p2 = subprocess.Popen(['grep', '-e', '\\*'], stdin=p1.stdout, stdout=subprocess.PIPE)
     output = p2.communicate()[0].strip()
@@ -239,7 +250,7 @@ def add_git_segment(powerline, cwd):
         return False
 
     branch = output.rstrip()[2:]
-    has_pending_commits, has_untracked_files, origin_position = get_git_status()
+    has_pending_commits, has_untracked_files, origin_position = get_git_status(work_tree)
     branch += origin_position
     if has_untracked_files:
         branch += ' +'
