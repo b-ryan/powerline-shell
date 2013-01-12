@@ -6,7 +6,6 @@ import subprocess
 import sys
 import re
 import argparse
-from datetime import datetime
 
 def binary_type():
     if sys.version_info > (3,0):
