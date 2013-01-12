@@ -6,6 +6,7 @@ import subprocess
 import sys
 import re
 import argparse
+from datetime import datetime
 
 def binary_type():
     if sys.version_info > (3,0):
@@ -35,7 +36,10 @@ def smart_byte(string):
         return string
 
 def native_string(string):
-    return str(smart_unicode(string))
+    if sys.version_info > (3,0):
+        return smart_unicode(string)
+    else:
+        return smart_byte(string)
 
 class Color:
     # The following link is a pretty good resources for color values:
