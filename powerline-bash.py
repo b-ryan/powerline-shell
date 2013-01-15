@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 
 import os
@@ -23,7 +23,7 @@ class Color:
 
     REPO_CLEAN_BG = 148  # a light green color
     REPO_CLEAN_FG = 0  # black
-    REPO_DIRTY_BG = 161  # pink/red
+    REPO_DIRTY_BG = 26  # arch-blue
     REPO_DIRTY_FG = 15  # white
 
     CMD_PASSED_BG = 236
@@ -58,7 +58,7 @@ class Powerline:
 
     root_indicators = {
         'bash': ' \\$ ',
-        'zsh': ' \\$ ',
+        'zsh': ' $ ',
         'bare': ' $ ',
     }
 
@@ -328,7 +328,7 @@ if __name__ == '__main__':
     add_virtual_env_segment(p, cwd)
     #p.append(Segment(p, ' \\u ', 250, 240))
     #p.append(Segment(p, ' \\h ', 250, 238))
-    add_cwd_segment(p, cwd, 5, args.cwd_only)
+    add_cwd_segment(p, cwd, 3, args.cwd_only)
     add_repo_segment(p, cwd)
     add_root_indicator(p, args.prev_error)
     sys.stdout.write(p.draw())
