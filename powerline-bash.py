@@ -7,10 +7,38 @@ import sys
 import re
 import argparse
 
+def binary_type():
+    if sys.version_info > (3,0):
+        return bytes
+    else:
+        return str
+
+def text_type():
+    if sys.version_info > (3,0):
+        return str
+    else:
+        return unicode
 
 def warn(msg):
-    print '[powerline-bash] ', msg
+    print('[powerline-bash] ', msg)
 
+def smart_unicode(string):
+    if isinstance(string, binary_type()):
+        return string.decode('utf-8')
+    else:
+        return string
+
+def smart_byte(string):
+    if isinstance(string, text_type()):
+        return string.encode('utf-8')
+    else:
+        return string
+
+def native_string(string):
+    if sys.version_info > (3,0):
+        return smart_unicode(string)
+    else:
+        return smart_byte(string)
 
 class Color:
     # The following link is a pretty good resources for color values:
@@ -85,9 +113,9 @@ class Powerline:
 
     def draw(self):
         shifted = self.segments[1:] + [None]
-        return (''.join((c.draw(n) for c, n in zip(self.segments, shifted)))
-                + self.reset).encode('utf-8')
-
+        ret = (''.join((c.draw(n) for c, n in zip(self.segments, shifted)))
+                + self.reset)
+        return native_string(ret)
 
 class Segment:
     def __init__(self, powerline, content, fg, bg, separator=None,
@@ -118,7 +146,7 @@ def add_cwd_segment(powerline, cwd, maxdepth, cwd_only=False):
     #powerline.append(' \\w ', 15, 237)
     home = os.getenv('HOME')
     cwd = cwd or os.getenv('PWD')
-    cwd = cwd.decode('utf-8')
+    cwd = smart_unicode(cwd)
 
     if cwd.find(home) == 0:
         cwd = cwd.replace(home, '~', 1)
@@ -175,13 +203,23 @@ def add_hg_segment(powerline, cwd):
     powerline.append(Segment(powerline, ' %s ' % branch, fg, bg))
     return True
 
+def get_git_directory(cwd):
+    d = cwd
+    while True:
+        git_dir = os.path.join(d, '.git')
+        if os.path.isdir(git_dir):
+            return d
+        elif d == '/':
+            return None
+        d = os.path.normpath(os.path.join(d, os.pardir))
 
-def get_git_status():
+def get_git_status(work_tree):
     has_pending_commits = True
     has_untracked_files = False
     origin_position = ""
-    output = subprocess.Popen(['git', 'status', '--ignore-submodules'],
+    output = subprocess.Popen(['git','--work-tree=%s' % work_tree, 'status', '--ignore-submodules'],
             stdout=subprocess.PIPE).communicate()[0]
+    output = smart_unicode(output)
     for line in output.split('\n'):
         origin_status = re.findall(
                 r"Your branch is (ahead|behind).*?(\d+) comm", line)
@@ -201,14 +239,18 @@ def get_git_status():
 
 def add_git_segment(powerline, cwd):
     #cmd = "git branch 2> /dev/null | grep -e '\\*'"
+    work_tree = get_git_directory(cwd)
+    if not work_tree:
+        return False
     p1 = subprocess.Popen(['git', 'branch'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     p2 = subprocess.Popen(['grep', '-e', '\\*'], stdin=p1.stdout, stdout=subprocess.PIPE)
     output = p2.communicate()[0].strip()
+    output = smart_unicode(output)
     if not output:
         return False
 
     branch = output.rstrip()[2:]
-    has_pending_commits, has_untracked_files, origin_position = get_git_status()
+    has_pending_commits, has_untracked_files, origin_position = get_git_status(work_tree)
     branch += origin_position
     if has_untracked_files:
         branch += ' +'
