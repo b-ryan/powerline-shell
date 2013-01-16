@@ -25,8 +25,8 @@ class Color:
     CWD_BG = 25  # Arch blue
     SEPARATOR_FG = 244
 
-    TIME_BG = 226  # a light green color
-    TIME_FG = 0  # black
+    TIME_BG = 25#226  # a light green color
+    TIME_FG = 254#0  # black
 
     REPO_CLEAN_BG = 148  # a light green color
     REPO_CLEAN_FG = 0  # black
