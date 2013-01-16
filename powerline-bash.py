@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import os
@@ -49,7 +49,7 @@ class Powerline:
             'separator_thin': u'\u2B81'
         }
     }
-
+    
     color_templates = {
         'bash': '\\[\\e%s\\]',
         'zsh': '%%{%s%%}',
@@ -70,9 +70,12 @@ class Powerline:
         self.separator = Powerline.symbols[mode]['separator']
         self.separator_thin = Powerline.symbols[mode]['separator_thin']
         self.segments = []
+        self.color_memo = {}
 
     def color(self, prefix, code):
-        return self.color_template % ('[%s;5;%sm' % (prefix, code))
+        if (prefix, code) not in self.color_memo:
+            self.color_memo[(prefix, code)] = self.color_template % ('[%s;5;%sm' % (prefix, code))
+        return self.color_memo[(prefix, code)]
 
     def fgcolor(self, code):
         return self.color('38', code)
@@ -127,8 +130,7 @@ def add_cwd_segment(powerline, cwd, maxdepth, cwd_only=False):
         cwd = cwd[1:]
 
     names = cwd.split('/')
-    if len(names) > maxdepth:
-        names = names[:2] + [u'\u2026'] + names[2 - maxdepth:]
+    if len(names) > maxdepth: names[2:(2-maxdepth)] = u'\u2026'
 
     if not cwd_only:
         for n in names[:-1]:
@@ -261,17 +263,31 @@ def add_svn_segment(powerline, cwd):
         return False
     return True
 
+def walk_up(path_):
+    path = path_
+    while (path != os.environ['HOME'] and path != '/'):
+        yield path
+        path = os.path.dirname(path)
+ 
+def check_repo(path):
+    if os.path.exists(os.path.join(path, '.svn')): return 'svn'
+    else:
+        for path_up in walk_up(path):
+            if os.path.exists(os.path.join(path_up, '.git')): return 'git'
+            if os.path.exists(os.path.join(path_up, '.hg')): return 'hg'
+    return ''
+
+def add__segment(powerline, cwd):
+    return True
 
 def add_repo_segment(powerline, cwd):
-    for add_repo_segment in (add_git_segment, add_svn_segment, add_hg_segment):
-        try:
-            if add_repo_segment(p, cwd):
-                return
-        except subprocess.CalledProcessError:
-            pass
-        except OSError:
-            pass
-
+    repo_kind = check_repo(cwd)
+    try:
+        if eval('add_%s_segment(p, cwd)' % repo_kind): return
+    except subprocess.CalledProcessError:
+        pass
+    except OSError:
+        pass
 
 def add_virtual_env_segment(powerline, cwd):
     env = os.getenv("VIRTUAL_ENV")
@@ -330,10 +346,13 @@ if __name__ == '__main__':
     cwd = get_valid_cwd()
     add_virtual_env_segment(p, cwd)
     #p.append(Segment(p, ' \\u ', 250, 240))
-    #p.append(Segment(p, ' \\h ', 250, 238))
+    p.append(Segment(p, ' \\h ', 250, 238))
     add_cwd_segment(p, cwd, 5, args.cwd_only)
-    add_repo_segment(p, cwd)
-    add_root_indicator(p, args.prev_error)
+    if 'volume' in cwd or 'Volume' in cwd:
+        pass  
+    else:
+        add_repo_segment(p, cwd)
+    add_root_indicator(p, args.prev_error)    
     sys.stdout.write(p.draw())
 
 # vim: set expandtab:
