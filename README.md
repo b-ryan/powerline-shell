@@ -3,7 +3,7 @@ Powerline style prompt for Bash (and now, ZSH)
 
 A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash/ZSH in 2 lines:
 
-![MacVim+Solarized+Powerline+CtrlP](https://raw.github.com/milkbikis/dotfiles-mac/master/bash-powerline-screenshot.png)
+![Screenshot](https://f.cloud.github.com/assets/1036439/72699/d4252786-601e-11e2-85e6-782868ffeeb9.png)
 
 *  Split in 2 lines
 *  Shows date/time
