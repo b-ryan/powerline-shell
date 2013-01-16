@@ -25,8 +25,11 @@ class Color:
     CWD_BG = 25  # Arch blue
     SEPARATOR_FG = 244
 
-    TIME_BG = 25#226  # a light green color
-    TIME_FG = 254#0  # black
+    TIME_BG = 25#226  # blue (Archlinux)
+    TIME_FG = 254#0  # grey
+
+    EXTRA_BG = 238  # yellow
+    EXTRA_FG =  252 # black
 
     REPO_CLEAN_BG = 148  # a light green color
     REPO_CLEAN_FG = 0  # black
@@ -326,6 +329,13 @@ def add_time_segment(powerline, cwd):
     powerline.append_right(Segment(powerline, stuff, Color.TIME_FG, Color.TIME_BG, separator=powerline.separator_right, right=True))
     return True
 
+def add_extra_segment(powerline, cwd, extra):
+
+    stuff = " %s " % extra
+    
+    powerline.append_right(Segment(powerline, stuff, Color.EXTRA_FG, Color.EXTRA_BG, separator=powerline.separator_right, right=True))
+    return True
+
 def add_repo_segment(powerline, cwd):
     for add_repo_segment in (add_git_segment, add_svn_segment, add_hg_segment):
         try:
@@ -386,6 +396,7 @@ if __name__ == '__main__':
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument('--cwd-only', action='store_true')
     arg_parser.add_argument('--mode', action='store', default='patched')
+    arg_parser.add_argument('--extra', action='store', default='')
     arg_parser.add_argument('--shell', action='store', default='bash')
     arg_parser.add_argument('--width', action='store', default=0)
     arg_parser.add_argument('prev_error', nargs='?', default=0)
@@ -397,9 +408,11 @@ if __name__ == '__main__':
     add_virtual_env_segment(p, cwd)
     #p.append(Segment(p, ' \\u ', 250, 240))
     #p.append(Segment(p, ' \\h ', 250, 238))
-    add_cwd_segment(p, cwd, 6, args.cwd_only)
+    add_cwd_segment(p, cwd, 4, args.cwd_only)
     
     add_time_segment(p, cwd)
+    if len(args.extra)>0:
+        add_extra_segment(p, cwd, args.extra)
     add_repo_segment(p, cwd)
     
     add_root_indicator(p, args.prev_error)
