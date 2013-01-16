@@ -7,6 +7,9 @@ import sys
 import re
 import argparse
 
+import datetime
+
+
 
 def warn(msg):
     print '[powerline-bash] ', msg
@@ -19,11 +22,15 @@ class Color:
     PATH_BG = 237  # dark grey
     PATH_FG = 250  # light grey
     CWD_FG = 254  # nearly-white grey
+    CWD_BG = 25  # Arch blue
     SEPARATOR_FG = 244
+
+    TIME_BG = 226  # a light green color
+    TIME_FG = 0  # black
 
     REPO_CLEAN_BG = 148  # a light green color
     REPO_CLEAN_FG = 0  # black
-    REPO_DIRTY_BG = 26  # arch-blue
+    REPO_DIRTY_BG = 161  # pink/red
     REPO_DIRTY_FG = 15  # white
 
     CMD_PASSED_BG = 236
@@ -42,11 +49,15 @@ class Powerline:
     symbols = {
         'compatible': {
             'separator': u'\u25B6',
-            'separator_thin': u'\u276F'
+            'separator_thin': u'\u276F',
+            'separator_right': u'\u25C0',
+            'separator_right_thin': u'\u276E'
         },
         'patched': {
             'separator': u'\u2B80',
-            'separator_thin': u'\u2B81'
+            'separator_thin': u'\u2B81',
+            'separator_right': u'\u2B82',
+            'separator_right_thin': u'\u2B83'
         }
     }
 
@@ -62,14 +73,19 @@ class Powerline:
         'bare': ' $ ',
     }
 
-    def __init__(self, mode, shell):
+    def __init__(self, mode, shell, width=0):
         self.shell = shell
         self.color_template = self.color_templates[shell]
         self.root_indicator = self.root_indicators[shell]
         self.reset = self.color_template % '[0m'
         self.separator = Powerline.symbols[mode]['separator']
+        self.separator_right = Powerline.symbols[mode]['separator_right']
         self.separator_thin = Powerline.symbols[mode]['separator_thin']
+        self.separator_right_thin = Powerline.symbols[mode]['separator_right_thin']
         self.segments = []
+        self.segments_right = []
+        self.segments_down = []
+        self.width=width
 
     def color(self, prefix, code):
         return self.color_template % ('[%s;5;%sm' % (prefix, code))
@@ -83,27 +99,65 @@ class Powerline:
     def append(self, segment):
         self.segments.append(segment)
 
+    def append_right(self, segment):
+        self.segments_right.append(segment)
+
+    def append_down(self, segment):
+        self.segments_down.append(segment)
+
     def draw(self):
         shifted = self.segments[1:] + [None]
-        return (''.join((c.draw(n) for c, n in zip(self.segments, shifted)))
-                + self.reset).encode('utf-8')
+        shifted_right = self.segments_right[1:] + [None]
+        shifted_down = self.segments_down[1:] + [None]
+
+        total=0
+        total+=sum(c.width() for c in self.segments)
+        total+=sum(c.width() for c in self.segments_right)
+
+        spaces=int(self.width)-total
+        fold=' ' * spaces
+        
+        return (
+            ''.join((c.draw(n) for c, n in zip(self.segments, shifted)))
+            + self.reset + fold + ''.join((c.draw(n) for c, n in zip(reversed(self.segments_right), reversed(shifted_right))))
+            + self.reset + "\n" + ''.join((c.draw(n) for c, n in zip(self.segments_down, shifted_down)))
+            + self.reset
+
+        ).encode('utf-8')
 
 
 class Segment:
     def __init__(self, powerline, content, fg, bg, separator=None,
-            separator_fg=None):
+            separator_fg=None, right=False):
         self.powerline = powerline
         self.content = content
         self.fg = fg
         self.bg = bg
         self.separator = separator or powerline.separator
         self.separator_fg = separator_fg or bg
+        self.right=right
+
+    def width(self):
+        return len(''.join((
+            self.content,
+            self.separator)))
 
     def draw(self, next_segment=None):
         if next_segment:
             separator_bg = self.powerline.bgcolor(next_segment.bg)
         else:
             separator_bg = self.powerline.reset
+
+        if self.right == True:
+            return ''.join((
+                separator_bg,
+                self.powerline.fgcolor(self.separator_fg),
+                self.separator,
+                self.powerline.fgcolor(self.fg),
+                self.powerline.bgcolor(self.bg),
+                self.content
+                
+                ))
 
         return ''.join((
             self.powerline.fgcolor(self.fg),
@@ -131,11 +185,16 @@ def add_cwd_segment(powerline, cwd, maxdepth, cwd_only=False):
         names = names[:2] + [u'\u2026'] + names[2 - maxdepth:]
 
     if not cwd_only:
-        for n in names[:-1]:
-            powerline.append(Segment(powerline, ' %s ' % n, Color.PATH_FG,
-                Color.PATH_BG, powerline.separator_thin, Color.SEPARATOR_FG))
+        for n in range(len(names[:-1])):
+            sep=powerline.separator_thin
+            sepc=Color.SEPARATOR_FG
+            if n == len(names)-2:
+                sep=powerline.separator
+                sepc=Color.PATH_BG
+            powerline.append(Segment(powerline, ' %s ' % names[n], Color.PATH_FG,
+                Color.PATH_BG, sep, sepc))
     powerline.append(Segment(powerline, ' %s ' % names[-1], Color.CWD_FG,
-        Color.PATH_BG))
+        Color.CWD_BG))
 
 
 def get_hg_status():
@@ -172,7 +231,7 @@ def add_hg_segment(powerline, cwd):
         if has_missing_files:
             extra += '!'
         branch += (' ' + extra if extra != '' else '')
-    powerline.append(Segment(powerline, ' %s ' % branch, fg, bg))
+    powerline.append_right(Segment(powerline, ' %s ' % branch, fg, bg, separator=powerline.separator_right, right=True))
     return True
 
 
@@ -219,7 +278,7 @@ def add_git_segment(powerline, cwd):
         bg = Color.REPO_DIRTY_BG
         fg = Color.REPO_DIRTY_FG
 
-    powerline.append(Segment(powerline, ' %s ' % branch, fg, bg))
+    powerline.append_right(Segment(powerline, ' %s ' % branch, fg, bg, separator=powerline.separator_right, right=True))
     return True
 
 
@@ -258,6 +317,14 @@ def add_svn_segment(powerline, cwd):
         return False
     return True
 
+def add_time_segment(powerline, cwd):
+        
+    now = datetime.datetime.now()
+    #stuff = " %d:%d:%d %d.%d.%d " % (now.hour, now.minute, now.second, now.day, now.month, now.year)
+    stuff = " %s " % now.strftime("%a %d %H:%M:%S")
+    
+    powerline.append_right(Segment(powerline, stuff, Color.TIME_FG, Color.TIME_BG, separator=powerline.separator_right, right=True))
+    return True
 
 def add_repo_segment(powerline, cwd):
     for add_repo_segment in (add_git_segment, add_svn_segment, add_hg_segment):
@@ -278,7 +345,7 @@ def add_virtual_env_segment(powerline, cwd):
     env_name = os.path.basename(env)
     bg = Color.VIRTUAL_ENV_BG
     fg = Color.VIRTUAL_ENV_FG
-    powerline.append(Segment(powerline, ' %s ' % env_name, fg, bg))
+    powerline.append_right(Segment(powerline, ' %s ' % env_name, fg, bg, separator=powerline.separator_right, right=True))
     return True
 
 
@@ -288,7 +355,7 @@ def add_root_indicator(powerline, error):
     if int(error) != 0:
         fg = Color.CMD_FAILED_FG
         bg = Color.CMD_FAILED_BG
-    powerline.append(Segment(powerline, powerline.root_indicator, fg, bg))
+    powerline.append_down(Segment(powerline, powerline.root_indicator, fg, bg))
 
 
 def get_valid_cwd():
@@ -320,16 +387,21 @@ if __name__ == '__main__':
     arg_parser.add_argument('--cwd-only', action='store_true')
     arg_parser.add_argument('--mode', action='store', default='patched')
     arg_parser.add_argument('--shell', action='store', default='bash')
+    arg_parser.add_argument('--width', action='store', default=0)
     arg_parser.add_argument('prev_error', nargs='?', default=0)
+    
     args = arg_parser.parse_args()
 
-    p = Powerline(mode=args.mode, shell=args.shell)
+    p = Powerline(mode=args.mode, shell=args.shell, width=args.width)
     cwd = get_valid_cwd()
     add_virtual_env_segment(p, cwd)
     #p.append(Segment(p, ' \\u ', 250, 240))
     #p.append(Segment(p, ' \\h ', 250, 238))
-    add_cwd_segment(p, cwd, 3, args.cwd_only)
+    add_cwd_segment(p, cwd, 6, args.cwd_only)
+    
+    add_time_segment(p, cwd)
     add_repo_segment(p, cwd)
+    
     add_root_indicator(p, args.prev_error)
     sys.stdout.write(p.draw())
 
