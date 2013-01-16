@@ -1,10 +1,12 @@
 Powerline style prompt for Bash (and now, ZSH)
 ==============================================
 
-A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash/ZSH:
+A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash/ZSH in 2 lines:
 
 ![MacVim+Solarized+Powerline+CtrlP](https://raw.github.com/milkbikis/dotfiles-mac/master/bash-powerline-screenshot.png)
 
+*  Split in 2 lines
+*  Shows date/time
 *  Shows some important details about the git branch:
     *  Displays the current git branch which changes background color when the branch is dirty
     *  A '+' appears when untracked files are present
@@ -22,18 +24,18 @@ A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash/ZS
 
 * Clone this repository somewhere:
 
-        git clone https://github.com/milkbikis/powerline-bash
+        git clone https://github.com/Janhouse/powerline-bash
 
 * Create a symlink to the python script in your home:
 
-        ln -s <path/to/powerline-bash.py> ~/powerline-bash.py
+        ln -s <path/to/powerline-bash.py> ~/.powerline-bash.py
 
   If you don't want the symlink, just modify the path in the commands below
 
 * Now add the following to your .bashrc:
 
         function _update_ps1() {
-           export PS1="$(~/powerline-bash.py $?)"
+           export PS1="$(~/.powerline-bash.py $? --width ${COLUMNS})"
         }
 
         export PROMPT_COMMAND="_update_ps1"
@@ -41,7 +43,7 @@ A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash/ZS
 * ZSH fans, add the following to your .zshrc:
 
         function powerline_precmd() {
-          export PS1="$(~/powerline-bash.py $? --shell zsh)"
+          export PS1="$(~/.powerline-bash.py $? --width ${COLUMNS} --shell zsh)"
         }
 
         function install_powerline_precmd() {
@@ -58,5 +60,5 @@ A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash/ZS
 * Fish users, redefine `fish_prompt` in ~/.config/fish/config.fish:
 
         function fish_prompt
-            ~/powerline-bash.py $status --shell bare
+            ~/.powerline-bash.py $status --width ${COLUMNS} --shell bare
         end
