@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python2.7
 # -*- coding: utf-8 -*-
 
 import os
@@ -6,7 +6,7 @@ import subprocess
 import sys
 import re
 import argparse
-
+import platform
 
 def warn(msg):
     print '[powerline-bash] ', msg
@@ -41,13 +41,23 @@ class Color:
 class Powerline:
     symbols = {
         'compatible': {
-            'separator': u'\u25B6',
-            'separator_thin': u'\u276F'
+            #'separator': u'\u25B6',
+            'separator': '>',
+        #'separator_thin': u'\u276F'
+	    'separator_thin': '>'
         },
         'patched': {
-            'separator': u'\u2B80',
-            'separator_thin': u'\u2B81'
+            #'separator': u'\u2B80',
+            'separator': '>',
+            #'separator_thin': u'\u2B81'
+            'separator_thin': '>'
+        },
+        # add for support display in mac osx's bash 
+        'macosx': {
+            'separator': '>',
+            'separator_thin': '>'
         }
+
     }
 
     color_templates = {
@@ -326,7 +336,13 @@ if __name__ == '__main__':
     arg_parser.add_argument('prev_error', nargs='?', default=0)
     args = arg_parser.parse_args()
 
-    p = Powerline(mode=args.mode, shell=args.shell)
+    # use this to detect whether it run on Moacosx
+    systype = platform.system()
+    if systype == "Windows" or systype == "Linux":
+        p = Powerline(mode=args.mode, shell=args.shell)
+    else:
+        p = Powerline('macosx', shell=args.shell)
+        
     cwd = get_valid_cwd()
     add_virtual_env_segment(p, cwd)
     #p.append(Segment(p, ' \\u ', 250, 240))
