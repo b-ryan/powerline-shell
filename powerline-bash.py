@@ -41,16 +41,12 @@ class Color:
 class Powerline:
     symbols = {
         'compatible': {
-            #'separator': u'\u25B6',
-            'separator': '>',
-        #'separator_thin': u'\u276F'
-	    'separator_thin': '>'
+            'separator': u'\u25B6',
+            'separator_thin': u'\u276F'
         },
         'patched': {
-            #'separator': u'\u2B80',
-            'separator': '>',
-            #'separator_thin': u'\u2B81'
-            'separator_thin': '>'
+            'separator': u'\u2B80',
+            'separator_thin': u'\u2B81'
         },
         # add for support display in mac osx's bash 
         'macosx': {
