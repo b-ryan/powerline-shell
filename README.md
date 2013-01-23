@@ -30,7 +30,7 @@ A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash/ZS
 
   If you don't want the symlink, just modify the path in the commands below
 
-* Now add the following to your .bashrc:
+* Now add the following to your .bashrc(If you use Mac OS add in .profile):
 
         function _update_ps1() {
            export PS1="$(~/powerline-bash.py $?)"
