@@ -22,18 +22,18 @@ A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash/ZS
 
 * Clone this repository somewhere:
 
-        git clone https://github.com/milkbikis/powerline-bash
+        git clone https://github.com/milkbikis/powerline-shell
 
 * Create a symlink to the python script in your home:
 
-        ln -s <path/to/powerline-bash.py> ~/powerline-bash.py
+        ln -s <path/to/powerline-shell.py> ~/powerline-shell.py
 
   If you don't want the symlink, just modify the path in the commands below
 
 * Now add the following to your .bashrc:
 
         function _update_ps1() {
-           export PS1="$(~/powerline-bash.py $?)"
+           export PS1="$(~/powerline-shell.py $?)"
         }
 
         export PROMPT_COMMAND="_update_ps1"
@@ -41,7 +41,7 @@ A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash/ZS
 * ZSH fans, add the following to your .zshrc:
 
         function powerline_precmd() {
-          export PS1="$(~/powerline-bash.py $? --shell zsh)"
+          export PS1="$(~/powerline-shell.py $? --shell zsh)"
         }
 
         function install_powerline_precmd() {
@@ -58,5 +58,5 @@ A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash/ZS
 * Fish users, redefine `fish_prompt` in ~/.config/fish/config.fish:
 
         function fish_prompt
-            ~/powerline-bash.py $status --shell bare
+            ~/powerline-shell.py $status --shell bare
         end
