@@ -33,7 +33,9 @@ A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash/ZS
 * Now add the following to your .bashrc:
 
         function _update_ps1() {
-           export PS1="$(~/powerline-shell.py $?)"
+          if [ "$TERM" != "linux" ] ; then
+            export PS1="$(~/powerline-shell.py $?)"
+          fi
         }
 
         export PROMPT_COMMAND="_update_ps1"
@@ -53,10 +55,12 @@ A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash/ZS
           precmd_functions+=(powerline_precmd)
         }
 
-        install_powerline_precmd
+        if [ "$TERM" != "linux" ] ; then
+          install_powerline_precmd
+        fi
 
 * Fish users, redefine `fish_prompt` in ~/.config/fish/config.fish:
 
         function fish_prompt
-            ~/powerline-shell.py $status --shell bare
+          ~/powerline-shell.py $status --shell bare
         end
