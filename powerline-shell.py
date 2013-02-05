@@ -238,7 +238,7 @@ def add_svn_segment(powerline, cwd):
         'I' Ignored
         'M' Modified
         'R' Replaced
-        'X' an unversioned directory created by an externals definition
+        'X' a directory pulled in by an svn:externals definition
         '?' item is not under version control
         '!' item is missing (removed by non-svn command) or incomplete
          '~' versioned item obstructed by some item of a different kind
@@ -248,7 +248,7 @@ def add_svn_segment(powerline, cwd):
         #cmd = '"svn status | grep -c "^[ACDIMRX\\!\\~]"'
         p1 = subprocess.Popen(['svn', 'status'], stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE)
-        p2 = subprocess.Popen(['grep', '-c', '^[ACDIMRX\\!\\~]'],
+        p2 = subprocess.Popen(['grep', '-c', '^[ACDIMR\\!\\~]'],
                 stdin=p1.stdout, stdout=subprocess.PIPE)
         output = p2.communicate()[0].strip()
         if len(output) > 0 and int(output) > 0:
