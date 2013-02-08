@@ -42,8 +42,11 @@ A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash/ZS
 
 * ZSH fans, add the following to your .zshrc:
 
+        CHROOT=`ls -di / | awk '{if ($1 != "2") print 1; else print 0;}'`
         function powerline_precmd() {
-          export PS1="$(~/.powerline-bash.py $? --width ${COLUMNS} --shell zsh)"
+            PREV=$?
+            EXTRA=`logname`@`hostname`
+            export PS1="$(~/.powerline-bash.py ${PREV} --width ${COLUMNS} --chroot ${CHROOT} --shell zsh --extra ${EXTRA})"
         }
 
         function install_powerline_precmd() {

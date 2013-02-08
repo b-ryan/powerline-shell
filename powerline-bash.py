@@ -30,6 +30,7 @@ class Color:
 
     EXTRA_BG = 238  # yellow
     EXTRA_FG =  252 # black
+    EXTRA_SEPC =  244 # black
 
     REPO_CLEAN_BG = 148  # a light green color
     REPO_CLEAN_FG = 0  # black
@@ -329,11 +330,18 @@ def add_time_segment(powerline, cwd):
     powerline.append_right(Segment(powerline, stuff, Color.TIME_FG, Color.TIME_BG, separator=powerline.separator_right, right=True))
     return True
 
-def add_extra_segment(powerline, cwd, extra):
+def add_extra_segment(powerline, cwd, extra, color=Color.EXTRA_FG, nol=False):
+
+
+    sep=powerline.separator_right
+    sepc=Color.EXTRA_BG
+    if nol:
+        sep=powerline.separator_right_thin
+        sepc=Color.EXTRA_SEPC
 
     stuff = " %s " % extra
     
-    powerline.append_right(Segment(powerline, stuff, Color.EXTRA_FG, Color.EXTRA_BG, separator=powerline.separator_right, right=True))
+    powerline.append_right(Segment(powerline, stuff, color, Color.EXTRA_BG, separator=sep, separator_fg=sepc, right=True))
     return True
 
 def add_repo_segment(powerline, cwd):
@@ -399,6 +407,7 @@ if __name__ == '__main__':
     arg_parser.add_argument('--extra', action='store', default='')
     arg_parser.add_argument('--shell', action='store', default='bash')
     arg_parser.add_argument('--width', action='store', default=0)
+    arg_parser.add_argument('--chroot', action='store', default=0)
     arg_parser.add_argument('prev_error', nargs='?', default=0)
     
     args = arg_parser.parse_args()
@@ -412,7 +421,14 @@ if __name__ == '__main__':
     
     add_time_segment(p, cwd)
     if len(args.extra)>0:
-        add_extra_segment(p, cwd, args.extra)
+        if args.chroot == "1":
+            add_extra_segment(p, cwd, args.extra, nol=True)
+        else:
+            add_extra_segment(p, cwd, args.extra)
+
+    if args.chroot == "1":
+        add_extra_segment(p, cwd, "CHROOT")
+
     add_repo_segment(p, cwd)
     
     add_root_indicator(p, args.prev_error)
