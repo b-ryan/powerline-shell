@@ -35,7 +35,7 @@ class Color:
     SVN_CHANGES_FG = 22  # dark green
 
     VIRTUAL_ENV_BG = 35  # a mid-tone green
-    VIRTUAL_ENV_FG = 22
+    VIRTUAL_ENV_FG = 00
 
 
 class Powerline:
