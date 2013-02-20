@@ -47,7 +47,11 @@ class Powerline:
         'patched': {
             'separator': u'\u2B80',
             'separator_thin': u'\u2B81'
-        }
+        },
+        'flat': {
+            'separator': '',
+            'separator_thin': ''
+        },
     }
 
     color_templates = {
