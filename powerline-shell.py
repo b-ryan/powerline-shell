@@ -327,11 +327,14 @@ if __name__ == '__main__':
     arg_parser.add_argument('--cwd-only', action='store_true')
     arg_parser.add_argument('--mode', action='store', default='patched')
     arg_parser.add_argument('--shell', action='store', default='bash')
+    arg_parser.add_argument('--no-follow', action='store_true')
     arg_parser.add_argument('prev_error', nargs='?', default=0)
     args = arg_parser.parse_args()
 
     p = Powerline(mode=args.mode, shell=args.shell)
     cwd = get_valid_cwd()
+    if args.no_follow:
+        cwd = os.getenv('PWD')
     add_virtual_env_segment(p, cwd)
     #p.append(Segment(p, ' \\u ', 250, 240))
     #p.append(Segment(p, ' \\h ', 250, 238))
