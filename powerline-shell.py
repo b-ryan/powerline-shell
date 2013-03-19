@@ -1,15 +1,31 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os
+import os as _os
 import subprocess
 import sys
 import re
 import argparse
+import six
 
+class WrappedOS(object):
+    str_funcs = ('getenv', 'getcwd',)
+
+    def __init__(self):
+        self.os = _os
+
+    def __getattr__(self, name):
+        if not six.PY3 and name in WrappedOS.str_funcs:
+            def wrapped(*args, **kwargs):
+                orig = self.os.__getattribute__(name)
+                return orig(*args, **kwargs).decode('utf-8')
+            return wrapped
+        return self.os.__getattribute__(name)
+
+os = WrappedOS()
 
 def warn(msg):
-    print '[powerline-bash] ', msg
+    print('[powerline-bash] ', msg)
 
 
 class Color:
@@ -90,7 +106,7 @@ class Powerline:
     def draw(self):
         shifted = self.segments[1:] + [None]
         return (''.join((c.draw(n) for c, n in zip(self.segments, shifted)))
-                + self.reset).encode('utf-8')
+                + self.reset)
 
 
 class Segment:
@@ -122,7 +138,6 @@ def add_cwd_segment(powerline, cwd, maxdepth, cwd_only=False):
     #powerline.append(' \\w ', 15, 237)
     home = os.getenv('HOME')
     cwd = cwd or os.getenv('PWD')
-    cwd = cwd.decode('utf-8')
 
     if cwd.find(home) == 0:
         cwd = cwd.replace(home, '~', 1)
@@ -184,8 +199,8 @@ def get_git_status():
     has_pending_commits = True
     has_untracked_files = False
     origin_position = ""
-    output = subprocess.Popen(['git', 'status', '--ignore-submodules'],
-            stdout=subprocess.PIPE).communicate()[0]
+    output = subprocess.Popen(['git', 'status'],
+            stdout=subprocess.PIPE).communicate()[0].decode('utf-8')
     for line in output.split('\n'):
         origin_status = re.findall(
                 r"Your branch is (ahead|behind).*?(\d+) comm", line)
@@ -207,7 +222,7 @@ def add_git_segment(powerline, cwd):
     #cmd = "git branch 2> /dev/null | grep -e '\\*'"
     p1 = subprocess.Popen(['git', 'branch'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     p2 = subprocess.Popen(['grep', '-e', '\\*'], stdin=p1.stdout, stdout=subprocess.PIPE)
-    output = p2.communicate()[0].strip()
+    output = p2.communicate()[0].strip().decode('utf-8')
     if not output:
         return False
 
@@ -338,6 +353,9 @@ if __name__ == '__main__':
     add_cwd_segment(p, cwd, 5, args.cwd_only)
     add_repo_segment(p, cwd)
     add_root_indicator(p, args.prev_error)
-    sys.stdout.write(p.draw())
+    if six.PY3:
+        sys.stdout.write(p.draw())
+    else:
+        sys.stdout.write(p.draw().encode('utf-8'))
 
 # vim: set expandtab:
