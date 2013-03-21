@@ -162,7 +162,7 @@ def get_hg_status():
     has_untracked_files = False
     has_missing_files = False
     output = subprocess.Popen(['hg', 'status'],
-            stdout=subprocess.PIPE).communicate()[0]
+            stdout=subprocess.PIPE).communicate()[0].decode('utf-8')
     for line in output.split('\n'):
         if line == '':
             continue
@@ -244,7 +244,7 @@ def add_git_segment(powerline, cwd):
 
 def add_svn_segment(powerline, cwd):
     is_svn = subprocess.Popen(['svn', 'status'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    is_svn_output = is_svn.communicate()[1].strip()
+    is_svn_output = is_svn.communicate()[1].strip().decode('utf-8')
     if len(is_svn_output) != 0:
         return
 
@@ -269,7 +269,7 @@ def add_svn_segment(powerline, cwd):
                 stderr=subprocess.PIPE)
         p2 = subprocess.Popen(['grep', '-c', '^[ACDIMR\\!\\~]'],
                 stdin=p1.stdout, stdout=subprocess.PIPE)
-        output = p2.communicate()[0].strip()
+        output = p2.communicate()[0].strip().decode('utf-8')
         if len(output) > 0 and int(output) > 0:
             changes = output.strip()
             powerline.append(Segment(powerline, ' %s ' % changes,
