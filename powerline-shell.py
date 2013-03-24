@@ -130,7 +130,7 @@ def add_cwd_segment(powerline, cwd, maxdepth, cwd_only=False):
     if cwd[0] == '/':
         cwd = cwd[1:]
 
-    names = cwd.split('/')
+    names = cwd.split(os.sep)
     if len(names) > maxdepth:
         names = names[:2] + [u'\u2026'] + names[2 - maxdepth:]
 
