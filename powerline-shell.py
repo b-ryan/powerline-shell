@@ -1,7 +1,7 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os
+import os as _os
 import subprocess
 import sys
 import re
@@ -9,10 +9,28 @@ import argparse
 
 import datetime
 
+class WrappedOS(object):
+    str_funcs = ('getenv', 'getcwd',)
+
+    def __init__(self):
+        self.os = _os
+
+    def __getattr__(self, name):
+        if not sys.version_info >= (3, 0) and name in WrappedOS.str_funcs:
+            def wrapped(*args, **kwargs):
+                orig = self.os.__getattribute__(name)
+                if orig(*args, **kwargs) is not None:
+                    return orig(*args, **kwargs).decode('utf-8')
+                else:
+                    return orig(*args, **kwargs)
+            return wrapped
+        return self.os.__getattribute__(name)
+
+os = WrappedOS()
 
 
 def warn(msg):
-    print '[powerline-shell] ', msg
+    print('[powerline-shell] ', msg)
 
 
 class Color:
@@ -127,7 +145,7 @@ class Powerline:
             + self.reset + "\n" + ''.join((c.draw(n) for c, n in zip(self.segments_down, shifted_down)))
             + self.reset
 
-        ).encode('utf-8')
+        )
 
 
 class Segment:
@@ -176,7 +194,7 @@ def add_cwd_segment(powerline, cwd, maxdepth, cwd_only=False):
     #powerline.append(' \\w ', 15, 237)
     home = os.getenv('HOME')
     cwd = cwd or os.getenv('PWD')
-    cwd = cwd.decode('utf-8')
+    #cwd = cwd.decode('utf-8')
 
     if cwd.find(home) == 0:
         cwd = cwd.replace(home, '~', 1)
@@ -206,7 +224,7 @@ def get_hg_status():
     has_untracked_files = False
     has_missing_files = False
     output = subprocess.Popen(['hg', 'status'],
-            stdout=subprocess.PIPE).communicate()[0]
+            stdout=subprocess.PIPE).communicate()[0].decode('utf-8')
     for line in output.split('\n'):
         if line == '':
             continue
@@ -243,8 +261,8 @@ def get_git_status():
     has_pending_commits = True
     has_untracked_files = False
     origin_position = ""
-    output = subprocess.Popen(['git', 'status', '--ignore-submodules'],
-            stdout=subprocess.PIPE).communicate()[0]
+    output = subprocess.Popen(['git', 'status'],
+            stdout=subprocess.PIPE).communicate()[0].decode('utf-8')
     for line in output.split('\n'):
         origin_status = re.findall(
                 r"Your branch is (ahead|behind).*?(\d+) comm", line)
@@ -266,7 +284,7 @@ def add_git_segment(powerline, cwd):
     #cmd = "git branch 2> /dev/null | grep -e '\\*'"
     p1 = subprocess.Popen(['git', 'branch'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     p2 = subprocess.Popen(['grep', '-e', '\\*'], stdin=p1.stdout, stdout=subprocess.PIPE)
-    output = p2.communicate()[0].strip()
+    output = p2.communicate()[0].strip().decode('utf-8')
     if not output:
         return False
 
@@ -288,7 +306,7 @@ def add_git_segment(powerline, cwd):
 
 def add_svn_segment(powerline, cwd):
     is_svn = subprocess.Popen(['svn', 'status'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    is_svn_output = is_svn.communicate()[1].strip()
+    is_svn_output = is_svn.communicate()[1].strip().decode('utf-8')
     if len(is_svn_output) != 0:
         return
     '''svn info:
@@ -312,7 +330,7 @@ def add_svn_segment(powerline, cwd):
                 stderr=subprocess.PIPE)
         p2 = subprocess.Popen(['grep', '-c', '^[ACDIMR\\!\\~]'],
                 stdin=p1.stdout, stdout=subprocess.PIPE)
-        output = p2.communicate()[0].strip()
+        output = p2.communicate()[0].strip().decode('utf-8')
         if len(output) > 0 and int(output) > 0:
             changes = output.strip()
             powerline.append(Segment(powerline, ' %s ' % changes,
@@ -434,6 +452,9 @@ if __name__ == '__main__':
     add_repo_segment(p, cwd)
     
     add_root_indicator(p, args.prev_error)
-    sys.stdout.write(p.draw())
+    if sys.version_info >= (3, 0):
+        sys.stdout.write(p.draw())
+    else:
+        sys.stdout.write(p.draw().encode('utf-8'))
 
 # vim: set expandtab:
