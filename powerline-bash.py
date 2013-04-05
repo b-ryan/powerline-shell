@@ -19,16 +19,16 @@ class Palette:
 class Powerline:
     symbols = {
         'compatible': {
-            'separator': u'\u25B6',
-            'separator_thin': u'\u276F',
-            'lseparator': u'\u25c2',
-            'lseparator_thin': u'\u276e'
+            'separator': u'\u25B6'.encode('UTF-8'),
+            'separator_thin': u'\u276F'.encode('UTF-8'),
+            'lseparator': u'\u25c2'.encode('UTF-8'),
+            'lseparator_thin': u'\u276e'.encode('UTF-8')
         },
         'patched': {
-            'separator': u'\u2B80',
-            'separator_thin': u'\u2B81',
-            'lseparator': u'\u2B82',
-            'lseparator_thin': u'\u2B83'
+            'separator': u'\u2B80'.encode('UTF-8'),
+            'separator_thin': u'\u2B81'.encode('UTF-8'),
+            'lseparator': u'\u2B82'.encode('UTF-8'),
+            'lseparator_thin': u'\u2B83'.encode('UTF-8')
         }
     }
     LSQESCRSQ = '\\[\\e%s\\]'
@@ -86,8 +86,9 @@ class Powerline:
             Exception("%s - this segment type is not allowed. Use Segment instance."%type(segment))
 
     def draw(self):
-        return (''.join((s[0].draw(self, s[1]) for s in zip(self.segments, self.segments[1:]+[None])))
-            + self.reset).encode('utf-8')
+        content = (''.join((s[0].draw(self, s[1]) for s in zip(self.segments, self.segments[1:]+[None])))
+            + self.reset)
+        return content
 
 
 class Segment(object):
@@ -112,13 +113,14 @@ class Segment(object):
             else:
                 return sep
 
-        return ''.join((
+        x=str(''.join((
             powerline.fgcolor(self.fg),
             powerline.bgcolor(self.bg),
             self.content,
             separator_bg,
             powerline.fgcolor(self.separator_fg),
-            get_separator(self.separator)))
+            get_separator(self.separator))))
+        return x
 
 
 class NewLineSegment(Segment):
@@ -161,7 +163,7 @@ def is_hg_clean():
     return len(output) == 0
 
 
-def add_hg_segment(cwd):
+def add_hg_segment(cwd, return_none):
     green = 148
     red = 161
     branch = os.popen('hg branch 2> /dev/null').read().rstrip()
@@ -179,15 +181,33 @@ def get_git_status():
     has_not_staged = False
     has_untracked_files = False
     origin_position = ""
-    output = subprocess.Popen(['git', 'status'], stdout=subprocess.PIPE).communicate()[0]
-    for line in output.split('\n'):
-        origin_status = re.findall("Your branch is (ahead|behind).*?(\d+) comm", line)
+    branch = ""
+    output = subprocess.Popen(['git', 'status'], stdout=subprocess.PIPE,
+                                                 stderr=subprocess.PIPE).communicate()[0]
+    output = output.splitlines()
+    if len(output) == 0:
+        is_git = False
+        return False, None, None, None, None, None
+    else:
+        is_git = True
+
+    if re.findall('Not currently on any', output[0]):
+        branch = 'NO BRANCH'
+    elif re.findall('On branch', output[0]):
+        branch = output[0][12:]
+    else:
+        branch = 'ERROR'
+
+    for line in output:
+        origin_status = re.findall("Your branch is (ahead|behind) .* (\d+) commit", line)
         if len(origin_status) > 0:
-            origin_position = " %d" % int(origin_status[0][1])
+            origin_position = "%d" % int(origin_status[0][1])
             if origin_status[0][0] == 'behind':
-                origin_position += u'\u21E3'
-            if origin_status[0][0] == 'ahead':
-                origin_position += u'\u21E1'
+                origin_position += u'\u21E3'.encode('UTF-8')
+            elif origin_status[0][0] == 'ahead':
+                origin_position += u'\u21E1'.encode('UTF-8')
+            else:
+                origin_position = ''
 
         if line.find('nothing to commit (working directory clean)') >= 0:
             has_pending_commits = False
@@ -198,30 +218,36 @@ def get_git_status():
             has_pending_commits = True
         if line.find('Untracked files') >= 0:
             has_untracked_files = True
-    return has_not_staged, has_pending_commits, has_untracked_files, origin_position
+    return is_git, branch, has_not_staged, has_pending_commits, has_untracked_files, origin_position
 
-def add_git_segment(cwd):
+
+def add_git_segment(cwd, return_none):
+    ok = u'✔'.encode('UTF-8')
+    dirty = '+'
     bg = 148
     fg = 8
-    p1 = subprocess.Popen(['git', 'status'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    output = p1.communicate()[0].strip()
-    if len(output) == 0:
-        fg=34
-        bg=22
-        return Segment(' git ', fg, bg)
-    else:
-        branch = output.splitlines()[0].rstrip()[12:]
-        has_not_staged, has_pending_commits, has_untracked_files, origin_position = get_git_status()
+
+    is_git, branch, has_not_staged, has_pending_commits, has_untracked_files, origin_position = get_git_status()
+
+    if not is_git:
+        if return_none:
+            return None
+        else:
+            return Segment(' git ', fg, bg)
+
+    if origin_position:
+        branch = '%s(%s)' % (branch, origin_position)
 
     segments = [
             Segment(' git ' , fg, bg, 'thin', fg),
-            Segment(' w:%s ' % ('+' if has_not_staged else u'✔') , fg, bg, 'thin',fg),
-            Segment(' i:%s ' % ('+' if has_pending_commits else u'✔'), fg, bg, 'thin',fg),
+            Segment(' w:%s ' % (dirty if has_not_staged else ok) , fg, bg, 'thin',fg),
+            Segment(' i:%s ' % (dirty if has_pending_commits else ok), fg, bg, 'thin',fg),
             Segment(' r:%s ' % branch, fg, bg),
     ]
     return segments
 
-def add_svn_segment(cwd):
+
+def add_svn_segment(cwd, return_none):
     if not os.path.exists(os.path.join(cwd,'.svn')):
         return
     '''svn info:
@@ -253,10 +279,11 @@ def add_svn_segment(cwd):
         return False
     return True
 
-def add_repo_segment(cwd):
-    for add_repo_segment in [add_git_segment, add_svn_segment, add_hg_segment]:
+
+def add_repo_segment(cwd, return_none=True):
+    for _add_repo_segment in [add_git_segment, add_svn_segment, add_hg_segment]:
         try:
-            info = add_repo_segment(cwd)
+            info = _add_repo_segment(cwd, return_none)
             if info:
                 return info
         except subprocess.CalledProcessError:
@@ -264,17 +291,21 @@ def add_repo_segment(cwd):
         except OSError:
             pass
 
-def add_virtual_env_segment(cwd):
+
+def add_virtual_env_segment(cwd, return_none=True):
     env = os.getenv("VIRTUAL_ENV")
-    if env == None:
+    if env is None:
         env_name = '-'
         bg = 23
         fg = 35
+        if return_none:
+            return
     else:
         env_name = os.path.basename(env)
         bg = 35
         fg = 51
     return Segment(' VE ', fg, bg, 'thin', fg),  Segment(' %s ' % env_name, fg, bg)
+
 
 def add_error_code(error):
     bg = 236
@@ -292,61 +323,45 @@ def add_root_indicator():
     return Segment(r' \$', fg, bg,)
 
 
+def set_terminal_title_to_pwd():
+    sys.stdout.write('\033]0;(${PWD}) - terminal\007')
+
+
 def developer_powerline():
+    dev_mode = os.getenv('POWERLINE_DEVELMODE', '')
+
+    if not dev_mode:
+        return
+
     p = Powerline(mode='patched')
     cwd = os.getcwd()
     p.append(Segment(" - dev mode -",7,1))
-    p.append(add_virtual_env_segment(cwd))
-    p.append(add_repo_segment(cwd))
+
+    segments = (add_virtual_env_segment(cwd),
+                add_repo_segment(cwd))
+
+    if dev_mode.lower() in ('?', 'auto') and not filter(bool, segments):
+        return
+
+    for segment in segments:
+        p.append(segment)
     p.append(NewLineSegment())
     sys.stdout.write(p.draw())
+
 
 def add_time():
     from datetime import datetime
     return Segment(datetime.now().strftime(' %H:%M:%S '),228,34)
 
-def add_timer(min_time=5):
-    #TODO: eh, bash and its signals ;]
-    return
-    last = os.getenv('LAST_CMD_TIME', None)
-    fg = 99
-    bg = 89
-    if not last:
-        return
-    else:
-        segments = [Segment(' Last cmd ',bg,fg, )]
-        from datetime import datetime, timedelta
-        try:
-            start = int(os.getenv('LAST_CMD_TIME'))
-            start = datetime.fromtimestamp(start)
-        except Exception as error:
-            return segments + [Segment(' Error while parsing date from LAST_CMD_TIME: %s '%error, fg, bg)]
-        now = int(os.getenv('LAST_CMD_TIME'))
-        now = datetime.fromtimestamp(now)
-        if now - start < timedelta(seconds=min_time):
-            return
-        segments.extend((
-                Segment(' start:%s '%start,fg, bg,'thin', fg),
-                Segment(' stop:%s '%now,fg, bg, 'thin', fg),
-                Segment(' time:%s '%(now-start,),fg, bg)
-                ))
-        return segments
-
 
 if __name__ == '__main__':
-    print 
-
-    timer = add_timer()
-    if timer:
-        p = Powerline(mode='patched')
-        p.append(timer)
-        p.append(NewLineSegment())
-        sys.stdout.write(p.draw())
+    print
 
     cwd = os.getcwd()
-    if os.getenv('POWERLINE_DEVELMODE',None):
-        developer_powerline()
+    developer_powerline()
+
     p = Powerline(mode='patched')
+    p.append(set_terminal_title_to_pwd())
     p.append(add_time())
     p.append(Segment(' \\u', 9, 185, ''))
     p.append(Segment('@', 17, 185, ''))
