@@ -34,8 +34,13 @@ A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash/ZS
 
 * Now add the following to your .bashrc:
 
+        CHROOT=`ls -di / | awk '{if ($1 != "2") print 1; else print 0;}'`
         function _update_ps1() {
-           export PS1="$(~/.powerline-shell.py $? --width ${COLUMNS})"
+            if [ "$TERM" != "linux" ] ; then
+                PREV=$?
+                EXTRA=`logname`@`hostname`
+                export PS1="$(~/.powerline-shell.py ${PREV} --width ${COLUMNS} --chroot ${CHROOT} --extra ${EXTRA})"
+            fi
         }
 
         export PROMPT_COMMAND="_update_ps1"
@@ -57,8 +62,11 @@ A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash/ZS
           done
           precmd_functions+=(powerline_precmd)
         }
-
-        install_powerline_precmd
+        if [ "$TERM" != "linux" ] ; then
+            install_powerline_precmd
+        else
+            prompt walters
+        fi
 
 * Fish users, redefine `fish_prompt` in ~/.config/fish/config.fish:
 
