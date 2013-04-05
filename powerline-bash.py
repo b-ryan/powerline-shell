@@ -287,7 +287,9 @@ def add_git_segment(powerline, cwd):
 
 
 def add_svn_segment(powerline, cwd):
-    if not os.path.exists(os.path.join(cwd, '.svn')):
+    is_svn = subprocess.Popen(['svn', 'status'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    is_svn_output = is_svn.communicate()[1].strip()
+    if len(is_svn_output) != 0:
         return
     '''svn info:
         First column: Says if item was added, deleted, or otherwise changed
