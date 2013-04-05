@@ -1,4 +1,4 @@
-Powerline style prompt for Bash (and now, ZSH)
+Powerline style prompt for Bash and ZSH.
 ==============================================
 
 A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash/ZSH in 2 lines:
@@ -24,18 +24,18 @@ A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash/ZS
 
 * Clone this repository somewhere:
 
-        git clone https://github.com/Janhouse/powerline-bash
+        git clone https://github.com/Janhouse/powerline-shell
 
 * Create a symlink to the python script in your home:
 
-        ln -s <path/to/powerline-bash.py> ~/.powerline-bash.py
+        ln -s <path/to/powerline-shell.py> ~/.powerline-shell.py
 
   If you don't want the symlink, just modify the path in the commands below
 
 * Now add the following to your .bashrc:
 
         function _update_ps1() {
-           export PS1="$(~/.powerline-bash.py $? --width ${COLUMNS})"
+           export PS1="$(~/.powerline-shell.py $? --width ${COLUMNS})"
         }
 
         export PROMPT_COMMAND="_update_ps1"
@@ -46,7 +46,7 @@ A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash/ZS
         function powerline_precmd() {
             PREV=$?
             EXTRA=`logname`@`hostname`
-            export PS1="$(~/.powerline-bash.py ${PREV} --width ${COLUMNS} --chroot ${CHROOT} --shell zsh --extra ${EXTRA})"
+            export PS1="$(~/.powerline-shell.py ${PREV} --width ${COLUMNS} --chroot ${CHROOT} --shell zsh --extra ${EXTRA})"
         }
 
         function install_powerline_precmd() {
@@ -63,5 +63,5 @@ A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash/ZS
 * Fish users, redefine `fish_prompt` in ~/.config/fish/config.fish:
 
         function fish_prompt
-            ~/.powerline-bash.py $status --width ${COLUMNS} --shell bare
+            ~/.powerline-shell.py $status --width ${COLUMNS} --shell bare
         end

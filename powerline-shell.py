@@ -12,7 +12,7 @@ import datetime
 
 
 def warn(msg):
-    print '[powerline-bash] ', msg
+    print '[powerline-shell] ', msg
 
 
 class Color:
