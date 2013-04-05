@@ -22,7 +22,7 @@ class WrappedOS(object):
                 if orig(*args, **kwargs) is not None:
                     return orig(*args, **kwargs).decode('utf-8')
                 else:
-                    return orig(*args, **kwargs)
+                    return None
             return wrapped
         return self.os.__getattribute__(name)
 
