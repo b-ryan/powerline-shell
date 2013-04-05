@@ -3,9 +3,9 @@ Powerline style prompt for Bash and ZSH.
 
 A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash/ZSH in 2 lines:
 
-![Screenshot](https://f.cloud.github.com/assets/1036439/72699/d4252786-601e-11e2-85e6-782868ffeeb9.png)
+![Screenshot](https://f.cloud.github.com/assets/1036439/344227/439818e4-9dfa-11e2-9683-255b1ce77fa4.png)
 
-*  Split in 2 lines
+*  Split in 2 lines!
 *  Shows date/time
 *  Shows some important details about the git branch:
     *  Displays the current git branch which changes background color when the branch is dirty
