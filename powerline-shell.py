@@ -62,6 +62,16 @@ class Powerline:
         'bare': ' $ ',
     }
 
+    user_prompt = {
+        'bash': ' \\u',
+        'zsh': ' %n'
+    }
+
+    host_prompt = {
+        'bash': ' \\h',
+        'zsh': ' %m'
+    }
+
     def __init__(self, mode, shell):
         self.shell = shell
         self.color_template = self.color_templates[shell]
@@ -329,8 +339,8 @@ if __name__ == '__main__':
     p = Powerline(mode=args.mode, shell=args.shell)
     cwd = get_valid_cwd()
     add_virtual_env_segment(p, cwd)
-    #p.append(Segment(p, ' \\u ', 250, 240))
-    #p.append(Segment(p, ' \\h ', 250, 238))
+    #p.append(Segment(p, p.user_prompt[p.shell], 250, 240))
+    #p.append(Segment(p, p.host_prompt[p.shell], 250, 238))
     add_cwd_segment(p, cwd, 5, args.cwd_only)
     add_repo_segment(p, cwd)
     add_root_indicator(p, args.prev_error)
