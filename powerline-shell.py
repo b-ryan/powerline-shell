@@ -142,7 +142,7 @@ def add_hostname_segment(powerline):
     user = os.getenv("USER")
     #powerline.append(Segment(powerline, ' %s@%s ' % (user, hostname), Color.CWD_FG, Color.PATH_BG))
 
-    powerline.append(Segment(powerline, '⌂⁂ ', Color.CWD_FG, Color.PATH_BG))
+    powerline.append(Segment(powerline, Color.CWD_FG, Color.PATH_BG))
 
 
 def add_cwd_segment(powerline, cwd, maxdepth, cwd_only = False):
