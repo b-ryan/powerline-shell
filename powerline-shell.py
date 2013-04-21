@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import socket
 import os
 import subprocess
 import sys
@@ -119,6 +120,15 @@ class Segment:
         else:
             separator_bg = self.powerline.reset
 
+        try:
+            self.content = self.content.decode('utf-8')
+        except:
+            try:
+                self.content = self.content.decode('latin1')
+            except:
+                pass
+
+
         return ''.join((
             self.powerline.fgcolor(self.fg),
             self.powerline.bgcolor(self.bg),
@@ -127,8 +137,15 @@ class Segment:
             self.powerline.fgcolor(self.separator_fg),
             self.separator))
 
+def add_hostname_segment(powerline):
+    hostname = socket.gethostname()
+    user = os.getenv("USER")
+    #powerline.append(Segment(powerline, ' %s@%s ' % (user, hostname), Color.CWD_FG, Color.PATH_BG))
 
-def add_cwd_segment(powerline, cwd, maxdepth, cwd_only=False):
+    powerline.append(Segment(powerline, '⌂⁂ ', Color.CWD_FG, Color.PATH_BG))
+
+
+def add_cwd_segment(powerline, cwd, maxdepth, cwd_only = False):
     #powerline.append(' \\w ', 15, 237)
     home = os.getenv('HOME')
     cwd = cwd or os.getenv('PWD')
@@ -169,6 +186,17 @@ def get_hg_status():
             has_modified_files = True
     return has_modified_files, has_untracked_files, has_missing_files
 
+def get_fossil_status():
+    has_modified_files = False
+    has_untracked_files = False
+    has_missing_files = False
+    output = os.popen('fossil changes 2>/dev/null').read().strip()
+    has_untracked_files = True if os.popen("fossil extras 2>/dev/null").read().strip() else False
+    has_missing_files = 'MISSING' in output
+    has_modified_files = 'EDITED' in output
+
+    return has_modified_files, has_untracked_files, has_missing_files
+
 
 def add_hg_segment(powerline, cwd):
     branch = os.popen('hg branch 2> /dev/null').read().rstrip()
@@ -177,6 +205,27 @@ def add_hg_segment(powerline, cwd):
     bg = Color.REPO_CLEAN_BG
     fg = Color.REPO_CLEAN_FG
     has_modified_files, has_untracked_files, has_missing_files = get_hg_status()
+    if has_modified_files or has_untracked_files or has_missing_files:
+        bg = Color.REPO_DIRTY_BG
+        fg = Color.REPO_DIRTY_FG
+        extra = ''
+        if has_untracked_files:
+            extra += '+'
+        if has_missing_files:
+            extra += '!'
+        branch += (' ' + extra if extra != '' else '')
+    powerline.append(Segment(powerline, ' %s ' % branch, fg, bg))
+    return True
+
+def add_fossil_segment(powerline, cwd):
+    subprocess.Popen(['fossil'], stdout=subprocess.PIPE).communicate()[0]
+    branch = ''.join([i.replace('*','').strip() for i in os.popen("fossil branch 2> /dev/null").read().strip().split("\n") if i.startswith('*')])
+    if len(branch) == 0:
+        return False
+
+    bg = Color.REPO_CLEAN_BG
+    fg = Color.REPO_CLEAN_FG
+    has_modified_files, has_untracked_files, has_missing_files = get_fossil_status()
     if has_modified_files or has_untracked_files or has_missing_files:
         bg = Color.REPO_DIRTY_BG
         fg = Color.REPO_DIRTY_FG
@@ -215,7 +264,7 @@ def get_git_status():
 
 def add_git_segment(powerline, cwd):
     #cmd = "git branch 2> /dev/null | grep -e '\\*'"
-    p1 = subprocess.Popen(['git', 'branch'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p1 = subprocess.Popen(['git', 'branch', '--no-color'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     p2 = subprocess.Popen(['grep', '-e', '\\*'], stdin=p1.stdout, stdout=subprocess.PIPE)
     output = p2.communicate()[0].strip()
     if not output:
@@ -277,7 +326,7 @@ def add_svn_segment(powerline, cwd):
 
 
 def add_repo_segment(powerline, cwd):
-    for add_repo_segment in (add_git_segment, add_svn_segment, add_hg_segment):
+    for add_repo_segment in (add_git_segment, add_svn_segment, add_fossil_segment, add_hg_segment):
         try:
             if add_repo_segment(p, cwd):
                 return
@@ -342,9 +391,12 @@ if __name__ == '__main__':
 
     p = Powerline(mode=args.mode, shell=args.shell)
     cwd = get_valid_cwd()
+    add_hostname_segment(p)
+
     add_virtual_env_segment(p, cwd)
-    #p.append(Segment(p, p.user_prompt[p.shell], 250, 240))
-    #p.append(Segment(p, p.host_prompt[p.shell], 250, 238))
+    #p.append(Segment(powerline, ' \\u ', 250, 240))
+    #p.append(Segment(powerline, ' \\h ', 250, 238))
+
     add_cwd_segment(p, cwd, 5, args.cwd_only)
     add_repo_segment(p, cwd)
     add_root_indicator(p, args.prev_error)
