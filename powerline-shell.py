@@ -140,12 +140,10 @@ class Segment:
 def add_hostname_segment(powerline):
     hostname = socket.gethostname()
     user = os.getenv("USER")
-    #powerline.append(Segment(powerline, ' %s@%s ' % (user, hostname), Color.CWD_FG, Color.PATH_BG))
-
-    powerline.append(Segment(powerline, Color.CWD_FG, Color.PATH_BG))
+    powerline.append(Segment(powerline, ' %s@%s ' % (user, hostname), Color.CWD_FG, Color.PATH_BG))
 
 
-def add_cwd_segment(powerline, cwd, maxdepth, cwd_only = False):
+def add_cwd_segment(powerline, cwd, maxdepth, cwd_only=False):
     #powerline.append(' \\w ', 15, 237)
     home = os.getenv('HOME')
     cwd = cwd or os.getenv('PWD')
@@ -326,7 +324,8 @@ def add_svn_segment(powerline, cwd):
 
 
 def add_repo_segment(powerline, cwd):
-    for add_repo_segment in (add_git_segment, add_svn_segment, add_fossil_segment, add_hg_segment):
+    for add_repo_segment in (add_git_segment, add_svn_segment, add_hg_segment,
+                             add_fossil_segment):
         try:
             if add_repo_segment(p, cwd):
                 return
