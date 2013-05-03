@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import socket
 import os
 import subprocess
 import sys
 import re
 import argparse
-
 
 def warn(msg):
     print '[powerline-bash] ', msg
@@ -120,15 +118,6 @@ class Segment:
         else:
             separator_bg = self.powerline.reset
 
-        try:
-            self.content = self.content.decode('utf-8')
-        except:
-            try:
-                self.content = self.content.decode('latin1')
-            except:
-                pass
-
-
         return ''.join((
             self.powerline.fgcolor(self.fg),
             self.powerline.bgcolor(self.bg),
@@ -143,8 +132,7 @@ def add_hostname_segment(powerline):
     powerline.append(Segment(powerline, ' %s@%s ' % (user, hostname), Color.CWD_FG, Color.PATH_BG))
 
 
-def add_cwd_segment(powerline, cwd, maxdepth, cwd_only=False):
-    #powerline.append(' \\w ', 15, 237)
+def add_cwd_segment(powerline, cwd, args):
     home = os.getenv('HOME')
     cwd = cwd or os.getenv('PWD')
     cwd = cwd.decode('utf-8')
@@ -156,16 +144,21 @@ def add_cwd_segment(powerline, cwd, maxdepth, cwd_only=False):
         cwd = cwd[1:]
 
     names = cwd.split(os.sep)
-    if len(names) > maxdepth:
-        names = names[:2] + [u'\u2026'] + names[2 - maxdepth:]
+    if len(names) > args.cwd_max_depth:
+        names = names[:2] + [u'\u2026'] + names[2 - args.cwd_max_depth:]
 
-    if not cwd_only:
+    if not args.cwd_only:
         for n in names[:-1]:
             powerline.append(Segment(powerline, ' %s ' % n, Color.PATH_FG,
                 Color.PATH_BG, powerline.separator_thin, Color.SEPARATOR_FG))
     powerline.append(Segment(powerline, ' %s ' % names[-1], Color.CWD_FG,
         Color.PATH_BG))
 
+def add_username_segment(p, cwd, args):
+    p.append(Segment(p, p.user_prompt[p.shell], 250, 240))
+
+def add_hostname_segment(p, cwd, args):
+    p.append(Segment(p, p.host_prompt[p.shell], 250, 238))
 
 def get_hg_status():
     has_modified_files = False
@@ -196,7 +189,7 @@ def get_fossil_status():
     return has_modified_files, has_untracked_files, has_missing_files
 
 
-def add_hg_segment(powerline, cwd):
+def add_hg_segment(powerline, cwd, args):
     branch = os.popen('hg branch 2> /dev/null').read().rstrip()
     if len(branch) == 0:
         return False
@@ -215,7 +208,7 @@ def add_hg_segment(powerline, cwd):
     powerline.append(Segment(powerline, ' %s ' % branch, fg, bg))
     return True
 
-def add_fossil_segment(powerline, cwd):
+def add_fossil_segment(powerline, cwd, args):
     subprocess.Popen(['fossil'], stdout=subprocess.PIPE).communicate()[0]
     branch = ''.join([i.replace('*','').strip() for i in os.popen("fossil branch 2> /dev/null").read().strip().split("\n") if i.startswith('*')])
     if len(branch) == 0:
@@ -260,7 +253,7 @@ def get_git_status():
     return has_pending_commits, has_untracked_files, origin_position
 
 
-def add_git_segment(powerline, cwd):
+def add_git_segment(powerline, cwd, args):
     #cmd = "git branch 2> /dev/null | grep -e '\\*'"
     p1 = subprocess.Popen(['git', 'branch', '--no-color'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     p2 = subprocess.Popen(['grep', '-e', '\\*'], stdin=p1.stdout, stdout=subprocess.PIPE)
@@ -284,29 +277,14 @@ def add_git_segment(powerline, cwd):
     return True
 
 
-def add_svn_segment(powerline, cwd):
+def add_svn_segment(powerline, cwd, args):
     is_svn = subprocess.Popen(['svn', 'status'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     is_svn_output = is_svn.communicate()[1].strip()
     if len(is_svn_output) != 0:
         return
 
-    '''svn info:
-        First column: Says if item was added, deleted, or otherwise changed
-        ' ' no modifications
-        'A' Added
-        'C' Conflicted
-        'D' Deleted
-        'I' Ignored
-        'M' Modified
-        'R' Replaced
-        'X' a directory pulled in by an svn:externals definition
-        '?' item is not under version control
-        '!' item is missing (removed by non-svn command) or incomplete
-         '~' versioned item obstructed by some item of a different kind
-    '''
-    #TODO: Color segment based on above status codes
     try:
-        #cmd = '"svn status | grep -c "^[ACDIMRX\\!\\~]"'
+        #"svn status | grep -c "^[ACDIMRX\\!\\~]"
         p1 = subprocess.Popen(['svn', 'status'], stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE)
         p2 = subprocess.Popen(['grep', '-c', '^[ACDIMR\\!\\~]'],
@@ -323,19 +301,7 @@ def add_svn_segment(powerline, cwd):
     return True
 
 
-def add_repo_segment(powerline, cwd):
-    for add_repo_segment in (add_git_segment, add_svn_segment, add_hg_segment,
-                             add_fossil_segment):
-        try:
-            if add_repo_segment(p, cwd):
-                return
-        except subprocess.CalledProcessError:
-            pass
-        except OSError:
-            pass
-
-
-def add_virtual_env_segment(powerline, cwd):
+def add_virtual_env_segment(powerline, cwd, args):
     env = os.getenv("VIRTUAL_ENV")
     if env is None:
         return False
@@ -347,10 +313,10 @@ def add_virtual_env_segment(powerline, cwd):
     return True
 
 
-def add_root_indicator(powerline, error):
+def add_root_indicator(powerline, cwd, args):
     bg = Color.CMD_PASSED_BG
     fg = Color.CMD_PASSED_FG
-    if int(error) != 0:
+    if int(args.prev_error) != 0:
         fg = Color.CMD_FAILED_FG
         bg = Color.CMD_FAILED_BG
     powerline.append(Segment(powerline, powerline.root_indicator, fg, bg))
@@ -382,23 +348,42 @@ def get_valid_cwd():
 
 if __name__ == '__main__':
     arg_parser = argparse.ArgumentParser()
-    arg_parser.add_argument('--cwd-only', action='store_true')
-    arg_parser.add_argument('--mode', action='store', default='patched')
-    arg_parser.add_argument('--shell', action='store', default='bash')
-    arg_parser.add_argument('prev_error', nargs='?', default=0)
+    arg_parser.add_argument('--cwd-only', action='store_true',
+            help='Only show the current directory')
+    arg_parser.add_argument('--cwd-max-depth', action='store', type=int,
+            default=5, help='Maximum number of directories to show in path')
+    arg_parser.add_argument('--mode', action='store', default='patched',
+            help='The characters used to make separators between segments',
+            choices=['patched', 'compatible', 'flat'])
+    arg_parser.add_argument('--shell', action='store', default='bash',
+            help='Set this to your shell type', choices=['bash', 'zsh'])
+    arg_parser.add_argument('prev_error', nargs='?', default=0,
+            help='Error code returned by the last command')
     args = arg_parser.parse_args()
 
     p = Powerline(mode=args.mode, shell=args.shell)
     cwd = get_valid_cwd()
-    #add_hostname_segment(p)
 
-    add_virtual_env_segment(p, cwd)
-    #p.append(Segment(powerline, ' \\u ', 250, 240))
-    #p.append(Segment(powerline, ' \\h ', 250, 238))
+    # Comment or uncomment segments that you do not want:
+    PROMPT_SEGMENTS = (
+        add_virtual_env_segment,
+        add_username_segment,
+        add_hostname_segment,
+        add_cwd_segment,
+        add_git_segment,
+        add_svn_segment,
+        add_hg_segment,
+        add_fossil_segment,
+        add_root_indicator,
+    )
 
-    add_cwd_segment(p, cwd, 5, args.cwd_only)
-    add_repo_segment(p, cwd)
-    add_root_indicator(p, args.prev_error)
+    try:
+        for add_segment in PROMPT_SEGMENTS:
+            add_segment(p, cwd, args)
+    except subprocess.CalledProcessError:
+        pass
+    except OSError:
+        pass
     sys.stdout.write(p.draw())
 
 # vim: set expandtab:
