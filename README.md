@@ -65,9 +65,29 @@ A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash, Z
 
 # Customization
 
+## Adding, Removing and Disabling segments
+
+The `.config` file defines which segments are drawn and in which order. Simply
+comment out and rearrange segment names to get your desired arrangement. Every
+time you change the `.config` file, run `install.py`, which will generate a new
+`powerline-shell.py` customized to your configuration. You should see the new
+prompt immediately.
+
+## Contributing new types of segments
+
 The `segments` directory contains python scripts which are injected as is into
 a single file `powerline-shell.py.template`. Each segment script defines a 
 function that inserts one or more segments into the prompt. If you want to add a
 new segment, simply create a new file in the segments directory and add its name
-to the `.config` file at the appropriate location. Make sure that your script
-does not introduce new globals which might conflict with other scripts.
+to the `.config` file at the appropriate location.
+
+Make sure that your script does not introduce new globals which might conflict 
+with other scripts. Your script should fail silently and run quickly in any
+scenario.
+
+## Themes
+
+The script currently uses a single theme, but it's easy enough to change the
+colors by editing the `Color` class in `powerline-shell.py.template`. I'm going
+to refactor the code to allow choosing between different themes and allowing
+people to contribute themes in separate files.
