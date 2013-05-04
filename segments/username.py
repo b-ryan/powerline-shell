@@ -3,6 +3,7 @@ def add_username_segment():
         'bash': ' \\u',
         'zsh': ' %n'
     }
-    powerline.append(user_prompts[powerline.args.shell], 250, 240)
+    powerline.append(user_prompts[powerline.args.shell], Color.USERNAME_FG,
+            Color.USERNAME_BG)
 
 add_username_segment()

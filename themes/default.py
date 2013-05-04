@@ -1,4 +1,10 @@
 class Color:
+    USERNAME_FG = 250
+    USERNAME_BG = 240
+
+    HOSTNAME_FG = 250
+    HOSTNAME_BG = 238
+
     PATH_BG = 237  # dark grey
     PATH_FG = 250  # light grey
     CWD_FG = 254  # nearly-white grey
