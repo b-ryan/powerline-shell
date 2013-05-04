@@ -1,7 +1,7 @@
-Powerline style prompt for Bash (and now, ZSH)
-==============================================
+A Powerline style prompt for your shell
+=======================================
 
-A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash/ZSH:
+A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash, ZSH and Fish:
 
 ![MacVim+Solarized+Powerline+CtrlP](https://raw.github.com/milkbikis/dotfiles-mac/master/bash-powerline-screenshot.png)
 
