@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import os
+import stat
 
 CONFIG_FILE = '.config'
 TEMPLATE_FILE = 'powerline-shell.py.template'
@@ -28,6 +29,8 @@ if __name__ == "__main__":
 
     try:
         open(OUTPUT_FILE, 'w').write(source)
+        st = os.stat(OUTPUT_FILE)
+        os.chmod(OUTPUT_FILE, st.st_mode | stat.S_IEXEC)
         print OUTPUT_FILE, 'saved successfully'
     except IOError:
         print 'ERROR: Could not write to powerline-shell.py. Make sure it is writable'
