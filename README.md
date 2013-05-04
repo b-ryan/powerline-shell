@@ -26,9 +26,13 @@ setting your $TERM to xterm-256color, because that works for me.
 
         git clone https://github.com/milkbikis/powerline-shell
 
-* Configure the segments you want by editing the `.config` file and run `install.py` to generate `powerline-shell.py`
+* Configure the segments you want by editing `config.py`. Then run
 
-* Create a symlink to the python script in your home:
+        ./install.py
+
+  This will generate `powerline-shell.py`
+
+* Create a symlink to this python script in your home:
 
         ln -s <path/to/powerline-shell.py> ~/powerline-shell.py
 
@@ -72,9 +76,9 @@ Redefine `fish_prompt` in ~/.config/fish/config.fish:
 
 ### Adding, Removing and Re-arranging segments
 
-The `.config` file defines which segments are drawn and in which order. Simply
+The `config.py` file defines which segments are drawn and in which order. Simply
 comment out and rearrange segment names to get your desired arrangement. Every
-time you change the `.config` file, run `install.py`, which will generate a new
+time you change `config.py`, run `install.py`, which will generate a new
 `powerline-shell.py` customized to your configuration. You should see the new
 prompt immediately.
 
@@ -84,7 +88,7 @@ The `segments` directory contains python scripts which are injected as is into
 a single file `powerline-shell.py.template`. Each segment script defines a 
 function that inserts one or more segments into the prompt. If you want to add a
 new segment, simply create a new file in the segments directory and add its name
-to the `.config` file at the appropriate location.
+to the `config.py` file at the appropriate location.
 
 Make sure that your script does not introduce new globals which might conflict 
 with other scripts. Your script should fail silently and run quickly in any
@@ -92,7 +96,7 @@ scenario.
 
 ### Themes
 
-The script currently uses a single theme, but it's easy enough to change the
-colors by editing the `Color` class in `powerline-shell.py.template`. I'm going
-to refactor the code to allow choosing between different themes and allowing
-people to contribute themes in separate files.
+The `themes` directory stores themes for your prompt, which are basically color
+values used by segments. Create a new theme by copying `themes/default.py` and
+changing the values. To use a theme, set the `THEME` variable in `config.py` to
+the name of your theme.
