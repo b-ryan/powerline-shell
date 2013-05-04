@@ -100,3 +100,8 @@ The `themes` directory stores themes for your prompt, which are basically color
 values used by segments. Create a new theme by copying `themes/default.py` and
 changing the values. To use a theme, set the `THEME` variable in `config.py` to
 the name of your theme.
+
+A script for testing color combinations is provided at `themes/colortest.py`.
+Note that the colors you see may vary depending on your terminal. When designing
+a theme, please test your theme on multiple terminals, especially with default
+settings.
