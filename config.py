@@ -1,38 +1,41 @@
-# This config file is a list of segments which are added to your powerline-shell
-# prompt in the order in which they appear. Any line starting with # is ignored
-# so you can simply comment out segments you don't like, or rearrange the lines 
-# if you want them to appear in a different order
-# 
-# Every time you make a change to this file, run install.py to update the
-# powerline-shell.py script
+# This is the configuration file for your powerline-shell prompt
+# Every time you make a change to this file, run install.py to apply changes
 #
 # For instructions on how to use the powerline-shell.py script, see the README
 
+# Add, remove or rearrange these segments to customize what you see on the shell
+# prompt. Any segment you add must be present in the segments/ directory
+
+SEGMENTS = [
 # Show current virtual environment (see http://www.virtualenv.org/)
-virtual_env
+    'virtual_env',
 
 # Show the current user's username as in ordinary prompts
-username
+    'username',
 
 # Show the machine's hostname. Mostly used when ssh-ing into other machines
-hostname
+    'hostname',
 
 # Show the current directory. If the path is too long, the middle part is
 # replaced with ellipsis ('...')
-cwd
+    'cwd',
 
 # Show the current git branch and status
-git
+    'git',
 
 # Show the current mercurial branch and status
-hg
+    'hg',
 
 # Show the current svn branch and status
-svn
+    'svn',
 
 # Show the current fossil branch and status
-fossil
+    'fossil',
 
 # Shows a '#' if the current user is root, '$' otherwise
 # Also, changes color if the last command exited with a non-zero error code
-root
+    'root',
+]
+
+# Change the colors used to draw individual segments in your prompt
+THEME = 'default'
