@@ -5,14 +5,14 @@ A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash/ZS
 
 ![MacVim+Solarized+Powerline+CtrlP](https://raw.github.com/milkbikis/dotfiles-mac/master/bash-powerline-screenshot.png)
 
-*  Shows some important details about the git branch:
-    *  Displays the current git branch which changes background color when the branch is dirty
+*  Shows some important details about the git/svn/hg/fossil branch:
+    *  Displays the current branch which changes background color when the branch is dirty
     *  A '+' appears when untracked files are present
     *  When the local branch differs from the remote, the difference in number of commits is shown along with '⇡' or '⇣' indicating whether a git push or pull is pending
 *  Changes color if the last command exited with a failure code
 *  If you're too deep into a directory tree, shortens the displayed path with an ellipsis
 *  Shows the current Python [virtualenv](http://www.virtualenv.org/) environment
-*  It's all done in a Python script, so you could go nuts with it
+*  It's easy to customize and extend. See below for details.
 
 # Setup
 
@@ -62,3 +62,12 @@ A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash/ZS
         function fish_prompt
             ~/powerline-shell.py $status --shell bare
         end
+
+# Customization
+
+The `segments` directory contains python scripts which are injected as is into
+a single file `powerline-shell.py.template`. Each segment script defines a 
+function that inserts one or more segments into the prompt. If you want to add a
+new segment, simply create a new file in the segments directory and add its name
+to the `.config` file at the appropriate location. Make sure that your script
+does not introduce new globals which might conflict with other scripts.
