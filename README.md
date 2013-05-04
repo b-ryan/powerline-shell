@@ -16,7 +16,9 @@ A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash, Z
 
 # Setup
 
-* This script uses ANSI color codes to display colors in a terminal. These are notoriously non-portable, so may not work for you out of the box, but try setting your $TERM to xterm-256color, because that works for me.
+This script uses ANSI color codes to display colors in a terminal. These are
+notoriously non-portable, so may not work for you out of the box, but try 
+setting your $TERM to xterm-256color, because that works for me.
 
 * Patch the font you use for your terminal: see https://github.com/Lokaltog/vim-powerline/wiki/Patched-fonts
 
@@ -32,7 +34,8 @@ A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash, Z
 
   If you don't want the symlink, just modify the path in the commands below
 
-* Now add the following to your `.bashrc`:
+## Bash:
+Add the following to your `.bashrc`:
 
         function _update_ps1() {
            export PS1="$(~/powerline-shell.py $?)"
@@ -40,7 +43,8 @@ A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash, Z
 
         export PROMPT_COMMAND="_update_ps1"
 
-* ZSH fans, add the following to your `.zshrc`:
+## ZSH:
+Add the following to your `.zshrc`:
 
         function powerline_precmd() {
           export PS1="$(~/powerline-shell.py $? --shell zsh)"
@@ -57,7 +61,8 @@ A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash, Z
 
         install_powerline_precmd
 
-* Fish users, redefine `fish_prompt` in ~/.config/fish/config.fish:
+## Fish:
+Redefine `fish_prompt` in ~/.config/fish/config.fish:
 
         function fish_prompt
             ~/powerline-shell.py $status --shell bare
