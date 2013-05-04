@@ -34,7 +34,7 @@ setting your $TERM to xterm-256color, because that works for me.
 
   If you don't want the symlink, just modify the path in the commands below
 
-## Bash:
+### Bash:
 Add the following to your `.bashrc`:
 
         function _update_ps1() {
@@ -43,7 +43,7 @@ Add the following to your `.bashrc`:
 
         export PROMPT_COMMAND="_update_ps1"
 
-## ZSH:
+### ZSH:
 Add the following to your `.zshrc`:
 
         function powerline_precmd() {
@@ -61,7 +61,7 @@ Add the following to your `.zshrc`:
 
         install_powerline_precmd
 
-## Fish:
+### Fish:
 Redefine `fish_prompt` in ~/.config/fish/config.fish:
 
         function fish_prompt
@@ -70,7 +70,7 @@ Redefine `fish_prompt` in ~/.config/fish/config.fish:
 
 # Customization
 
-## Adding, Removing and Re-arranging segments
+### Adding, Removing and Re-arranging segments
 
 The `.config` file defines which segments are drawn and in which order. Simply
 comment out and rearrange segment names to get your desired arrangement. Every
@@ -78,7 +78,7 @@ time you change the `.config` file, run `install.py`, which will generate a new
 `powerline-shell.py` customized to your configuration. You should see the new
 prompt immediately.
 
-## Contributing new types of segments
+### Contributing new types of segments
 
 The `segments` directory contains python scripts which are injected as is into
 a single file `powerline-shell.py.template`. Each segment script defines a 
@@ -90,7 +90,7 @@ Make sure that your script does not introduce new globals which might conflict
 with other scripts. Your script should fail silently and run quickly in any
 scenario.
 
-## Themes
+### Themes
 
 The script currently uses a single theme, but it's easy enough to change the
 colors by editing the `Color` class in `powerline-shell.py.template`. I'm going
