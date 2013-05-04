@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import os
 
 CONFIG_FILE = '.config'
