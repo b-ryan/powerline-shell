@@ -65,7 +65,7 @@ A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash, Z
 
 # Customization
 
-## Adding, Removing and Disabling segments
+## Adding, Removing and Re-arranging segments
 
 The `.config` file defines which segments are drawn and in which order. Simply
 comment out and rearrange segment names to get your desired arrangement. Every
