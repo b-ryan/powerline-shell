@@ -13,7 +13,7 @@ def reset():
     return ESCAPE + '[48;0m'
 
 if __name__ == "__main__":
-    if len(sys.argv) < 5:
+    if len(sys.argv) < 6:
         print 'Usage: colortest.py fg_start fg_end bg_start bg_end test_string'
         sys.exit(1)
 
