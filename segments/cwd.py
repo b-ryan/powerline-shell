@@ -1,17 +1,21 @@
 import os
 
-def add_cwd_segment():
+def get_short_path(cwd):
     home = os.getenv('HOME')
-    cwd = powerline.cwd or os.getenv('PWD')
-    cwd = cwd.decode('utf-8')
-
-    if cwd.find(home) == 0:
-        cwd = cwd.replace(home, '~', 1)
-
-    if cwd[0] == '/':
-        cwd = cwd[1:]
-
     names = cwd.split(os.sep)
+    if names[0] == '': names = names[1:]
+    path = ''
+    for i in range(len(names)):
+        path += os.sep + names[i]
+        if os.path.samefile(path, home):
+            return ['~'] + names[i+1:]
+    return names
+
+
+def add_cwd_segment():
+    cwd = powerline.cwd or os.getenv('PWD')
+    names = get_short_path(cwd.decode('utf-8'))
+
     max_depth = powerline.args.cwd_max_depth
     if len(names) > max_depth:
         names = names[:2] + [u'\u2026'] + names[2 - max_depth:]
