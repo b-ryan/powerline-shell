@@ -42,7 +42,9 @@ setting your $TERM to xterm-256color, because that works for me.
 Add the following to your `.bashrc`:
 
         function _update_ps1() {
-           export PS1="$(~/powerline-shell.py $?)"
+          if [ "$TERM" != "linux" ] ; then
+            export PS1="$(~/powerline-shell.py $?)"
+          fi
         }
 
         export PROMPT_COMMAND="_update_ps1"
@@ -63,13 +65,15 @@ Add the following to your `.zshrc`:
           precmd_functions+=(powerline_precmd)
         }
 
-        install_powerline_precmd
+        if [ "$TERM" != "linux" ] ; then
+          install_powerline_precmd
+        fi
 
 ### Fish:
 Redefine `fish_prompt` in ~/.config/fish/config.fish:
 
         function fish_prompt
-            ~/powerline-shell.py $status --shell bare
+          ~/powerline-shell.py $status --shell bare
         end
 
 # Customization
