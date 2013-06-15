@@ -38,6 +38,10 @@ setting your $TERM to xterm-256color, because that works for me.
 
   If you don't want the symlink, just modify the path in the commands below
 
+* For python2.6 you have to install argparse
+
+        pip install argparse
+
 ### Bash:
 Add the following to your `.bashrc`:
 
