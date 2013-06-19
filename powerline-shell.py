@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 
 import os as _os
@@ -19,8 +19,9 @@ class WrappedOS(object):
         if not sys.version_info >= (3, 0) and name in WrappedOS.str_funcs:
             def wrapped(*args, **kwargs):
                 orig = self.os.__getattribute__(name)
-                if orig(*args, **kwargs) is not None:
-                    return orig(*args, **kwargs).decode('utf-8')
+                swag=orig(*args, **kwargs)
+                if swag is not None:
+                    return swag.decode('utf-8')
                 else:
                     return None
             return wrapped
