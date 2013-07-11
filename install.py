@@ -12,7 +12,7 @@ def load_source(srcfile):
     try:
         return ''.join(open(srcfile).readlines()) + '\n\n'
     except IOError:
-        print 'Could not open ' + srcfile
+        print 'Could not open', srcfile
         return ''
 
 if __name__ == "__main__":
