@@ -14,7 +14,8 @@ SEGMENTS = [
     'username',
 
 # Show the machine's hostname. Mostly used when ssh-ing into other machines
-    'hostname',
+    #'hostname',
+    'hostname_colorized', # colorize based on a hash of the hostname
 
 # Show the current directory. If the path is too long, the middle part is
 # replaced with ellipsis ('...')
