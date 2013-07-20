@@ -1,6 +1,10 @@
 #! /usr/bin/env python
 
-""" Convert values between RGB hex codes and xterm-256 color codes.
+"""
+Code is modified (fairly heavily) by hryanjones@gmail.com from
+https://gist.github.com/MicahElliott/719710
+
+Convert values between RGB tuples and xterm-256 color codes.
 
 Nice long listing of all 256 colors and their codes. Useful for
 developing console color themes, or even script output schemes.
@@ -309,9 +313,6 @@ def rgb2short(r, g, b):
                 break
             i += 1
     #print '***', res
-    #res = ''.join([ ('%02.x' % i) for i in res ])
-    #equiv = RGB2SHORT_DICT[ res ]
-    #print '***', res, equiv
     return RGB2SHORT_DICT[tuple(res)]
 
 #---------------------------------------------------------------------
