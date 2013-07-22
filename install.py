@@ -16,6 +16,11 @@ def load_source(srcfile):
         return ''
 
 if __name__ == "__main__":
+    try:
+        with open('config.py'): pass
+    except IOError:
+        print 'Please copy config.py.dist to config.py and retry.'
+        exit(1)
     source = load_source(TEMPLATE_FILE)
     source += load_source(os.path.join(THEMES_DIR, config.THEME + '.py'))
     for segment in config.SEGMENTS:
