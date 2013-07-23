@@ -2,6 +2,7 @@
 import os
 import stat
 import config
+import shutil
 
 TEMPLATE_FILE = 'powerline-shell.py.template'
 OUTPUT_FILE = 'powerline-shell.py'
@@ -16,6 +17,11 @@ def load_source(srcfile):
         return ''
 
 if __name__ == "__main__":
+    try:
+        with open('config.py'): pass
+    except IOError:
+        print 'Created personal config.py for your customizations'
+        shutil.copyfile('config.py.dist', 'config.py')
     source = load_source(TEMPLATE_FILE)
     source += load_source(os.path.join(THEMES_DIR, config.THEME + '.py'))
     for segment in config.SEGMENTS:
@@ -29,3 +35,4 @@ if __name__ == "__main__":
         print OUTPUT_FILE, 'saved successfully'
     except IOError:
         print 'ERROR: Could not write to powerline-shell.py. Make sure it is writable'
+        exit(1)
