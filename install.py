@@ -1,8 +1,14 @@
 #!/usr/bin/env python
 import os
 import stat
-import config
-import shutil
+
+try:
+    import config
+except ImportError:
+    print('Created personal config.py for your customizations')
+    import shutil
+    shutil.copyfile('config.py.dist', 'config.py')
+    import config
 
 TEMPLATE_FILE = 'powerline-shell.py.template'
 OUTPUT_FILE = 'powerline-shell.py'
@@ -17,11 +23,6 @@ def load_source(srcfile):
         return ''
 
 if __name__ == "__main__":
-    try:
-        with open('config.py'): pass
-    except IOError:
-        print 'Created personal config.py for your customizations'
-        shutil.copyfile('config.py.dist', 'config.py')
     source = load_source(TEMPLATE_FILE)
     source += load_source(os.path.join(THEMES_DIR, config.THEME + '.py'))
     for segment in config.SEGMENTS:
