@@ -1,7 +1,14 @@
 #!/usr/bin/env python
 import os
 import stat
-import config
+
+try:
+    import config
+except ImportError:
+    print('Created personal config.py for your customizations')
+    import shutil
+    shutil.copyfile('config.py.dist', 'config.py')
+    import config
 
 TEMPLATE_FILE = 'powerline-shell.py.template'
 OUTPUT_FILE = 'powerline-shell.py'
@@ -29,3 +36,4 @@ if __name__ == "__main__":
         print OUTPUT_FILE, 'saved successfully'
     except IOError:
         print 'ERROR: Could not write to powerline-shell.py. Make sure it is writable'
+        exit(1)
