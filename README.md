@@ -22,6 +22,8 @@ setting your $TERM to xterm-256color, because that works for me.
 
 * Patch the font you use for your terminal: see https://github.com/Lokaltog/vim-powerline/wiki/Patched-fonts
 
+  * If you struggle too much to get working fonts in your terminal, you can use "compatible" mode.
+
 * Clone this repository somewhere:
 
         git clone https://github.com/milkbikis/powerline-shell
@@ -30,17 +32,30 @@ setting your $TERM to xterm-256color, because that works for me.
 
         ./install.py
 
-  This will generate `powerline-shell.py`
+  * This will generate `powerline-shell.py`
 
-* Create a symlink to this python script in your home:
+* (optional) Create a symlink to this python script in your home:
 
         ln -s <path/to/powerline-shell.py> ~/powerline-shell.py
 
-  If you don't want the symlink, just modify the path in the commands below
+  * If you don't want the symlink, just modify the path in the commands below
 
 * For python2.6 you have to install argparse
 
         pip install argparse
+
+### All Shells:
+There are a few optional arguments which can be seen by running `powerline-shell.py --help`.
+
+```
+  --cwd-only            Only show the current directory
+  --cwd-max-depth CWD_MAX_DEPTH
+                        Maximum number of directories to show in path
+  --colorize-hostname   Colorize the hostname based on a hash of itself.
+  --mode {patched,compatible,flat}
+                        The characters used to make separators between
+                        segments
+```
 
 ### Bash:
 Add the following to your `.bashrc`:
