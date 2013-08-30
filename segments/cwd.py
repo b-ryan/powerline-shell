@@ -22,8 +22,14 @@ def add_cwd_segment():
 
     if not powerline.args.cwd_only:
         for n in names[:-1]:
-            powerline.append(' %s ' % n, Color.PATH_FG, Color.PATH_BG,
+            if n == '~':
+                powerline.append(' %s ' % n, Color.HOME_FG, Color.HOME_BG)
+            else:
+                powerline.append(' %s ' % n, Color.PATH_FG, Color.PATH_BG,
                     powerline.separator_thin, Color.SEPARATOR_FG)
-    powerline.append(' %s ' % names[-1], Color.CWD_FG, Color.PATH_BG)
+    if names[-1] == '~':
+        powerline.append(' %s ' % names[-1], Color.HOME_FG, Color.HOME_BG)
+    else:
+        powerline.append(' %s ' % names[-1], Color.CWD_FG, Color.PATH_BG)
 
 add_cwd_segment()
