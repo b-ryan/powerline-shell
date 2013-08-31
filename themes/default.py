@@ -5,6 +5,7 @@ class Color:
     HOSTNAME_FG = 250
     HOSTNAME_BG = 238
 
+    HOME_SPECIAL_DISPLAY = True
     HOME_BG = 31  # blueish
     HOME_FG = 15  # white
     PATH_BG = 237  # dark grey

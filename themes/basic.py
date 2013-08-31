@@ -7,6 +7,7 @@ class Color:
     HOSTNAME_FG = 8
     HOSTNAME_BG = 7
 
+    HOME_SPECIAL_DISPLAY = False
     PATH_BG = 8 # dark grey
     PATH_FG = 7 # light grey
     CWD_FG = 15 # white
