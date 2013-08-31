@@ -5,6 +5,7 @@ class Color:
     HOSTNAME_FG = 15
     HOSTNAME_BG = 10
 
+    HOME_SPECIAL_DISPLAY = False
     PATH_FG = 7
     PATH_BG = 10
     CWD_FG = 15
