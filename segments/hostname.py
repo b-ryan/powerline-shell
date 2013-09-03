@@ -11,7 +11,7 @@ def add_hostname_segment():
         powerline.append(host_prompt, FG, BG)
     else:
         if powerline.args.shell == 'bash':
-            host_prompt = ' \\h'
+            host_prompt = ' \\h '
         elif powerline.args.shell == 'zsh':
             host_prompt = ' %m'
         else:
