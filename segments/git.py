@@ -2,7 +2,7 @@ import re
 import subprocess
 
 def get_git_status():
-    has_pending_commits = True
+    has_dirty_repo = False
     has_untracked_files = False
     origin_position = ""
     output = subprocess.Popen(['git', 'status', '--ignore-submodules'],
@@ -17,11 +17,16 @@ def get_git_status():
             if origin_status[0][0] == 'ahead':
                 origin_position += u'\u21E1'
 
-        if line.find('nothing to commit') >= 0:
-            has_pending_commits = False
         if line.find('Untracked files') >= 0:
             has_untracked_files = True
-    return has_pending_commits, has_untracked_files, origin_position
+
+    diff_output = subprocess.Popen(['git', 'diff', 'HEAD'],
+        stdout=subprocess.PIPE).communicate()[0].strip()
+
+    if diff_output:
+        has_dirty_repo = True
+
+    return has_dirty_repo, has_untracked_files, origin_position
 
 
 def add_git_segment():
@@ -33,14 +38,14 @@ def add_git_segment():
         return
 
     branch = output.rstrip()[2:]
-    has_pending_commits, has_untracked_files, origin_position = get_git_status()
+    has_dirty_repo, has_untracked_files, origin_position = get_git_status()
     branch += origin_position
     if has_untracked_files:
         branch += ' +'
 
     bg = Color.REPO_CLEAN_BG
     fg = Color.REPO_CLEAN_FG
-    if has_pending_commits:
+    if has_dirty_repo:
         bg = Color.REPO_DIRTY_BG
         fg = Color.REPO_DIRTY_FG
 
