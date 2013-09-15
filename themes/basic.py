@@ -13,6 +13,9 @@ class Color:
     CWD_FG = 15 # white
     SEPARATOR_FG = 7
 
+    READONLY_BG = 1
+    READONLY_FG = 15
+
     REPO_CLEAN_BG = 2  # green
     REPO_CLEAN_FG = 0  # black
     REPO_DIRTY_BG = 1  # red
