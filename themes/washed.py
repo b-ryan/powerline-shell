@@ -12,7 +12,7 @@ class Color:
     SEPARATOR_FG = 251
 
     REPO_CLEAN_BG = 150  # pale green
-    REPO_CLEAN_FG = 0
+    REPO_CLEAN_FG = 235
     REPO_DIRTY_BG = 203  # pale red
     REPO_DIRTY_FG = 15
 
