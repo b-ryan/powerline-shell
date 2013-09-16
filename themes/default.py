@@ -1,4 +1,8 @@
-class Color:
+class DefaultColor:
+    """
+    This class should have the default colors for every segment.
+    Please test every new segment with this theme first.
+    """
     USERNAME_FG = 250
     USERNAME_BG = 240
 
@@ -34,3 +38,10 @@ class Color:
 
     VIRTUAL_ENV_BG = 35  # a mid-tone green
     VIRTUAL_ENV_FG = 00
+
+class Color(DefaultColor):
+    """
+    This subclass is required when the user chooses to use 'default' theme.
+    Because the segments require a 'Color' class for every theme.
+    """
+    pass

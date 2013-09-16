@@ -24,6 +24,7 @@ def load_source(srcfile):
 
 if __name__ == "__main__":
     source = load_source(TEMPLATE_FILE)
+    source += load_source(os.path.join(THEMES_DIR, 'default.py'))
     source += load_source(os.path.join(THEMES_DIR, config.THEME + '.py'))
     for segment in config.SEGMENTS:
         source += load_source(os.path.join(SEGMENTS_DIR, segment + '.py'))
