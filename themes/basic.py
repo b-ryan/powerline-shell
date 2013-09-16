@@ -1,6 +1,6 @@
 # Basic theme which only uses colors in 0-15 range
 
-class Color:
+class Color(DefaultColor):
     USERNAME_FG = 8
     USERNAME_BG = 15
 
