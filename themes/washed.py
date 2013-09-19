@@ -1,4 +1,4 @@
-class Color:
+class Color(DefaultColor):
     USERNAME_FG = 8
     USERNAME_BG = 251
 
