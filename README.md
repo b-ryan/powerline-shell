@@ -29,7 +29,7 @@ setting your $TERM to `xterm-256color`, because that works for me.
 
         git clone https://github.com/milkbikis/powerline-shell
 
-* Configure the segments you want by editing `config.py`. Then run
+* Copy `config.py.dist` to `config.py` and edit it to configure the segments you want. Then run
 
         ./install.py
 
