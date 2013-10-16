@@ -5,7 +5,7 @@ class Color(DefaultColor):
     """
     USERNAME_FG = 24
     USERNAME_BG = 40
-    USERNAME_ROOT_FG = 240
+    USERNAME_ROOT_FG = 250
     USERNAME_ROOT_BG = 196
 
     HOSTNAME_FG = 240
@@ -13,11 +13,11 @@ class Color(DefaultColor):
 
     HOME_SPECIAL_DISPLAY = True
 
-    HOME_FG = 15
+    HOME_FG = 250
     HOME_BG = 31
     PATH_FG = 250
     PATH_BG = 240
-    CWD_FG = 254
+    CWD_FG = 250
     SEPARATOR_FG = 240
 
     NEWLINE_FG = ''
@@ -40,9 +40,9 @@ class Color(DefaultColor):
     CMD_FAILED_FG = 15
 
     SVN_CHANGES_BG = 148
-    SVN_CHANGES_FG = 22  # dark green
+    SVN_CHANGES_FG = 250
 
-    VIRTUAL_ENV_BG = 35  # a mid-tone green
+    VIRTUAL_ENV_BG = 35 
     VIRTUAL_ENV_FG = 00
 
 
