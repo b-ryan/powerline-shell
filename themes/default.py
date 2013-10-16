@@ -5,11 +5,14 @@ class DefaultColor:
     """
     USERNAME_FG = 250
     USERNAME_BG = 240
+    USERNAME_ROOT_FG = 240
+    USERNAME_ROOT_BG = 196
 
     HOSTNAME_FG = 250
     HOSTNAME_BG = 238
 
     HOME_SPECIAL_DISPLAY = True
+
     HOME_BG = 31  # blueish
     HOME_FG = 15  # white
     PATH_BG = 237  # dark grey
@@ -38,6 +41,10 @@ class DefaultColor:
 
     VIRTUAL_ENV_BG = 35  # a mid-tone green
     VIRTUAL_ENV_FG = 00
+
+    NEWLINE_FG = ''
+    NEWLINE_BG = ''
+
 
 class Color(DefaultColor):
     """
