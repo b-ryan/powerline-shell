@@ -44,5 +44,8 @@ SEGMENTS = [
     'root',
 ]
 
+# The terminal denominator used to represent the shell.
+TERMINAL_CHAR = '#'
+
 # Change the colors used to draw individual segments in your prompt
-THEME = 'default'
+THEME = 'light_user'

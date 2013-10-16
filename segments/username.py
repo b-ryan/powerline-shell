@@ -8,6 +8,10 @@ def add_username_segment():
         import os
         user_prompt = ' %s ' % os.getenv('USER')
 
-    powerline.append(user_prompt, Color.USERNAME_FG, Color.USERNAME_BG)
+    import os
+    if os.getenv('USER') == 'root':
+        powerline.append(user_prompt, Color.USERNAME_ROOT_FG, Color.USERNAME_ROOT_BG)
+    else:
+        powerline.append(user_prompt, Color.USERNAME_FG, Color.USERNAME_BG)
 
 add_username_segment()

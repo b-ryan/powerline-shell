@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import os
 import stat
+import sys
 
 try:
     import config
@@ -26,10 +27,13 @@ if __name__ == "__main__":
     source = load_source(TEMPLATE_FILE)
     source += load_source(os.path.join(THEMES_DIR, 'default.py'))
     source += load_source(os.path.join(THEMES_DIR, config.THEME + '.py'))
+
+    # append every segment specified in config to the PS1
     for segment in config.SEGMENTS:
         source += load_source(os.path.join(SEGMENTS_DIR, segment + '.py'))
     source += 'sys.stdout.write(powerline.draw())\n'
 
+    # create the powerline-shell.py, which creates the shell PS1
     try:
         open(OUTPUT_FILE, 'w').write(source)
         st = os.stat(OUTPUT_FILE)

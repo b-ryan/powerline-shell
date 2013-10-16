@@ -44,7 +44,11 @@ class Powerline:
         self.separator_thin = Powerline.symbols[mode]['separator_thin']
         self.segments = []
 
+    # return reset_color when we don't use a color to achieve transparency
     def color(self, prefix, code):
+      if code == '':
+        return '%{$reset_color%}'
+      else:
         return self.color_template % ('[%s;5;%sm' % (prefix, code))
 
     def fgcolor(self, code):
@@ -53,9 +57,13 @@ class Powerline:
     def bgcolor(self, code):
         return self.color('48', code)
 
+    # when passing '\n' as the first argument, we want to go to newline, which means we don't want the separator,
+    # so we must use empty third/forth parameter.
     def append(self, content, fg, bg, separator=None, separator_fg=None):
-        self.segments.append((content, fg, bg, separator or self.separator,
-            separator_fg or bg))
+        if content == '\n':
+            self.segments.append((content, fg, bg, '', ''))
+        else:
+            self.segments.append((content, fg, bg, separator or self.separator, separator_fg or bg))
 
     def draw(self):
         return (''.join(self.draw_segment(i) for i in range(len(self.segments)))
@@ -102,10 +110,14 @@ if __name__ == "__main__":
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument('--cwd-only', action='store_true',
             help='Only show the current directory')
+    arg_parser.add_argument('--cwd-split', action='store_true',
+            help='Split the current directory into multiple pieces.')
     arg_parser.add_argument('--cwd-max-depth', action='store', type=int,
             default=5, help='Maximum number of directories to show in path')
     arg_parser.add_argument('--colorize-hostname', action='store_true',
             help='Colorize the hostname based on a hash of itself.')
+    arg_parser.add_argument('--full-hostname', action='store_true',
+            help='Print full hostname with the domain.')
     arg_parser.add_argument('--mode', action='store', default='patched',
             help='The characters used to make separators between segments',
             choices=['patched', 'compatible', 'flat'])
