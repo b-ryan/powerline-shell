@@ -3,10 +3,14 @@
 
 import argparse
 import os
+import re
 import sys
+import subprocess
+
 
 def warn(msg):
-    print '[powerline-bash] ', msg
+    print('[powerline-bash] ', msg)
+
 
 class Powerline:
     symbols = {
@@ -54,12 +58,11 @@ class Powerline:
         return self.color('48', code)
 
     def append(self, content, fg, bg, separator=None, separator_fg=None):
-        self.segments.append((content, fg, bg, separator or self.separator,
-            separator_fg or bg))
+        self.segments.append((content, fg, bg, separator or self.separator, separator_fg or bg))
 
     def draw(self):
         return (''.join(self.draw_segment(i) for i in range(len(self.segments)))
-                + self.reset).encode('utf-8')
+                + self.reset)
 
     def draw_segment(self, idx):
         segment = self.segments[idx]
@@ -72,6 +75,7 @@ class Powerline:
             self.bgcolor(next_segment[2]) if next_segment else self.reset,
             self.fgcolor(segment[4]),
             segment[3]))
+
 
 def get_valid_cwd():
     """ We check if the current working directory is valid or not. Typically
@@ -101,18 +105,18 @@ def get_valid_cwd():
 if __name__ == "__main__":
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument('--cwd-only', action='store_true',
-            help='Only show the current directory')
+                            help='Only show the current directory')
     arg_parser.add_argument('--cwd-max-depth', action='store', type=int,
-            default=5, help='Maximum number of directories to show in path')
+                            default=5, help='Maximum number of directories to show in path')
     arg_parser.add_argument('--colorize-hostname', action='store_true',
-            help='Colorize the hostname based on a hash of itself.')
+                            help='Colorize the hostname based on a hash of itself.')
     arg_parser.add_argument('--mode', action='store', default='patched',
-            help='The characters used to make separators between segments',
-            choices=['patched', 'compatible', 'flat'])
+                            help='The characters used to make separators between segments',
+                            choices=['patched', 'compatible', 'flat'])
     arg_parser.add_argument('--shell', action='store', default='bash',
-            help='Set this to your shell type', choices=['bash', 'zsh', 'bare'])
+                            help='Set this to your shell type', choices=['bash', 'zsh', 'bare'])
     arg_parser.add_argument('prev_error', nargs='?', type=int, default=0,
-            help='Error code returned by the last command')
+                            help='Error code returned by the last command')
     args = arg_parser.parse_args()
 
     powerline = Powerline(args, get_valid_cwd())

@@ -18,16 +18,17 @@ I'm not sure where this script was inspired from. I think I must have
 written it from scratch, though it's been several years now.
 """
 
-__author__    = 'Micah Elliott http://MicahElliott.com'
-__version__   = '0.1'
+__author__ = 'Micah Elliott http://MicahElliott.com'
+__version__ = '0.1'
 __copyright__ = 'Copyright (C) 2011 Micah Elliott.  All rights reserved.'
-__license__   = 'WTFPL http://sam.zoy.org/wtfpl/'
+__license__ = 'WTFPL http://sam.zoy.org/wtfpl/'
 
 #---------------------------------------------------------------------
 
 
 def hexstr2num(hexstr):
     return int(hexstr, 16)
+
 
 def rgbstring2tuple(s):
     return tuple([hexstr2num(h) for h in (s[:2], s[2:4], s[4:])])
@@ -100,19 +101,19 @@ RGB2SHORT_DICT = {
     (95, 135, 215): 68,
     (95, 135, 255): 69,
     (95, 175, 0):   70,
-    (95, 175, 95) : 71,
+    (95, 175, 95): 71,
     (95, 175, 135): 72,
     (95, 175, 175): 73,
     (95, 175, 215): 74,
     (95, 175, 255): 75,
     (95, 215, 0):   76,
-    (95, 215, 95) : 77,
+    (95, 215, 95): 77,
     (95, 215, 135): 78,
     (95, 215, 175): 79,
     (95, 215, 215): 80,
     (95, 215, 255): 81,
     (95, 255, 0):   82,
-    (95, 255, 95) : 83,
+    (95, 255, 95): 83,
     (95, 255, 135): 84,
     (95, 255, 175): 85,
     (95, 255, 215): 86,
@@ -282,9 +283,6 @@ RGB2SHORT_DICT = {
     (255, 255, 255): 231}
 
 
-def hexstr2num(hexstr):
-    return int(hexstr, 16)
-
 def rgb2short(r, g, b):
     """ Find the closest xterm-256 approximation to the given RGB value.
     @param r,g,b: each is a number between 0-255 for the Red, Green, and Blue values
@@ -298,7 +296,7 @@ def rgb2short(r, g, b):
     """
     incs = (0x00, 0x5f, 0x87, 0xaf, 0xd7, 0xff)
     # Break 6-char RGB code into 3 integer vals.
-    parts = [ r, g, b] 
+    parts = [r, g, b]
     res = []
     for part in parts:
         i = 0
@@ -307,12 +305,13 @@ def rgb2short(r, g, b):
             if s <= part <= b:
                 s1 = abs(s - part)
                 b1 = abs(b - part)
-                if s1 < b1: closest = s
-                else: closest = b
+                if s1 < b1:
+                    closest = s
+                else:
+                    closest = b
                 res.append(closest)
                 break
             i += 1
-    #print '***', res
     return RGB2SHORT_DICT[tuple(res)]
 
 #---------------------------------------------------------------------

@@ -39,6 +39,7 @@ class DefaultColor:
     VIRTUAL_ENV_BG = 35  # a mid-tone green
     VIRTUAL_ENV_FG = 00
 
+
 class Color(DefaultColor):
     """
     This subclass is required when the user chooses to use 'default' theme.

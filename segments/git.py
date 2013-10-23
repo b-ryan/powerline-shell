@@ -1,15 +1,11 @@
-import re
-import subprocess
-
 def get_git_status():
     has_pending_commits = True
     has_untracked_files = False
     origin_position = ""
     output = subprocess.Popen(['git', 'status', '--ignore-submodules'],
-            stdout=subprocess.PIPE).communicate()[0]
-    for line in output.split('\n'):
-        origin_status = re.findall(
-                r"Your branch is (ahead|behind).*?(\d+) comm", line)
+                              stdout=subprocess.PIPE).communicate()[0]
+    for line in str(output, 'utf8').split('\n'):
+        origin_status = re.findall(r"Your branch is (ahead|behind).*?(\d+) comm", line)
         if origin_status:
             origin_position = " %d" % int(origin_status[0][1])
             if origin_status[0][0] == 'behind':
@@ -25,14 +21,13 @@ def get_git_status():
 
 
 def add_git_segment():
-    #cmd = "git branch 2> /dev/null | grep -e '\\*'"
     p1 = subprocess.Popen(['git', 'branch', '--no-color'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     p2 = subprocess.Popen(['grep', '-e', '\\*'], stdin=p1.stdout, stdout=subprocess.PIPE)
     output = p2.communicate()[0].strip()
     if not output:
         return
 
-    branch = output.rstrip()[2:]
+    branch = str(output.rstrip()[2:], 'utf8')
     has_pending_commits, has_untracked_files, origin_position = get_git_status()
     branch += origin_position
     if has_untracked_files:
