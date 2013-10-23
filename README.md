@@ -1,3 +1,5 @@
+`Fork with minimum modifications to work with Python 3.`
+
 A Powerline style prompt for your shell
 =======================================
 
