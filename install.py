@@ -30,7 +30,8 @@ if __name__ == "__main__":
         source += load_source(os.path.join(THEMES_DIR, config.THEME + '.py'))
     for segment in config.SEGMENTS:
         source += load_source(os.path.join(SEGMENTS_DIR, segment + '.py'))
-    source += 'sys.stdout.write(powerline.draw())\n'
+    source += "try:\n    sys.stdout.write(powerline.draw())\nexcept (TypeError, UnicodeEncodeError):\n\
+    sys.stdout.write(powerline.draw().encode('utf-8'))"
 
     try:
         open(OUTPUT_FILE, 'w').write(source)
