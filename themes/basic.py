@@ -29,8 +29,5 @@ class Color(DefaultColor):
     CMD_FAILED_BG = 11
     CMD_FAILED_FG = 0
 
-    SVN_CHANGES_BG = REPO_DIRTY_BG
-    SVN_CHANGES_FG = REPO_DIRTY_FG
-
     VIRTUAL_ENV_BG = 2
     VIRTUAL_ENV_FG = 0
