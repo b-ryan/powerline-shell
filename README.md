@@ -17,7 +17,7 @@ A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash, Z
 # Setup
 
 This script uses ANSI color codes to display colors in a terminal. These are
-notoriously non-portable, so may not work for you out of the box, but try 
+notoriously non-portable, so may not work for you out of the box, but try
 setting your $TERM to `xterm-256color`, because that works for me.
 
 * Patch the font you use for your terminal: see https://github.com/Lokaltog/powerline-fonts
@@ -65,7 +65,7 @@ Add the following to your `.bashrc`:
            export PS1="$(~/powerline-shell.py $? 2> /dev/null)"
         }
 
-        export PROMPT_COMMAND="_update_ps1"
+        export PROMPT_COMMAND="_update_ps1; $PROMPT_COMMAND"
 
 ### ZSH:
 Add the following to your `.zshrc`:
@@ -105,12 +105,12 @@ prompt immediately.
 ### Contributing new types of segments
 
 The `segments` directory contains python scripts which are injected as is into
-a single file `powerline-shell.py.template`. Each segment script defines a 
+a single file `powerline-shell.py.template`. Each segment script defines a
 function that inserts one or more segments into the prompt. If you want to add a
 new segment, simply create a new file in the segments directory and add its name
 to the `config.py` file at the appropriate location.
 
-Make sure that your script does not introduce new globals which might conflict 
+Make sure that your script does not introduce new globals which might conflict
 with other scripts. Your script should fail silently and run quickly in any
 scenario.
 
