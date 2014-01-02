@@ -4,13 +4,10 @@ def get_git_status():
     origin_position = ""
     output = subprocess.Popen(['git', 'status', '--ignore-submodules'],
                               stdout=subprocess.PIPE).communicate()[0]
-    try:
-        lines = str(output, 'utf8').split('\n')
-    except TypeError:
-        lines = output.split('\n')
 
-    for line in lines:
-        origin_status = re.findall(r"Your branch is (ahead|behind).*?(\d+) comm", line)
+    for line in output.decode().split('\n'):
+        origin_status = re.findall(
+            r"Your branch is (ahead|behind).*?(\d+) comm", line)
         if origin_status:
             origin_position = " %d" % int(origin_status[0][1])
             if origin_status[0][0] == 'behind':
@@ -26,15 +23,18 @@ def get_git_status():
 
 
 def add_git_segment():
-    p1 = subprocess.Popen(['git', 'rev-parse', '--abbrev-ref', 'HEAD'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    output = p1.communicate()[0].strip()
-    if not output:
+    # See http://git-blame.blogspot.com/2013/06/checking-current-branch-programatically.html
+    p = subprocess.Popen(['git', 'symbolic-ref', '-q', 'HEAD'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    out, err = p.communicate()
+
+    if b"Not a git repo" in err:
         return
 
-    try:
-        branch = str(output, 'utf8')
-    except TypeError:
-        branch = output
+    if out:
+        branch = out[len('refs/heads/'):].rstrip().decode()
+    else:
+        branch = '(Detached)'
+
     has_pending_commits, has_untracked_files, origin_position = get_git_status()
     branch += origin_position
     if has_untracked_files:
