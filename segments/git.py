@@ -3,7 +3,7 @@ def get_git_status():
     has_untracked_files = False
     origin_position = ""
     output = subprocess.Popen(['git', 'status', '--ignore-submodules'],
-                              stdout=subprocess.PIPE).communicate()[0]
+                              env={"LANG": "C"}, stdout=subprocess.PIPE).communicate()[0]
 
     for line in output.decode().split('\n'):
         origin_status = re.findall(
