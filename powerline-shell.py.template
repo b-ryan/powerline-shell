@@ -8,7 +8,6 @@ import sys
 import subprocess
 
 
-
 def warn(msg):
     print('[powerline-bash] ', msg)
 
