@@ -90,7 +90,7 @@ def get_valid_cwd():
     """
     try:
         cwd = os.getcwd()
-    except:
+    except OSError:
         cwd = os.getenv('PWD')  # This is where the OS thinks we are
         parts = cwd.split(os.sep)
         up = cwd
@@ -99,7 +99,7 @@ def get_valid_cwd():
             up = os.sep.join(parts)
         try:
             os.chdir(up)
-        except:
+        except OSError:
             warn("Your current directory is invalid.")
             sys.exit(1)
         warn("Your current directory is invalid. Lowest valid directory: " + up)
