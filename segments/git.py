@@ -1,13 +1,14 @@
 import re
 import subprocess
 
+
 def get_git_status():
     has_pending_commits = True
     has_untracked_files = False
     origin_position = ""
     output = subprocess.Popen(['git', 'status', '--ignore-submodules'],
-            env={"LANG": "C"}, stdout=subprocess.PIPE).communicate()[0]
-    for line in output.split('\n'):
+                              env={"LANG": "C"}, stdout=subprocess.PIPE).communicate()[0]
+    for line in output.decode().split('\n'):
         origin_status = re.findall(
             r"Your branch is (ahead|behind).*?(\d+) comm", line)
         if origin_status:
@@ -29,11 +30,11 @@ def add_git_segment():
     p = subprocess.Popen(['git', 'symbolic-ref', '-q', 'HEAD'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = p.communicate()
 
-    if 'Not a git repo' in err:
+    if b'Not a git repo' in err:
         return
 
     if out:
-        branch = out[len('refs/heads/'):].rstrip()
+        branch = out[len('refs/heads/'):].rstrip().decode()
     else:
         branch = '(Detached)'
 

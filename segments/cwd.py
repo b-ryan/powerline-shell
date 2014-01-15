@@ -15,7 +15,7 @@ def get_short_path(cwd):
 
 def add_cwd_segment():
     cwd = powerline.cwd or os.getenv('PWD')
-    names = get_short_path(cwd.decode('utf-8'))
+    names = get_short_path(cwd)
 
     max_depth = powerline.args.cwd_max_depth
     if len(names) > max_depth:

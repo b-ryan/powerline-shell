@@ -5,8 +5,10 @@ import argparse
 import os
 import sys
 
+
 def warn(msg):
-    print '[powerline-bash] ', msg
+    print('[powerline-bash] ', msg)
+
 
 class Powerline:
     symbols = {
@@ -63,7 +65,7 @@ class Powerline:
 
     def draw(self):
         return (''.join(self.draw_segment(i) for i in range(len(self.segments)))
-                + self.reset).encode('utf-8')
+                + self.reset)
 
     def draw_segment(self, idx):
         segment = self.segments[idx]
