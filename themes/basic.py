@@ -3,6 +3,7 @@
 class Color(DefaultColor):
     USERNAME_FG = 8
     USERNAME_BG = 15
+    USERNAME_ROOT_BG = 1
 
     HOSTNAME_FG = 8
     HOSTNAME_BG = 7
