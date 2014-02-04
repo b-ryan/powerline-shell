@@ -5,6 +5,7 @@ class DefaultColor:
     """
     USERNAME_FG = 250
     USERNAME_BG = 240
+    USERNAME_ROOT_BG = 124
 
     HOSTNAME_FG = 250
     HOSTNAME_BG = 238
