@@ -118,6 +118,8 @@ if __name__ == "__main__":
             help='Only show the current directory')
     arg_parser.add_argument('--cwd-max-depth', action='store', type=int,
             default=5, help='Maximum number of directories to show in path')
+    arg_parser.add_argument('--cwd-max-dir-size', action='store', type=int,
+            help='Maximum number of letters displayed for each directory in the path')
     arg_parser.add_argument('--colorize-hostname', action='store_true',
             help='Colorize the hostname based on a hash of itself.')
     arg_parser.add_argument('--mode', action='store', default='patched',

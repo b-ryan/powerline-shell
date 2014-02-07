@@ -23,6 +23,8 @@ def add_cwd_segment():
 
     if not powerline.args.cwd_only:
         for n in names[:-1]:
+            if powerline.args.cwd_max_dir_size:
+                n = n[:powerline.args.cwd_max_dir_size]
             if n == '~' and Color.HOME_SPECIAL_DISPLAY:
                 powerline.append(' %s ' % n, Color.HOME_FG, Color.HOME_BG)
             else:
