@@ -1,4 +1,4 @@
-from bzrlib import bzrdir, transport, urlutils, repository, workingtree, info, status, errors
+from bzrlib import bzrdir, urlutils, workingtree, status, errors
 from StringIO import StringIO
 import os
 
