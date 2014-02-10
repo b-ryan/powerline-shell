@@ -45,7 +45,7 @@ def add_bzr_segment():
             elif line.split()[0] == 'D':
                 has_missing_files = True
 
-    if has_modified_files or has_untracked_files or has_missing_files:
+    if has_modified_files or has_missing_files:
         bg = Color.REPO_DIRTY_BG
         fg = Color.REPO_DIRTY_FG
     else:
