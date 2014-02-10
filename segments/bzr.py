@@ -24,7 +24,10 @@ def add_bzr_segment():
         repo_location = base
         name = branch.nick
 
-    working = workingtree.WorkingTree.open(base)
+    try:
+        working = workingtree.WorkingTree.open(base)
+    except errors.MissingFeature:
+        working = False
 
     has_modified_files, has_untracked_files, has_missing_files = False, False, False
 
@@ -33,13 +36,14 @@ def add_bzr_segment():
     tof.seek(0)
     values = tof.readlines()
 
-    for line in values:
-        if line.split()[0] == 'M':
-            has_modified_files
-        elif line.split()[0] == '?':
-            has_untracked_files = True
-        elif line.split()[0] == 'D':
-            has_missing_files = True
+    if working:
+        for line in values:
+            if line.split()[0] == 'M':
+                has_modified_files = True
+            elif line.split()[0] == '?':
+                has_untracked_files = True
+            elif line.split()[0] == 'D':
+                has_missing_files = True
 
     if has_modified_files or has_untracked_files or has_missing_files:
         bg = Color.REPO_DIRTY_BG
