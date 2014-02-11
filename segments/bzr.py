@@ -1,18 +1,6 @@
-try:
-    from bzrliba import bzrdir, urlutils, workingtree, status, errors
-    add_bzr_segment = bzr_segment
-except ImportError:
-    add_bzr_segment = lambda: False
-
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from StringIO import StringIO
-import os
-
 COLOCATED_LOCATION = '.bzr/branches'
 
-def bzr_segment():
+def add_bzr_segment():
     location = os.getcwd()
 
     try:
@@ -36,7 +24,6 @@ def bzr_segment():
         working = workingtree.WorkingTree.open(base)
     except errors.MissingFeature:
         working = False
-
     has_modified_files, has_untracked_files, has_missing_files = False, False, False
 
     if working:
@@ -44,13 +31,12 @@ def bzr_segment():
         status.show_tree_status(working, short=True, to_file=tof)
         tof.seek(0)
         statuses = set(l.strip()[0] for l in tof.readlines())
-
-        for status in statuses:
-            if status == 'M':
+        for s in statuses:
+            if s == 'M':
                 has_modified_files = True
-            elif status == '?':
+            elif s == '?':
                 has_untracked_files = True
-            elif status == 'D':
+            elif s == 'D':
                 has_missing_files = True
 
     if has_modified_files or has_missing_files:
@@ -63,4 +49,14 @@ def bzr_segment():
     name = has_missing_files and name+'!' or has_untracked_files and name+'+' or name
     return powerline.append(' %s ' % name, fg, bg)
 
-add_bzr_segment()
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from StringIO import StringIO
+import os
+
+try:
+    from bzrlib import bzrdir, urlutils, workingtree, status, errors
+    add_bzr_segment()
+except ImportError:
+    pass
