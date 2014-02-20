@@ -35,7 +35,12 @@ def add_git_segment():
     if out:
         branch = out[len('refs/heads/'):].rstrip()
     else:
-        branch = '(Detached)'
+        p = subprocess.Popen(['git', 'rev-parse', '--short', 'HEAD'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        commit_hash_out, commit_hash_err = (x.rstrip('\n') for x in p.communicate())
+
+        p = subprocess.Popen(['git', 'describe', '--exact-match', '--tags', commit_hash_out], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        tag_hash_out, tag_hash_err = (x.rstrip('\n') for x in p.communicate())
+        branch = '➤ {}'.format(tag_hash_out if p.returncode == 0 else commit_hash_out).decode('utf-8')
 
     has_pending_commits, has_untracked_files, origin_position = get_git_status()
     branch += origin_position
