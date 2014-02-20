@@ -50,7 +50,7 @@ def add_bzr_segment():
     return powerline.append(' %s ' % name, fg, bg)
 
 try:
-    from cStringIO import StringIO
+    from io import StringIO
 except ImportError:
     from StringIO import StringIO
 import os
