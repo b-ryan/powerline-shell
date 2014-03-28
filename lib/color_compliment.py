@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python2
 
 from colortrans import *
 from colorsys import hls_to_rgb, rgb_to_hls
