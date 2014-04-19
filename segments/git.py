@@ -4,7 +4,7 @@ import subprocess
 def get_git_status(pdata):
     status = pdata[0].splitlines()
 
-    branchinfo = re.search('^## (?P<local>\S+)(\.{3}(?P<remote>\S+)( \[(ahead (?P<ahead>\d+)(, )?)?(behind (?P<behind>\d+))?\])?)?$', status[0])
+    branchinfo = re.search('^## (?P<local>\S+?)(\.{3}(?P<remote>\S+?)( \[(ahead (?P<ahead>\d+)(, )?)?(behind (?P<behind>\d+))?\])?)?$', status[0])
 
     stats = {'untracked': 0, 'notstaged': 0, 'staged': 0, 'conflicted': 0}
     for statusline in status[1:]:
