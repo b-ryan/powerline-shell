@@ -32,6 +32,9 @@ def add_git_segment():
     if 'Not a git repo' in err:
         return
 
+    if get_short_path(os.getcwd()).pop() == '.git':
+        return
+
     if out:
         branch = out[len('refs/heads/'):].rstrip()
     else:
