@@ -32,7 +32,7 @@ def add_git_segment():
     if 'Not a git repo' in err:
         return
 
-    if get_short_path(os.getcwd()).pop() == '.git':
+    if os.getcwd().find('.git') >= 0:
         return
 
     if out:
