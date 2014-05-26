@@ -63,7 +63,7 @@ class Powerline:
 
     def draw(self):
         return (''.join(self.draw_segment(i) for i in range(len(self.segments)))
-                + self.reset).encode('utf-8')
+                + self.reset).encode('utf-8') + ' '
 
     def draw_segment(self, idx):
         segment = self.segments[idx]
