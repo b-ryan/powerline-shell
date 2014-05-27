@@ -7,7 +7,11 @@ def get_git_status():
     origin_position = ""
     output = subprocess.Popen(['git', 'status', '--ignore-submodules'],
             env={"LANG": "C", "HOME": os.getenv("HOME")}, stdout=subprocess.PIPE).communicate()[0]
-    for line in output.split('\n'):
+    try:
+        lines = output.split('\n')
+    except TypeError:  # Python 3
+        lines = output.decode().split('\n')
+    for line in lines:
         origin_status = re.findall(
             r"Your branch is (ahead|behind).*?(\d+) comm", line)
         if origin_status:
@@ -38,7 +42,11 @@ def add_git_segment():
         branch = '(Detached)'
 
     has_pending_commits, has_untracked_files, origin_position = get_git_status()
-    branch += origin_position
+    try:
+        branch += origin_position
+    except TypeError:
+        branch = branch.decode()
+        branch += origin_position
     if has_untracked_files:
         branch += ' +'
 
