@@ -48,7 +48,7 @@ def add_git_segment():
         bg = Color.REPO_DIRTY_BG
         fg = Color.REPO_DIRTY_FG
 
-    powerline.append(' %s ' % branch, fg, bg)
+    powerline.append( u' \uE0A0 %s ' % branch, fg, bg)
 
 try:
     add_git_segment()
