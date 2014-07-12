@@ -49,7 +49,8 @@ setting your $TERM to `xterm-256color`, because that works for me.
 There are a few optional arguments which can be seen by running `powerline-shell.py --help`.
 
 ```
-  --cwd-only            Only show the current directory
+  --cwd-mode {fancy,plain,dironly}
+                        How to display the current directory
   --cwd-max-depth CWD_MAX_DEPTH
                         Maximum number of directories to show in path
   --colorize-hostname   Colorize the hostname based on a hash of itself.
