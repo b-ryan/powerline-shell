@@ -10,6 +10,9 @@ SEGMENTS = [
 # Show current virtual environment (see http://www.virtualenv.org/)
     'virtual_env',
 
+# Show current .ruby-version & .ruby-gemset
+    'ruby_gemset',
+
 # Show the current user's username as in ordinary prompts
     'username',
 
