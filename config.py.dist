@@ -33,6 +33,9 @@ SEGMENTS = [
 # Show the current mercurial branch and status
     'hg',
 
+# Show the current bazaar branch and status
+    'bzr',
+
 # Show the current svn branch and status
     'svn',
 
