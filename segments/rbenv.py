@@ -1,7 +1,6 @@
 import subprocess
 
-
-def add_ruby_version_segment():
+def add_rbenv_segment():
     try:
         p1 = subprocess.Popen(["rbenv", "global"], stdout=subprocess.PIPE)
         version = p1.communicate()[0].rstrip()
@@ -9,4 +8,5 @@ def add_ruby_version_segment():
     except OSError:
         return
 
-add_ruby_version_segment()
+add_rbenv_segment()
+
