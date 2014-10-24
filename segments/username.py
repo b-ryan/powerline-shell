@@ -1,4 +1,3 @@
-
 def add_username_segment():
     import os
     if powerline.args.shell == 'bash':

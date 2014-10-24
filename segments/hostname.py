@@ -1,14 +1,14 @@
 def add_hostname_segment():
     if powerline.args.colorize_hostname:
-        from lib.color_compliment import stringToHashToColorAndOpposite
+        from lib.color_compliment import string_to_hash_to_color_and_opposite
         from lib.colortrans import rgb2short
         from socket import gethostname
         hostname = gethostname()
-        FG, BG = stringToHashToColorAndOpposite(hostname)
-        FG, BG = (rgb2short(*color) for color in [FG, BG])
+        fg, bg = string_to_hash_to_color_and_opposite(hostname)
+        fg, bg = (rgb2short(*color) for color in [fg, bg])
         host_prompt = ' %s ' % hostname.split('.')[0]
 
-        powerline.append(host_prompt, FG, BG)
+        powerline.append(host_prompt, fg, bg)
     else:
         if powerline.args.shell == 'bash':
             host_prompt = ' \\h '

@@ -1,6 +1,3 @@
-import subprocess
-
-
 def add_ruby_version_segment():
     try:
         p1 = subprocess.Popen(["ruby", "-v"], stdout=subprocess.PIPE)

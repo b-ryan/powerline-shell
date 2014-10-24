@@ -1,6 +1,3 @@
-import subprocess
-
-
 def add_php_version_segment():
     try:
         output = subprocess.check_output(['php', '-r', 'echo PHP_VERSION;'], stderr=subprocess.STDOUT)
