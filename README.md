@@ -59,13 +59,16 @@ There are a few optional arguments which can be seen by running `powerline-shell
 ```
 
 ### Bash:
-Add the following to your `.bashrc`:
+Add the following to your `~/.bashrc`:
 
         function _update_ps1() {
-           export PS1="$(~/powerline-shell.py $? 2> /dev/null)"
+           export PS1="$(photon ~/powerline-shell.py $? 2> /dev/null)"
         }
 
-        export PROMPT_COMMAND="_update_ps1; $PROMPT_COMMAND"
+        export PROMPT_COMMAND="_update_ps1;$PROMPT_COMMAND"
+
+**Note:** If you use OS X 10.9+ and don't exist `~/.bashrc` file or `~/.profile` file, run `touch ~/.profile` and add the above code. 
+
 
 ### ZSH:
 Add the following to your `.zshrc`:
@@ -90,7 +93,7 @@ Redefine `fish_prompt` in ~/.config/fish/config.fish:
 
         function fish_prompt
             ~/powerline-shell.py $status --shell bare ^/dev/null
-        end
+        end                
 
 # Customization
 
