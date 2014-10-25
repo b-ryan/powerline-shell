@@ -35,11 +35,7 @@ setting your $TERM to `xterm-256color`, because that works for me.
 
   * This will generate `powerline-shell.py`
 
-* (optional) Create a symlink to this python script in your home:
-
-        ln -s <path/to/powerline-shell.py> ~/powerline-shell.py
-
-  * If you don't want the symlink, just modify the path in the commands below
+* If you don't install python, it's the moment.
 
 * For python2.6 you have to install argparse
 
