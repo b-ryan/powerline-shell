@@ -58,7 +58,7 @@ There are a few optional arguments which can be seen by running `powerline-shell
 Add the following to your `~/.bashrc`:
 
         function _update_ps1() {
-           export PS1="$(photon ~/powerline-shell.py $? 2> /dev/null)"
+           export PS1="$(python ~/powerline-shell.py $? 2> /dev/null)"
         }
 
         export PROMPT_COMMAND="_update_ps1;$PROMPT_COMMAND"
