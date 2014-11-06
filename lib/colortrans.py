@@ -17,6 +17,7 @@ Resources:
 I'm not sure where this script was inspired from. I think I must have
 written it from scratch, though it's been several years now.
 """
+from __future__ import print_function
 
 __author__    = 'Micah Elliott http://MicahElliott.com'
 __version__   = '0.1'
@@ -312,7 +313,7 @@ def rgb2short(r, g, b):
                 res.append(closest)
                 break
             i += 1
-    #print '***', res
+    #print('***', res)
     return RGB2SHORT_DICT[tuple(res)]
 
 #---------------------------------------------------------------------
