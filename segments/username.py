@@ -1,7 +1,7 @@
 
 def add_username_segment():
     import os
-    if powerline.args.shell == 'bash':
+    if powerline.args.shell == 'bash-line':
         user_prompt = ' \\u '
     elif powerline.args.shell == 'zsh':
         user_prompt = ' %n '

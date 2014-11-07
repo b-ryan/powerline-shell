@@ -1,6 +1,7 @@
 def add_root_indicator_segment():
     root_indicators = {
-        'bash': ' \\$ ',
+        'bash-line': ' \\$ ',
+        'bash': '',
         'zsh': ' \\$ ',
         'bare': ' $ ',
     }
