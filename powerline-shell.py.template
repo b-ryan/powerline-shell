@@ -31,7 +31,8 @@ class Powerline:
     }
 
     color_templates = {
-        'bash': '\\[\\e%s\\]',
+        'bash-line': '\\[\\e%s\\]',
+        'bash': '\\033%s',
         'zsh': '%%{%s%%}',
         'bare': '%s',
     }
@@ -118,7 +119,7 @@ if __name__ == "__main__":
             help='The characters used to make separators between segments',
             choices=['patched', 'compatible', 'flat'])
     arg_parser.add_argument('--shell', action='store', default='bash',
-            help='Set this to your shell type', choices=['bash', 'zsh', 'bare'])
+            help='Set this to your shell type', choices=['bash-line', 'bash', 'zsh', 'bare'])
     arg_parser.add_argument('prev_error', nargs='?', type=int, default=0,
             help='Error code returned by the last command')
     args = arg_parser.parse_args()
