@@ -55,7 +55,7 @@ There are a few optional arguments which can be seen by running `powerline-shell
 ```
 
 ### Bash:
-Add the following to your `~/.bashrc`:
+Add the following to your `.bashrc`:
 
         function _update_ps1() {
            export PS1="$(python ~/powerline-shell.py $? 2> /dev/null)"
@@ -63,7 +63,7 @@ Add the following to your `~/.bashrc`:
 
         export PROMPT_COMMAND="_update_ps1;$PROMPT_COMMAND"
 
-**Note:** If you use OS X 10.9+ and don't exist `~/.bashrc` file or `~/.profile` file, run `touch ~/.profile` and add the above code. 
+**Note:** If you prefer, you can use `~/.profile` file, exec `touch ~/.profile` and add the above code. 
 
 
 ### ZSH:
