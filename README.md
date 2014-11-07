@@ -35,11 +35,7 @@ setting your $TERM to `xterm-256color`, because that works for me.
 
   * This will generate `powerline-shell.py`
 
-* (optional) Create a symlink to this python script in your home:
-
-        ln -s <path/to/powerline-shell.py> ~/powerline-shell.py
-
-  * If you don't want the symlink, just modify the path in the commands below
+* If you don't install python, it's the moment.
 
 * For python2.6 you have to install argparse
 
@@ -62,10 +58,13 @@ There are a few optional arguments which can be seen by running `powerline-shell
 Add the following to your `.bashrc`:
 
         function _update_ps1() {
-           export PS1="$(~/powerline-shell.py $? 2> /dev/null)"
+           export PS1="$(python ~/powerline-shell.py $? 2> /dev/null)"
         }
 
-        export PROMPT_COMMAND="_update_ps1; $PROMPT_COMMAND"
+        export PROMPT_COMMAND="_update_ps1;$PROMPT_COMMAND"
+
+**Note:** If you prefer, you can use `~/.profile` file, exec `touch ~/.profile` and add the above code. 
+
 
 ### ZSH:
 Add the following to your `.zshrc`:
@@ -90,7 +89,7 @@ Redefine `fish_prompt` in ~/.config/fish/config.fish:
 
         function fish_prompt
             ~/powerline-shell.py $status --shell bare ^/dev/null
-        end
+        end                
 
 # Customization
 
