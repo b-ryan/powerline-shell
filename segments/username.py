@@ -1,6 +1,7 @@
 
 def add_username_segment():
     import os
+    import pwd
     if powerline.args.shell == 'bash':
         user_prompt = ' \\u '
     elif powerline.args.shell == 'zsh':
@@ -8,7 +9,7 @@ def add_username_segment():
     else:
         user_prompt = ' %s ' % os.getenv('USER')
 
-    if os.getenv('USER') == 'root':
+    if pwd.getpwuid(os.getuid())[ 0 ] == 'root':
         bgcolor = Color.USERNAME_ROOT_BG
     else:
         bgcolor = Color.USERNAME_BG
