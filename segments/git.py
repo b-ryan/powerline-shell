@@ -16,7 +16,11 @@ def get_git_status():
     output = subprocess.Popen(['git', 'status', '--ignore-submodules'],
                               env={"LANG": "C", "HOME": os.getenv("HOME")},
                               stdout=subprocess.PIPE).communicate()[0]
-    for line in output.split('\n'):
+    try:
+        lines = output.split('\n')
+    except TypeError:  # Python 3
+        lines = output.decode().split('\n')
+    for line in lines:
         origin_status = re.findall(
             r"Your branch is (ahead|behind).*?(\d+) comm", line)
         diverged_status = re.findall(r"and have (\d+) and (\d+) different commits each", line)
@@ -62,18 +66,22 @@ def add_git_segment():
         p = subprocess.Popen(['git', 'symbolic-ref', '-q', 'HEAD'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out, err = p.communicate()
 
-        if 'Not a git repo' in err:
-            return
+    if 'Not a git repo' in str(err):
+        return
 
         if out:
             branch = out[len('refs/heads/'):].rstrip()
         else:
             branch = '(Detached)'
 
-        has_pending_commits, has_untracked_files, origin_position = get_git_status()
+    has_pending_commits, has_untracked_files, origin_position = get_git_status()
+    try:
         branch += origin_position
-        if has_untracked_files:
-            branch += ' +'
+    except TypeError:
+        branch = branch.decode()
+        branch += origin_position
+    if has_untracked_files:
+        branch += ' +'
 
         bg = Color.REPO_CLEAN_BG
         fg = Color.REPO_CLEAN_FG
