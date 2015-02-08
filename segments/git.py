@@ -10,12 +10,15 @@ def get_git_status():
     for line in output.split('\n'):
         origin_status = re.findall(
             r"Your branch is (ahead|behind).*?(\d+) comm", line)
+        diverged_status = re.findall(r"and have (\d+) and (\d+) different commits each", line)
         if origin_status:
             origin_position = " %d" % int(origin_status[0][1])
             if origin_status[0][0] == 'behind':
                 origin_position += u'\u21E3'
             if origin_status[0][0] == 'ahead':
                 origin_position += u'\u21E1'
+        if diverged_status:
+            origin_position = " %d%c %d%c" % (int(diverged_status[0][0]), u'\u21E1', int(diverged_status[0][1]), u'\u21E3')
 
         if line.find('nothing to commit') >= 0:
             has_pending_commits = False
