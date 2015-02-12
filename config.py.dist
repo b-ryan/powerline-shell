@@ -45,6 +45,10 @@ SEGMENTS = [
 # Show number of running jobs
     'jobs',
 
+# Shows a non-zero return code of the last command
+# Only visible when the command failed
+    'rc',
+
 # Shows a '#' if the current user is root, '$' otherwise
 # Also, changes color if the last command exited with a non-zero error code
     'root',
