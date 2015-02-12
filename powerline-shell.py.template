@@ -74,10 +74,11 @@ class Powerline:
         next_segment = self.segments[idx + 1] if idx < len(self.segments)-1 else None
 
         return ''.join((
+            self.reset if segment[1] is None or segment[2] is None else '',
             self.fgcolor(segment[1]),
             self.bgcolor(segment[2]),
             segment[0],
-            self.bgcolor(next_segment[2]) if next_segment else self.reset,
+            self.bgcolor(next_segment[2]) if next_segment and next_segment[2] else self.reset,
             self.fgcolor(segment[4]),
             segment[3]))
 
