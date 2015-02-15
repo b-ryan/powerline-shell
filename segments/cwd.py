@@ -17,6 +17,15 @@ def add_cwd_segment():
     cwd = powerline.cwd or os.getenv('PWD')
     names = get_short_path(cwd.decode('utf-8'))
 
+    max_length = powerline.args.cwd_max_length
+    sliced_names = []
+    for item in names:
+        if len(item) > max_length:
+            sliced_names.append(item[:max_length] + u'\u2026')
+        else:
+            sliced_names.append(item)
+    names = sliced_names    
+    
     max_depth = powerline.args.cwd_max_depth
     if len(names) > max_depth:
         names = names[:2] + [u'\u2026'] + names[2 - max_depth:]
