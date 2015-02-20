@@ -1,6 +1,19 @@
 import re
 import subprocess
 
+def get_current_fs():
+    try:
+        p = subprocess.Popen(['stat', '-f', '-c', '%T', '.'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = p.communicate()
+
+        if out is not '':
+            return out.strip()
+        else:
+            raise 'no valid output'
+    except Exception, e:
+        warn('could not determine local filesystem: ' + e.message)
+        return None
+
 def get_git_status():
     has_pending_commits = True
     has_untracked_files = False
@@ -40,16 +53,22 @@ def add_git_segment():
     else:
         branch = '(Detached)'
 
-    has_pending_commits, has_untracked_files, origin_position = get_git_status()
-    branch += origin_position
-    if has_untracked_files:
-        branch += ' +'
+    fs = get_current_fs()
+    if not re.match('^nfs', fs):
+        has_pending_commits, has_untracked_files, origin_position = get_git_status()
+        branch += origin_position
+        if has_untracked_files:
+            branch += ' +'
 
-    bg = Color.REPO_CLEAN_BG
-    fg = Color.REPO_CLEAN_FG
-    if has_pending_commits:
-        bg = Color.REPO_DIRTY_BG
-        fg = Color.REPO_DIRTY_FG
+        bg = Color.REPO_CLEAN_BG
+        fg = Color.REPO_CLEAN_FG
+        if has_pending_commits:
+            bg = Color.REPO_DIRTY_BG
+            fg = Color.REPO_DIRTY_FG
+    else:
+        bg = Color.REPO_UNKNOWN_BG
+        fg = Color.REPO_UNKNOWN_FG
+        branch += ' (nfs)'
 
     powerline.append(' %s ' % branch, fg, bg)
 
