@@ -15,6 +15,11 @@ def get_bzr_status():
     return has_modified_files, has_untracked_files
 
 def add_bzr_segment():
+    p1 = subprocess.Popen(['bzr', 'log', '-r-1'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p2 = subprocess.Popen(['grep', 'revno:'], stdin=p1.stdout, stdout=subprocess.PIPE)
+    branch = p2.communicate()[0].split(':')[-1].strip()
+    if len(branch) == 0:
+        return False
     bg = Color.REPO_CLEAN_BG
     fg = Color.REPO_CLEAN_FG
     has_modified_files, has_untracked_files = get_bzr_status()
