@@ -17,9 +17,12 @@ def get_bzr_status():
 def add_bzr_segment():
     p1 = subprocess.Popen(['bzr', 'log', '-r-1'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     p2 = subprocess.Popen(['grep', 'revno:'], stdin=p1.stdout, stdout=subprocess.PIPE)
-    branch = p2.communicate()[0].split(':')[-1].strip()
-    if len(branch) == 0:
+    revno = p2.communicate()[0].split(':')[-1].strip()
+    if len(revno) == 0:
         return False
+    p3 = subprocess.Popen(['bzr', 'info'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p4 = subprocess.Popen(['grep', 'push branch:'], stdin=p3.stdout, stdout=subprocess.PIPE)
+    branch = p4.communicate()[0].split('/')[-2].strip()
     bg = Color.REPO_CLEAN_BG
     fg = Color.REPO_CLEAN_FG
     has_modified_files, has_untracked_files = get_bzr_status()
@@ -29,7 +32,7 @@ def add_bzr_segment():
         extra = ''
         if has_untracked_files:
             extra += '+'
-        branch += (' ' + extra if extra != '' else '')
-    return powerline.append(' %s ' % branch, fg, bg)
+        revno += (' ' + extra if extra != '' else '')
+    return powerline.append(' %s ' % ' '.join([branch, revno]), fg, bg)
 
 add_bzr_segment()
