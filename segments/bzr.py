@@ -22,7 +22,11 @@ def add_bzr_segment():
         return False
     p3 = subprocess.Popen(['bzr', 'info'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     p4 = subprocess.Popen(['grep', 'push branch:'], stdin=p3.stdout, stdout=subprocess.PIPE)
-    branch = p4.communicate()[0].split('/')[-2].strip()
+    branch_line = p4.communicate()[0].split('/')
+    if len(branch_line) != 2:
+        branch = ''
+    else:
+        branch = branch_line[-2].strip()
     bg = Color.REPO_CLEAN_BG
     fg = Color.REPO_CLEAN_FG
     has_modified_files, has_untracked_files = get_bzr_status()
