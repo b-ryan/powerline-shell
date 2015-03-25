@@ -35,21 +35,26 @@ def add_git_segment():
     if 'Not a git repo' in err:
         return
 
+    branch = u'\ue0a0 '
     if out:
-        branch = out[len('refs/heads/'):].rstrip()
+        branch += out[len('refs/heads/'):].rstrip()
     else:
-        branch = '(Detached)'
+        branch += '(Detached)'
 
     has_pending_commits, has_untracked_files, origin_position = get_git_status()
     branch += origin_position
     if has_untracked_files:
-        branch += ' +'
+        branch += u' \u271A'
 
     bg = Color.REPO_CLEAN_BG
     fg = Color.REPO_CLEAN_FG
     if has_pending_commits:
         bg = Color.REPO_DIRTY_BG
         fg = Color.REPO_DIRTY_FG
+        branch += u' \u2718'
+    else:
+        branch += u' \u2714'
+
 
     powerline.append(' %s ' % branch, fg, bg)
 
