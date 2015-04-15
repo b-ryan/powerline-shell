@@ -40,4 +40,9 @@ def add_bzr_segment():
         revno += (' ' + extra if extra != '' else '')
     return powerline.append(' %s ' % ' '.join([branch, revno]), fg, bg)
 
-add_bzr_segment()
+try:
+    add_bzr_segment()
+except OSError:
+    pass
+except subprocess.CalledProcessError:
+    pass
