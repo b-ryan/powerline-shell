@@ -15,7 +15,6 @@ def get_bzr_status():
     return has_modified_files, has_untracked_files
 
 def add_bzr_segment():
-    import ipdb; ipdb.set_trace()
     p1 = subprocess.Popen(['bzr', 'log', '-r-1'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     p2 = subprocess.Popen(['grep', 'revno:'], stdin=p1.stdout, stdout=subprocess.PIPE)
     revno = p2.communicate()[0].split(':')[-1].strip()
@@ -38,7 +37,7 @@ def add_bzr_segment():
         if has_untracked_files:
             extra += '+'
         revno += (' ' + extra if extra != '' else '')
-    return powerline.append(' %s ' % ' '.join([branch, revno]), fg, bg)
+    return powerline.append('%s ' % ' '.join([branch, revno]), fg, bg)
 
 try:
     add_bzr_segment()
