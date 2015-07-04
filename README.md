@@ -58,6 +58,10 @@ There are a few optional arguments which can be seen by running `powerline-shell
                         segments
 ```
 
+HINT: In order to use powerline-shell along with a Python 3 virtualenv, the following snippet should be put into your .bashrc, .bash_profile, .zshrc and so on:
+
+        alias python2='python'
+
 ### Bash:
 Add the following to your `.bashrc`:
 
