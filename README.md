@@ -62,16 +62,16 @@ There are a few optional arguments which can be seen by running `powerline-shell
 Add the following to your `.bashrc`:
 
         function _update_ps1() {
-           export PS1="$(~/powerline-shell.py $? 2> /dev/null)"
+           PS1="$(~/powerline-shell.py $? 2> /dev/null)"
         }
 
-        export PROMPT_COMMAND="_update_ps1; $PROMPT_COMMAND"
+        PROMPT_COMMAND="_update_ps1; $PROMPT_COMMAND"
 
 ### ZSH:
 Add the following to your `.zshrc`:
 
         function powerline_precmd() {
-          export PS1="$(~/powerline-shell.py $? --shell zsh 2> /dev/null)"
+          PS1="$(~/powerline-shell.py $? --shell zsh 2> /dev/null)"
         }
 
         function install_powerline_precmd() {
