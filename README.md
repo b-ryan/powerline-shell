@@ -59,7 +59,7 @@ There are a few optional arguments which can be seen by running `powerline-shell
 ```
 
 ### Bash:
-Add the following to your `.bashrc`:
+Add the following to your `.bashrc` (or `.profile` on Mac):
 
         function _update_ps1() {
            PS1="$(~/powerline-shell.py $? 2> /dev/null)"
