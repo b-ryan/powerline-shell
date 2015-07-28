@@ -130,3 +130,10 @@ A script for testing color combinations is provided at `themes/colortest.py`.
 Note that the colors you see may vary depending on your terminal. When designing
 a theme, please test your theme on multiple terminals, especially with default
 settings.
+
+# Changes
+
+2015-07-27
+
+* Use `python2` instead of `python` in hashbangs
+* Add `node_version` segment
