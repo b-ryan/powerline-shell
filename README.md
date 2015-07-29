@@ -65,7 +65,9 @@ Add the following to your `.bashrc` (or `.profile` on Mac):
            PS1="$(~/powerline-shell.py $? 2> /dev/null)"
         }
 
-        PROMPT_COMMAND="_update_ps1; $PROMPT_COMMAND"
+        if [ "$TERM" != "linux" ]; then
+            PROMPT_COMMAND="_update_ps1; $PROMPT_COMMAND"
+        fi
 
 ### ZSH:
 Add the following to your `.zshrc`:
@@ -83,7 +85,9 @@ Add the following to your `.zshrc`:
           precmd_functions+=(powerline_precmd)
         }
 
-        install_powerline_precmd
+        if [ "$TERM" != "linux" ]; then
+            install_powerline_precmd
+        fi
 
 ### Fish:
 Redefine `fish_prompt` in ~/.config/fish/config.fish:
