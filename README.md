@@ -137,7 +137,12 @@ settings.
 
 # Changes
 
+2015-07-30
+
+* Fix ZSH root indicator (@nkcfan)
+* Add uptime segment (@marcioAlmada)
+
 2015-07-27
 
-* Use `python2` instead of `python` in hashbangs
-* Add `node_version` segment
+* Use `python2` instead of `python` in hashbangs (
+* Add `node_version` segment (@mmilleruva)
