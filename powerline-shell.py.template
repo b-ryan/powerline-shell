@@ -76,7 +76,7 @@ class Powerline:
         return ''.join((
             self.fgcolor(segment[1]),
             self.bgcolor(segment[2]),
-            segment[0],
+            segment[0].strip() if self.args.svelte else segment[0],
             self.bgcolor(next_segment[2]) if next_segment else self.reset,
             self.fgcolor(segment[4]),
             segment[3]))
@@ -119,6 +119,8 @@ if __name__ == "__main__":
             choices=['patched', 'compatible', 'flat'])
     arg_parser.add_argument('--shell', action='store', default='bash',
             help='Set this to your shell type', choices=['bash', 'zsh', 'bare'])
+    arg_parser.add_argument('--svelte', action='store_true',
+            help='Remove padding between segments')
     arg_parser.add_argument('prev_error', nargs='?', type=int, default=0,
             help='Error code returned by the last command')
     args = arg_parser.parse_args()
