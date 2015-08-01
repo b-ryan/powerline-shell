@@ -137,6 +137,10 @@ settings.
 
 # Changes
 
+2015-07-31
+
+* The current working directory no longer follows symbolic links
+
 2015-07-30
 
 * Fix ZSH root indicator (@nkcfan)
