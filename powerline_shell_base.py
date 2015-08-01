@@ -88,8 +88,8 @@ def get_valid_cwd():
         We return the original cwd because the shell still considers that to be
         the working directory, so returning our guess will confuse people
     """
-    # Prefer the PDW environment variable. Python's os.getcwd function follows
-    # symbolic links, which is undesirable. But if PDW is not set then fall
+    # Prefer the PWD environment variable. Python's os.getcwd function follows
+    # symbolic links, which is undesirable. But if PWD is not set then fall
     # back to this func
     try:
         cwd = os.getenv('PWD') or os.getcwd()
