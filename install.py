@@ -10,7 +10,7 @@ except ImportError:
     shutil.copyfile('config.py.dist', 'config.py')
     import config
 
-TEMPLATE_FILE = 'powerline-shell.py.template'
+TEMPLATE_FILE = 'powerline_shell_base.py'
 OUTPUT_FILE = 'powerline-shell.py'
 SEGMENTS_DIR = 'segments'
 THEMES_DIR = 'themes'
