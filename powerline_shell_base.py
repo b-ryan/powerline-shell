@@ -88,21 +88,26 @@ def get_valid_cwd():
         We return the original cwd because the shell still considers that to be
         the working directory, so returning our guess will confuse people
     """
+    # Prefer the PWD environment variable. Python's os.getcwd function follows
+    # symbolic links, which is undesirable. But if PWD is not set then fall
+    # back to this func
     try:
-        cwd = os.getcwd()
+        cwd = os.getenv('PWD') or os.getcwd()
     except:
-        cwd = os.getenv('PWD')  # This is where the OS thinks we are
-        parts = cwd.split(os.sep)
-        up = cwd
-        while parts and not os.path.exists(up):
-            parts.pop()
-            up = os.sep.join(parts)
-        try:
-            os.chdir(up)
-        except:
-            warn("Your current directory is invalid.")
-            sys.exit(1)
-        warn("Your current directory is invalid. Lowest valid directory: " + up)
+        warn("Your current directory is invalid. If you open a ticket at " +
+            "https://github.com/milkbikis/powerline-shell/issues/new " +
+            "we would love to help fix the issue.")
+        sys.stdout.write("> ")
+        sys.exit(1)
+
+    parts = cwd.split(os.sep)
+    up = cwd
+    while parts and not os.path.exists(up):
+        parts.pop()
+        up = os.sep.join(parts)
+    if cwd != up:
+        warn("Your current directory is invalid. Lowest valid directory: "
+            + up)
     return cwd
 
 

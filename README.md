@@ -109,10 +109,10 @@ prompt immediately.
 ### Contributing new types of segments
 
 The `segments` directory contains python scripts which are injected as is into
-a single file `powerline-shell.py.template`. Each segment script defines a
-function that inserts one or more segments into the prompt. If you want to add a
-new segment, simply create a new file in the segments directory and add its name
-to the `config.py` file at the appropriate location.
+a single file `powerline_shell_base.py`. Each segment script defines a function
+that inserts one or more segments into the prompt. If you want to add a new
+segment, simply create a new file in the segments directory and add its name to
+the `config.py` file at the appropriate location.
 
 Make sure that your script does not introduce new globals which might conflict
 with other scripts. Your script should fail silently and run quickly in any
