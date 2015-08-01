@@ -148,5 +148,5 @@ settings.
 
 2015-07-27
 
-* Use `python2` instead of `python` in hashbangs (
+* Use `python2` instead of `python` in hashbangs
 * Add `node_version` segment (@mmilleruva)
