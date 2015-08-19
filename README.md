@@ -137,6 +137,14 @@ settings.
 
 # Changes
 
+2015-08-18
+
+* New `time` segment ([@filipebarros](https://github.com/milkbikis/powerline-shell/pull/107))
+
+2015-08-01
+
+* Use `print` function for some python3 compatibility ([@strycore](https://github.com/milkbikis/powerline-shell/pull/195))
+
 2015-07-31
 
 * The current working directory no longer follows symbolic links
