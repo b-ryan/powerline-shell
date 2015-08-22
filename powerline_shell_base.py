@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from __future__ import print_function
 
 import argparse
 import os
 import sys
 
 def warn(msg):
-    print '[powerline-bash] ', msg
+    print('[powerline-bash] ', msg)
 
 class Powerline:
     symbols = {
@@ -49,7 +50,10 @@ class Powerline:
         self.segments = []
 
     def color(self, prefix, code):
-        return self.color_template % ('[%s;5;%sm' % (prefix, code))
+        if code is None:
+            return ''
+        else:
+            return self.color_template % ('[%s;5;%sm' % (prefix, code))
 
     def fgcolor(self, code):
         return self.color('38', code)
@@ -58,8 +62,9 @@ class Powerline:
         return self.color('48', code)
 
     def append(self, content, fg, bg, separator=None, separator_fg=None):
-        self.segments.append((content, fg, bg, separator or self.separator,
-            separator_fg or bg))
+        self.segments.append((content, fg, bg,
+            separator if separator is not None else self.separator,
+            separator_fg if separator_fg is not None else bg))
 
     def draw(self):
         return (''.join(self.draw_segment(i) for i in range(len(self.segments)))
@@ -84,21 +89,26 @@ def get_valid_cwd():
         We return the original cwd because the shell still considers that to be
         the working directory, so returning our guess will confuse people
     """
+    # Prefer the PWD environment variable. Python's os.getcwd function follows
+    # symbolic links, which is undesirable. But if PWD is not set then fall
+    # back to this func
     try:
-        cwd = os.getcwd()
+        cwd = os.getenv('PWD') or os.getcwd()
     except:
-        cwd = os.getenv('PWD')  # This is where the OS thinks we are
-        parts = cwd.split(os.sep)
-        up = cwd
-        while parts and not os.path.exists(up):
-            parts.pop()
-            up = os.sep.join(parts)
-        try:
-            os.chdir(up)
-        except:
-            warn("Your current directory is invalid.")
-            sys.exit(1)
-        warn("Your current directory is invalid. Lowest valid directory: " + up)
+        warn("Your current directory is invalid. If you open a ticket at " +
+            "https://github.com/milkbikis/powerline-shell/issues/new " +
+            "we would love to help fix the issue.")
+        sys.stdout.write("> ")
+        sys.exit(1)
+
+    parts = cwd.split(os.sep)
+    up = cwd
+    while parts and not os.path.exists(up):
+        parts.pop()
+        up = os.sep.join(parts)
+    if cwd != up:
+        warn("Your current directory is invalid. Lowest valid directory: "
+            + up)
     return cwd
 
 
