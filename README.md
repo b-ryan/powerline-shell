@@ -138,25 +138,39 @@ settings.
 
 # Changes
 
+2015-08-26
+
+* New `plain` mode of displaying the current working directory which can be
+  used by adding `--cwd-only plain` to `powerline-shell.py`.
+  This deprecates the `--cwd-only` option. `--cwd-mode dironly` can be used
+  instead. ([@paol](https://github.com/milkbikis/powerline-shell/pull/156))
+
 2015-08-18
 
-* New `time` segment ([@filipebarros](https://github.com/milkbikis/powerline-shell/pull/107))
+* New `time` segment
+  ([@filipebarros](https://github.com/milkbikis/powerline-shell/pull/107))
 
 2015-08-01
 
-* Use `print` function for some python3 compatibility ([@strycore](https://github.com/milkbikis/powerline-shell/pull/195))
+* Use `print` function for some python3 compatibility
+  ([@strycore](https://github.com/milkbikis/powerline-shell/pull/195))
 
 2015-07-31
 
 * The current working directory no longer follows symbolic links
-* New `exit_code` segment ([@disruptek](https://github.com/milkbikis/powerline-shell/pull/129))
+* New `exit_code` segment
+  ([@disruptek](https://github.com/milkbikis/powerline-shell/pull/129))
 
 2015-07-30
 
-* Fix ZSH root indicator ([@nkcfan](https://github.com/milkbikis/powerline-shell/pull/150))
-* Add uptime segment ([@marcioAlmada](https://github.com/milkbikis/powerline-shell/pull/139))
+* Fix ZSH root indicator
+  ([@nkcfan](https://github.com/milkbikis/powerline-shell/pull/150))
+* Add uptime segment
+  ([@marcioAlmada](https://github.com/milkbikis/powerline-shell/pull/139))
 
 2015-07-27
 
-* Use `python2` instead of `python` in hashbangs ([@Undeterminant](https://github.com/milkbikis/powerline-shell/pull/100))
-* Add `node_version` segment ([@mmilleruva](https://github.com/milkbikis/powerline-shell/pull/189))
+* Use `python2` instead of `python` in hashbangs
+  ([@Undeterminant](https://github.com/milkbikis/powerline-shell/pull/100))
+* Add `node_version` segment
+  ([@mmilleruva](https://github.com/milkbikis/powerline-shell/pull/189))
