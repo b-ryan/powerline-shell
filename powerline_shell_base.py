@@ -114,8 +114,11 @@ def get_valid_cwd():
 
 if __name__ == "__main__":
     arg_parser = argparse.ArgumentParser()
+    arg_parser.add_argument('--cwd-mode', action='store',
+            help='How to display the current directory', default='fancy',
+            choices=['fancy', 'plain', 'dironly'])
     arg_parser.add_argument('--cwd-only', action='store_true',
-            help='Only show the current directory')
+            help='Deprecated. Use --cwd-mode=dironly')
     arg_parser.add_argument('--cwd-max-depth', action='store', type=int,
             default=5, help='Maximum number of directories to show in path')
     arg_parser.add_argument('--colorize-hostname', action='store_true',
