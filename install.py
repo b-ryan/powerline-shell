@@ -1,4 +1,5 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
+from __future__ import print_function
 import os
 import stat
 
@@ -10,7 +11,7 @@ except ImportError:
     shutil.copyfile('config.py.dist', 'config.py')
     import config
 
-TEMPLATE_FILE = 'powerline-shell.py.template'
+TEMPLATE_FILE = 'powerline_shell_base.py'
 OUTPUT_FILE = 'powerline-shell.py'
 SEGMENTS_DIR = 'segments'
 THEMES_DIR = 'themes'
@@ -19,7 +20,7 @@ def load_source(srcfile):
     try:
         return ''.join(open(srcfile).readlines()) + '\n\n'
     except IOError:
-        print 'Could not open', srcfile
+        print('Could not open', srcfile)
         return ''
 
 if __name__ == "__main__":
@@ -34,7 +35,7 @@ if __name__ == "__main__":
         open(OUTPUT_FILE, 'w').write(source)
         st = os.stat(OUTPUT_FILE)
         os.chmod(OUTPUT_FILE, st.st_mode | stat.S_IEXEC)
-        print OUTPUT_FILE, 'saved successfully'
+        print(OUTPUT_FILE, 'saved successfully')
     except IOError:
-        print 'ERROR: Could not write to powerline-shell.py. Make sure it is writable'
+        print('ERROR: Could not write to powerline-shell.py. Make sure it is writable')
         exit(1)
