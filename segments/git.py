@@ -29,6 +29,7 @@ def add_git_segment():
         'behind': u'\u2B07',
         'staged': u'\u2714',
         'notstaged': u'\u270E',
+        'untracked': u'\u2753',
         'conflicted': u'\u273C'
     }
 
@@ -67,7 +68,7 @@ def add_git_segment():
     if stats['notstaged']:
         powerline.append('%s%c' % (stats['notstaged'] if stats['notstaged'] > 1 else str('').decode('utf-8'), symbols['notstaged']), Color.GIT_NOTSTAGED_FG, Color.GIT_NOTSTAGED_BG)
     if stats['untracked']:
-        powerline.append('%s?' % (stats['untracked'] if stats['untracked'] > 1 else str('')), Color.GIT_UNTRACKED_FG, Color.GIT_UNTRACKED_BG)
+        powerline.append('%s%c' % (stats['untracked'] if stats['untracked'] > 1 else str('').decode('utf-8'), symbols['untracked']), Color.GIT_UNTRACKED_FG, Color.GIT_UNTRACKED_BG)
     if stats['conflicted']:
         powerline.append('%s%c' % (stats['conflicted'] if stats['conflicted'] > 1 else str('').decode('utf-8'), symbols['conflicted']), Color.GIT_CONFLICTED_FG, Color.GIT_CONFLICTED_BG)
 try:
