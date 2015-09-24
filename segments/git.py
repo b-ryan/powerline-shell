@@ -23,6 +23,15 @@ def get_git_status(pdata):
 
 
 def add_git_segment():
+    symbols = {
+        'detached': u'\u2693',
+        'ahead': u'\u2B06',
+        'behind': u'\u2B07',
+        'staged': u'\u2714',
+        'notstaged': u'\u270E',
+        'conflicted': u'\u273C'
+    }
+
     p = subprocess.Popen(['git', 'status', '--porcelain', '-b'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     pdata = p.communicate()
     if p.returncode != 0:
@@ -36,7 +45,7 @@ def add_git_segment():
         p = subprocess.Popen(['git', 'describe', '--tags', '--always'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         detached_ref = p.communicate()[0].rstrip('\n')
         if p.returncode == 0:
-            branch = '⚓ {}'.format(detached_ref).decode('utf-8')
+            branch = '%c %s' % (symbols['detached'], detached_ref.decode('utf-8'))
         else:
             branch = 'Big Bang'
 
@@ -50,17 +59,17 @@ def add_git_segment():
 
     if branchinfo:
         if branchinfo['ahead']:
-            powerline.append("{}⬆".format(branchinfo['ahead'] if int(branchinfo['ahead']) > 1 else str('')).decode('utf-8'), Color.GIT_AHEAD_FG, Color.GIT_AHEAD_BG)
+            powerline.append('%s%c' % (branchinfo['ahead'] if int(branchinfo['ahead']) > 1 else str('').decode('utf-8'), symbols['ahead']), Color.GIT_AHEAD_FG, Color.GIT_AHEAD_BG)
         if branchinfo['behind']:
-            powerline.append("{}⬇".format(branchinfo['behind'] if int(branchinfo['behind']) > 1 else str('')).decode('utf-8'), Color.GIT_BEHIND_FG, Color.GIT_BEHIND_BG)
+            powerline.append('%s%c' % (branchinfo['behind'] if int(branchinfo['behind']) > 1 else str('').decode('utf-8'), symbols['behind']), Color.GIT_BEHIND_FG, Color.GIT_BEHIND_BG)
     if stats['staged']:
-        powerline.append("{}✔".format(stats['staged'] if stats['staged'] > 1 else str('')).decode('utf-8'), Color.GIT_STAGED_FG, Color.GIT_STAGED_BG)
+        powerline.append('%s%c' % (stats['staged'] if stats['staged'] > 1 else str('').decode('utf-8'), symbols['staged']), Color.GIT_STAGED_FG, Color.GIT_STAGED_BG)
     if stats['notstaged']:
-        powerline.append("{}✎".format(stats['notstaged'] if stats['notstaged'] > 1 else str('')).decode('utf-8'), Color.GIT_NOTSTAGED_FG, Color.GIT_NOTSTAGED_BG)
+        powerline.append('%s%c' % (stats['notstaged'] if stats['notstaged'] > 1 else str('').decode('utf-8'), symbols['notstaged']), Color.GIT_NOTSTAGED_FG, Color.GIT_NOTSTAGED_BG)
     if stats['untracked']:
-        powerline.append("{}?".format(stats['untracked'] if stats['untracked'] > 1 else str('')), Color.GIT_UNTRACKED_FG, Color.GIT_UNTRACKED_BG)
+        powerline.append('%s?' % (stats['untracked'] if stats['untracked'] > 1 else str('')), Color.GIT_UNTRACKED_FG, Color.GIT_UNTRACKED_BG)
     if stats['conflicted']:
-        powerline.append("{}✼".format(stats['conflicted'] if stats['conflicted'] > 1 else str('')).decode('utf-8'), Color.GIT_CONFLICTED_FG, Color.GIT_CONFLICTED_BG)
+        powerline.append('%s%c' % (stats['conflicted'] if stats['conflicted'] > 1 else str('').decode('utf-8'), symbols['conflicted']), Color.GIT_CONFLICTED_FG, Color.GIT_CONFLICTED_BG)
 try:
     add_git_segment()
 except OSError:
