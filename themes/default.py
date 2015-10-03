@@ -37,9 +37,6 @@ class DefaultColor:
     CMD_FAILED_BG = 161
     CMD_FAILED_FG = 15
 
-    SVN_CHANGES_BG = 148
-    SVN_CHANGES_FG = 22  # dark green
-
     VIRTUAL_ENV_BG = 35  # a mid-tone green
     VIRTUAL_ENV_FG = 00
 
