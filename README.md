@@ -53,6 +53,9 @@ There are a few optional arguments which can be seen by running `powerline-shell
                         How to display the current directory
   --cwd-max-depth CWD_MAX_DEPTH
                         Maximum number of directories to show in path
+  --cwd-max-dir-size CWD_MAX_DIR_SIZE
+                        Maximum number of letters displayed for each directory
+                        in the path
   --colorize-hostname   Colorize the hostname based on a hash of itself.
   --mode {patched,compatible,flat}
                         The characters used to make separators between
