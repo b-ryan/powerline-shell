@@ -141,6 +141,13 @@ settings.
 
 # Changes
 
+2015-10-02
+
+* New option (`--cwd-max-dir-size`) which allows you to limit each directory
+  that is displayed to a number of characters. This currently does not apply
+  if you are using `--cwd-mode plain`.
+  ([@mart-e](https://github.com/milkbikis/powerline-shell/pull/127))
+
 2015-08-26
 
 * New `plain` mode of displaying the current working directory which can be
