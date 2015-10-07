@@ -1,5 +1,5 @@
 import os
-
+import subprocess
 
 def replace_home_dir(cwd):
     home = os.getenv('HOME')
@@ -18,6 +18,15 @@ def split_path_into_names(cwd):
         return ['/']
 
     return names
+
+def get_git_root(cwd):
+    p = subprocess.Popen(['git', 'rev-parse', '--show-toplevel'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    out, err = p.communicate()
+
+    if 'Not a git repo' in err:
+        return False
+
+    return out
 
 
 def requires_special_home_display(name):
@@ -44,8 +53,8 @@ def get_fg_bg(name):
 
 
 def add_cwd_segment():
-    cwd = (powerline.cwd or os.getenv('PWD')).decode('utf-8')
-    cwd = replace_home_dir(cwd)
+    original_cwd = (powerline.cwd or os.getenv('PWD')).decode('utf-8')
+    cwd = replace_home_dir(original_cwd)
     names = split_path_into_names(cwd)
 
     max_depth = powerline.args.cwd_max_depth
@@ -59,6 +68,12 @@ def add_cwd_segment():
             # The user has indicated they only want the current directory to be
             # displayed, so chop everything else off
             names = names[-1:]
+
+        git_root = get_git_root(cwd)
+        if(git_root != False):
+            git_names = split_path_into_names(git_root)
+            names = split_path_into_names(original_cwd)
+            names = names[len(git_names)-1:]
 
         for i, name in enumerate(names):
             fg, bg = get_fg_bg(name)
