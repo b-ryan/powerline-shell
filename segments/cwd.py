@@ -1,5 +1,5 @@
 import os
-
+import subprocess
 
 def replace_home_dir(cwd):
     home = os.getenv('HOME')
@@ -18,6 +18,15 @@ def split_path_into_names(cwd):
         return ['/']
 
     return names
+
+def is_git_repo(cwd):
+    p = subprocess.Popen(['git', 'symbolic-ref', '-q', 'HEAD'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    out, err = p.communicate()
+
+    if 'Not a git repo' in err:
+        return False
+
+    return True
 
 
 def requires_special_home_display(name):
@@ -55,7 +64,7 @@ def add_cwd_segment():
     if powerline.args.cwd_mode == 'plain':
         powerline.append(' %s ' % (cwd,), Color.CWD_FG, Color.PATH_BG)
     else:
-        if (powerline.args.cwd_mode == 'dironly' or powerline.args.cwd_only):
+        if (powerline.args.cwd_mode == 'dironly' or powerline.args.cwd_only or is_git_repo(cwd)):
             # The user has indicated they only want the current directory to be
             # displayed, so chop everything else off
             names = names[-1:]
