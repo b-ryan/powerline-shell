@@ -4,6 +4,7 @@ import subprocess
 def get_git_status():
     has_pending_commits = True
     has_untracked_files = False
+    has_untracked_changes = False
     origin_position = ""
     output = subprocess.Popen(['git', 'status', '--ignore-submodules'],
             env={"LANG": "C", "HOME": os.getenv("HOME")}, stdout=subprocess.PIPE).communicate()[0]
@@ -24,7 +25,10 @@ def get_git_status():
             has_pending_commits = False
         if line.find('Untracked files') >= 0:
             has_untracked_files = True
-    return has_pending_commits, has_untracked_files, origin_position
+        if line.find('Changes to be committed') >= 0 or line.find('Changes not staged for commit') >= 0:
+            has_untracked_changes = True
+
+    return has_pending_commits, has_untracked_files, origin_position, has_untracked_changes
 
 
 def add_git_segment():
@@ -40,9 +44,12 @@ def add_git_segment():
     else:
         branch = '(Detached)'
 
-    has_pending_commits, has_untracked_files, origin_position = get_git_status()
+    has_pending_commits, has_untracked_files, origin_position, has_untracked_changes = get_git_status()
     branch += origin_position
-    if has_untracked_files:
+
+    if has_untracked_changes:
+        branch += u' \xB1'
+    elif has_untracked_files:
         branch += ' +'
 
     bg = Color.REPO_CLEAN_BG
