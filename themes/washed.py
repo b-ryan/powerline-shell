@@ -17,6 +17,8 @@ class Color(DefaultColor):
 
     REPO_CLEAN_BG = 150  # pale green
     REPO_CLEAN_FG = 235
+    REPO_READY_BG = 227  # pale yellow
+    REPO_READY_FG = 240  # greyish
     REPO_DIRTY_BG = 203  # pale red
     REPO_DIRTY_FG = 15
 
