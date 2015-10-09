@@ -21,6 +21,8 @@ class Color(DefaultColor):
     REPO_CLEAN_FG = 0  # black
     REPO_DIRTY_BG = 1  # red
     REPO_DIRTY_FG = 15 # white
+    REPO_UNKNOWN_BG = 33  # red
+    REPO_UNKNOWN_FG = 15 # white
 
     JOBS_FG = 14
     JOBS_BG = 8
