@@ -28,6 +28,8 @@ def get_git_status():
 
 
 def add_git_segment():
+    if not find_project_root(".git"):
+        return False
     # See http://git-blame.blogspot.com/2013/06/checking-current-branch-programatically.html
     p = subprocess.Popen(['git', 'symbolic-ref', '-q', 'HEAD'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = p.communicate()

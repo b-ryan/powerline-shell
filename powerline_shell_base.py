@@ -82,6 +82,13 @@ class Powerline:
             self.fgcolor(segment[4]),
             segment[3]))
 
+def find_project_root(dirname):
+    d = os.path.abspath(os.path.curdir)
+    while len(d) > 1:
+        d, base = os.path.split(d)
+        if os.path.isdir(os.path.join(d,base, ".git")):
+            return os.path.join(d,base)
+
 def get_valid_cwd():
     """ We check if the current working directory is valid or not. Typically
         happens when you checkout a different branch on git that doesn't have

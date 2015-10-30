@@ -49,8 +49,8 @@ def add_cwd_segment():
     names = split_path_into_names(cwd)
 
     max_depth = powerline.args.cwd_max_depth
-    if len(names) > max_depth:
-        names = names[:2] + [u'\u2026'] + names[2 - max_depth:]
+    if len(names) > int(max_depth) + 3:
+        names = names[:2] + [u'\u2026'] + names[len(names) - max_depth:]
 
     if powerline.args.cwd_mode == 'plain':
         powerline.append(' %s ' % (cwd,), Color.CWD_FG, Color.PATH_BG)

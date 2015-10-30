@@ -19,6 +19,8 @@ def get_hg_status():
     return has_modified_files, has_untracked_files, has_missing_files
 
 def add_hg_segment():
+    if not find_project_root(".hg"):
+        return False
     branch = os.popen('hg branch 2> /dev/null').read().rstrip()
     if len(branch) == 0:
         return False
