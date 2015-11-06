@@ -125,6 +125,8 @@ if __name__ == "__main__":
             help='Maximum number of letters displayed for each directory in the path')
     arg_parser.add_argument('--colorize-hostname', action='store_true',
             help='Colorize the hostname based on a hash of itself.')
+    arg_parser.add_argument('--remote-hostname', action='store_true',
+            help='Display the hostname only if on a remote machine (currently SSH only)')
     arg_parser.add_argument('--mode', action='store', default='patched',
             help='The characters used to make separators between segments',
             choices=['patched', 'compatible', 'flat'])
