@@ -12,7 +12,7 @@ def add_battery_segment():
     f.close()
     
     if status == 'Charging':
-        pwr = u' \u21ea '
+        pwr = u' \u26A1 '
     else:
         pwr = ' '
     
