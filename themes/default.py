@@ -42,6 +42,11 @@ class DefaultColor:
 
     VIRTUAL_ENV_BG = 35  # a mid-tone green
     VIRTUAL_ENV_FG = 00
+    
+    BATTERY_NORMAL_BG = 22
+    BATTERY_NORMAL_FG = 7
+    BATTERY_LOW_BG = 196
+    BATTERY_LOW_FG = 7
 
 class Color(DefaultColor):
     """

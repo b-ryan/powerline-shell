@@ -1,9 +1,13 @@
 def add_battery_segment():
-    f = open('/sys/class/power_supply/BAT0/capacity')
+    CAP_FILE = '/sys/class/power_supply/BAT0/capacity'
+    STATUS_FILE = '/sys/class/power_supply/BAT0/status'
+    LOW_BATTERY_THRESHOLD = 20
+    
+    f = open(CAP_FILE)
     cap = f.read().strip()
     f.close()
     
-    f = open('/sys/class/power_supply/BAT0/status')
+    f = open(STATUS_FILE)
     status = f.read().strip()
     f.close()
     
@@ -12,11 +16,13 @@ def add_battery_segment():
     else:
         pwr = ' '
     
-    if int(cap) > 20:
-        bg = Color.HOME_BG
+    if int(cap) < LOW_BATTERY_THRESHOLD:
+        bg = Color.BATTERY_LOW_BG
+        fg = Color.BATTERY_LOW_FG
     else:
-        bg = Color.READONLY_BG
+        bg = Color.BATTERY_NORMAL_BG
+        fg = Color.BATTERY_NORMAL_FG
     
-    powerline.append(' ' + cap + '%' + pwr, Color.HOME_FG, bg)
+    powerline.append(' ' + cap + '%' + pwr, fg, bg)
 
 add_battery_segment()
