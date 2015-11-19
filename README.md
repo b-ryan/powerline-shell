@@ -5,14 +5,34 @@ A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash, Z
 
 ![MacVim+Solarized+Powerline+CtrlP](https://raw.github.com/milkbikis/dotfiles-mac/master/bash-powerline-screenshot.png)
 
-*  Shows some important details about the git/svn/hg/fossil branch:
-    *  Displays the current branch which changes background color when the branch is dirty
-    *  A '+' appears when untracked files are present
-    *  When the local branch differs from the remote, the difference in number of commits is shown along with '⇡' or '⇣' indicating whether a git push or pull is pending
+*  Shows some important details about the git/svn/hg/fossil branch (see below)
 *  Changes color if the last command exited with a failure code
 *  If you're too deep into a directory tree, shortens the displayed path with an ellipsis
 *  Shows the current Python [virtualenv](http://www.virtualenv.org/) environment
 *  It's easy to customize and extend. See below for details.
+
+### Version Control
+
+All of the version control systems supported by powerline shell give you a
+quick look into the state of your repo:
+
+* The current branch is displayed and changes background color when the
+  branch is dirty.
+* When the local branch differs from the remote, the difference in number
+  of commits is shown along with `⇡` or `⇣` indicating whether a git push
+  or pull is pending
+
+In addition, git has a few extra symbols:
+
+* `✎` -- a file has been modified, but not staged for commit
+* `✔` -- a file is staged for commit
+* `✼` -- a file has conflicts
+
+FIXME
+    *  A `+` appears when untracked files are present (except for git, which
+       uses `?` instead)
+
+Each of these will have a number next to it if more than one file matches.
 
 # Setup
 
