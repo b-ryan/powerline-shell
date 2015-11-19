@@ -1,5 +1,7 @@
 import os
 
+ELLIPSIS = u'\u2026'
+
 
 def replace_home_dir(cwd):
     home = os.getenv('HOME')
@@ -46,31 +48,43 @@ def get_fg_bg(name):
 def add_cwd_segment():
     cwd = (powerline.cwd or os.getenv('PWD')).decode('utf-8')
     cwd = replace_home_dir(cwd)
-    names = split_path_into_names(cwd)
-
-    max_depth = powerline.args.cwd_max_depth
-    if len(names) > max_depth:
-        names = names[:2] + [u'\u2026'] + names[2 - max_depth:]
 
     if powerline.args.cwd_mode == 'plain':
         powerline.append(' %s ' % (cwd,), Color.CWD_FG, Color.PATH_BG)
-    else:
-        if (powerline.args.cwd_mode == 'dironly' or powerline.args.cwd_only):
-            # The user has indicated they only want the current directory to be
-            # displayed, so chop everything else off
-            names = names[-1:]
+        return
 
-        for i, name in enumerate(names):
-            fg, bg = get_fg_bg(name)
+    names = split_path_into_names(cwd)
 
-            separator = powerline.separator_thin
-            separator_fg = Color.SEPARATOR_FG
-            is_last_dir = (i == len(names) - 1)
-            if requires_special_home_display(name) or is_last_dir:
-                separator = None
-                separator_fg = None
+    max_depth = powerline.args.cwd_max_depth
+    if max_depth <= 0:
+        warn("Ignoring --cwd-max-depth argument since it's not greater than 0")
+    elif len(names) > max_depth:
+        # https://github.com/milkbikis/powerline-shell/issues/148
+        # n_before is the number is the number of directories to put before the
+        # ellipsis. So if you are at ~/a/b/c/d/e and max depth is 4, it will
+        # show `~ a ... d e`.
+        #
+        # max_depth must be greater than n_before or else you end up repeating
+        # parts of the path with the way the splicing is written below.
+        n_before = 2 if max_depth > 2 else max_depth - 1
+        names = names[:n_before] + [ELLIPSIS] + names[n_before - max_depth:]
 
-            powerline.append(' %s ' % maybe_shorten_name(name), fg, bg,
-                             separator, separator_fg)
+    if (powerline.args.cwd_mode == 'dironly' or powerline.args.cwd_only):
+        # The user has indicated they only want the current directory to be
+        # displayed, so chop everything else off
+        names = names[-1:]
+
+    for i, name in enumerate(names):
+        fg, bg = get_fg_bg(name)
+
+        separator = powerline.separator_thin
+        separator_fg = Color.SEPARATOR_FG
+        is_last_dir = (i == len(names) - 1)
+        if requires_special_home_display(name) or is_last_dir:
+            separator = None
+            separator_fg = None
+
+        powerline.append(' %s ' % maybe_shorten_name(name), fg, bg,
+                         separator, separator_fg)
 
 add_cwd_segment()
