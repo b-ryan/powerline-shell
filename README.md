@@ -161,6 +161,11 @@ settings.
 
 # Changes
 
+2015-11-18
+
+* The git segment has gotten a makeover
+  ([MartinWetterwald](https://github.com/milkbikis/powerline-shell/pull/136))
+
 2015-10-02
 
 * New option (`--cwd-max-dir-size`) which allows you to limit each directory
