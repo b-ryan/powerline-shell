@@ -53,6 +53,17 @@ class DefaultColor:
     GIT_CONFLICTED_BG = 9
     GIT_CONFLICTED_FG = 15
 
+    HG_ADDED_BG = 34
+    HG_ADDED_FG = 15
+    HG_MODIFIED_BG = 20
+    HG_MODIFIED_FG = 15
+    HG_REMOVED_BG = 124
+    HG_REMOVED_FG = 15
+    HG_MISSING_BG = 9
+    HG_MISSING_FG = 15
+    HG_UNTRACKED_BG = 170
+    HG_UNTRACKED_FG = 15
+
     VIRTUAL_ENV_BG = 35  # a mid-tone green
     VIRTUAL_ENV_FG = 00
 
