@@ -167,6 +167,8 @@ settings.
   ([MartinWetterwald](https://github.com/milkbikis/powerline-shell/pull/136))
 * Fix git segment when git is not on the standard PATH
   ([andrejgl](https://github.com/milkbikis/powerline-shell/pull/153))
+* Fix `--cwd-max-depth` showing duplicates when it's <= 2
+  ([b-ryan](https://github.com/milkbikis/powerline-shell/pull/209))
 
 2015-10-02
 
