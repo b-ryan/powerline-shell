@@ -1,11 +1,35 @@
 import re
 import subprocess
 
-def get_git_status(pdata):
-    status = pdata[0].splitlines()
+GIT_SYMBOLS = {
+    'detached': u'\u2693',
+    'ahead': u'\u2B06',
+    'behind': u'\u2B07',
+    'staged': u'\u2714',
+    'notstaged': u'\u270E',
+    'untracked': u'\u2753',
+    'conflicted': u'\u273C'
+}
 
-    branchinfo = re.search('^## (?P<local>\S+?)(\.{3}(?P<remote>\S+?)( \[(ahead (?P<ahead>\d+)(, )?)?(behind (?P<behind>\d+))?\])?)?$', status[0])
 
+def parse_git_branch_info(status):
+    info = re.search('^## (?P<local>\S+?)''(\.{3}(?P<remote>\S+?)( \[(ahead (?P<ahead>\d+)(, )?)?(behind (?P<behind>\d+))?\])?)?$', status[0])
+    return info.groupdict() if info else None
+
+
+def _get_git_detached_branch():
+    p = subprocess.Popen(['git', 'describe', '--tags', '--always'],
+                         stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    detached_ref = p.communicate()[0].rstrip('\n')
+    if p.returncode == 0:
+        branch = u'{} {}'.format(GIT_SYMBOLS['detached'],
+                                 detached_ref.decode('utf-8'))
+    else:
+        branch = 'Big Bang'
+    return branch
+
+
+def parse_git_stats(status):
     stats = {'untracked': 0, 'notstaged': 0, 'staged': 0, 'conflicted': 0}
     for statusline in status[1:]:
         code = statusline[:2]
@@ -18,37 +42,31 @@ def get_git_status(pdata):
                 stats['notstaged'] += 1
             if code[0] != ' ':
                 stats['staged'] += 1
-    dirty = (True if sum(stats.values()) > 0 else False)
-    return dirty, stats, branchinfo.groupdict() if branchinfo else None
+
+    return stats
+
+
+def _n_or_empty(_dict, _key):
+    return _dict[_key] if int(_dict[_key]) > 1 else u''
 
 
 def add_git_segment():
-    symbols = {
-        'detached': u'\u2693',
-        'ahead': u'\u2B06',
-        'behind': u'\u2B07',
-        'staged': u'\u2714',
-        'notstaged': u'\u270E',
-        'untracked': u'\u2753',
-        'conflicted': u'\u273C'
-    }
-
-    p = subprocess.Popen(['git', 'status', '--porcelain', '-b'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p = subprocess.Popen(['git', 'status', '--porcelain', '-b'],
+                         stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     pdata = p.communicate()
     if p.returncode != 0:
         return
 
-    dirty, stats, branchinfo = get_git_status(pdata)
+    status = pdata[0].splitlines()
 
-    if branchinfo:
-        branch = branchinfo['local']
+    branch_info = parse_git_branch_info(status)
+    stats = parse_git_stats(status)
+    dirty = (True if sum(stats.values()) > 0 else False)
+
+    if branch_info:
+        branch = branch_info['local']
     else:
-        p = subprocess.Popen(['git', 'describe', '--tags', '--always'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        detached_ref = p.communicate()[0].rstrip('\n')
-        if p.returncode == 0:
-            branch = '%c %s' % (symbols['detached'], detached_ref.decode('utf-8'))
-        else:
-            branch = 'Big Bang'
+        branch = _get_git_detached_branch()
 
     bg = Color.REPO_CLEAN_BG
     fg = Color.REPO_CLEAN_FG
@@ -58,22 +76,20 @@ def add_git_segment():
 
     powerline.append(' %s ' % branch, fg, bg)
 
-    if branchinfo:
-        if branchinfo['ahead']:
-            powerline.append('%s%c' % (branchinfo['ahead'] if int(branchinfo['ahead']) > 1 else str('').decode('utf-8'), symbols['ahead']), Color.GIT_AHEAD_FG, Color.GIT_AHEAD_BG)
-        if branchinfo['behind']:
-            powerline.append('%s%c' % (branchinfo['behind'] if int(branchinfo['behind']) > 1 else str('').decode('utf-8'), symbols['behind']), Color.GIT_BEHIND_FG, Color.GIT_BEHIND_BG)
-    if stats['staged']:
-        powerline.append('%s%c' % (stats['staged'] if stats['staged'] > 1 else str('').decode('utf-8'), symbols['staged']), Color.GIT_STAGED_FG, Color.GIT_STAGED_BG)
-    if stats['notstaged']:
-        powerline.append('%s%c' % (stats['notstaged'] if stats['notstaged'] > 1 else str('').decode('utf-8'), symbols['notstaged']), Color.GIT_NOTSTAGED_FG, Color.GIT_NOTSTAGED_BG)
-    if stats['untracked']:
-        powerline.append('%s%c' % (stats['untracked'] if stats['untracked'] > 1 else str('').decode('utf-8'), symbols['untracked']), Color.GIT_UNTRACKED_FG, Color.GIT_UNTRACKED_BG)
-    if stats['conflicted']:
-        powerline.append('%s%c' % (stats['conflicted'] if stats['conflicted'] > 1 else str('').decode('utf-8'), symbols['conflicted']), Color.GIT_CONFLICTED_FG, Color.GIT_CONFLICTED_BG)
+    def _add(_dict, _key, fg, bg):
+        if _dict[_key]:
+            _str = u' {}{} '.format(_n_or_empty(_dict, _key), GIT_SYMBOLS[_key])
+            powerline.append(_str, fg, bg)
+
+    if branch_info:
+        _add(branch_info, 'ahead', Color.GIT_AHEAD_FG, Color.GIT_AHEAD_BG)
+        _add(branch_info, 'behind', Color.GIT_BEHIND_FG, Color.GIT_BEHIND_BG)
+    _add(stats, 'staged', Color.GIT_STAGED_FG, Color.GIT_STAGED_BG)
+    _add(stats, 'notstaged', Color.GIT_NOTSTAGED_FG, Color.GIT_NOTSTAGED_BG)
+    _add(stats, 'untracked', Color.GIT_UNTRACKED_FG, Color.GIT_UNTRACKED_BG)
+    _add(stats, 'conflicted', Color.GIT_CONFLICTED_FG, Color.GIT_CONFLICTED_BG)
+
 try:
     add_git_segment()
-except OSError:
-    pass
-except subprocess.CalledProcessError:
+except (OSError, subprocess.CalledProcessError):
     pass
