@@ -164,11 +164,13 @@ settings.
 2015-11-18
 
 * The git segment has gotten a makeover
-  ([MartinWetterwald](https://github.com/milkbikis/powerline-shell/pull/136))
+  ([@MartinWetterwald](https://github.com/milkbikis/powerline-shell/pull/136))
 * Fix git segment when git is not on the standard PATH
-  ([andrejgl](https://github.com/milkbikis/powerline-shell/pull/153))
+  ([@andrejgl](https://github.com/milkbikis/powerline-shell/pull/153))
 * Fix `--cwd-max-depth` showing duplicates when it's <= 2
-  ([b-ryan](https://github.com/milkbikis/powerline-shell/pull/209))
+  ([@b-ryan](https://github.com/milkbikis/powerline-shell/pull/209))
+* Add padding around `exit_code` segment
+  ([@phatblat](https://github.com/milkbikis/powerline-shell/pull/205))
 
 2015-10-02
 
