@@ -11,6 +11,18 @@ GIT_SYMBOLS = {
     'conflicted': u'\u273C'
 }
 
+git_subprocess_env = {
+    # LANG is specified to ensure git always uses a language we are expecting.
+    # Otherwise we may be unable to parse the output.
+    "LANG": "C",
+
+    # https://github.com/milkbikis/powerline-shell/pull/126
+    "HOME": os.getenv("HOME"),
+
+    # https://github.com/milkbikis/powerline-shell/pull/153
+    "PATH": os.getenv("PATH"),
+}
+
 
 def parse_git_branch_info(status):
     info = re.search('^## (?P<local>\S+?)''(\.{3}(?P<remote>\S+?)( \[(ahead (?P<ahead>\d+)(, )?)?(behind (?P<behind>\d+))?\])?)?$', status[0])
@@ -19,7 +31,8 @@ def parse_git_branch_info(status):
 
 def _get_git_detached_branch():
     p = subprocess.Popen(['git', 'describe', '--tags', '--always'],
-                         stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                         stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                         env=git_subprocess_env)
     detached_ref = p.communicate()[0].rstrip('\n')
     if p.returncode == 0:
         branch = u'{} {}'.format(GIT_SYMBOLS['detached'],
@@ -52,7 +65,8 @@ def _n_or_empty(_dict, _key):
 
 def add_git_segment():
     p = subprocess.Popen(['git', 'status', '--porcelain', '-b'],
-                         stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                         stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                         env=git_subprocess_env)
     pdata = p.communicate()
     if p.returncode != 0:
         return
