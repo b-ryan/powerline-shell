@@ -165,6 +165,8 @@ settings.
 
 * The git segment has gotten a makeover
   ([MartinWetterwald](https://github.com/milkbikis/powerline-shell/pull/136))
+* Fix git segment when git is not on the standard PATH
+  ([andrejgl](https://github.com/milkbikis/powerline-shell/pull/153))
 
 2015-10-02
 
