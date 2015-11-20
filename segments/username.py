@@ -1,5 +1,5 @@
 
-def add_username_segment():
+def add_username_segment(powerline):
     import os
     if powerline.args.shell == 'bash':
         user_prompt = ' \\u '
@@ -14,5 +14,3 @@ def add_username_segment():
         bgcolor = Color.USERNAME_BG
 
     powerline.append(user_prompt, Color.USERNAME_FG, bgcolor)
-
-add_username_segment()

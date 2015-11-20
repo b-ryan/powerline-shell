@@ -12,8 +12,14 @@ def get_fossil_status():
 
     return has_modified_files, has_untracked_files, has_missing_files
 
-def add_fossil_segment():
-    subprocess.Popen(['fossil'], stdout=subprocess.PIPE).communicate()[0]
+def add_fossil_segment(powerline):
+    try:
+        subprocess.Popen(['fossil'], stdout=subprocess.PIPE).communicate()[0]
+    except OSError:
+        return
+    except subprocess.CalledProcessError:
+        return
+
     branch = ''.join([i.replace('*','').strip() for i in os.popen("fossil branch 2> /dev/null").read().strip().split("\n") if i.startswith('*')])
     if len(branch) == 0:
         return
@@ -31,10 +37,3 @@ def add_fossil_segment():
             extra += '!'
         branch += (' ' + extra if extra != '' else '')
     powerline.append(' %s ' % branch, fg, bg)
-
-try:
-    add_fossil_segment()
-except OSError:
-    pass
-except subprocess.CalledProcessError:
-    pass

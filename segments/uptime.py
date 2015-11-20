@@ -9,7 +9,7 @@ import re
 # -1h   00:00:00 up 120 days, 49 min,  2 users,  load average: 0,00, 0,00, 0,00
 # mac:  00:00:00 up 23  3 day(s), 10:00,  2 users,  load average: 0,00, 0,00, 0,00
 
-def add_uptime_segment():
+def add_uptime_segment(powerline):
     try:
         output = subprocess.check_output(['uptime'], stderr=subprocess.STDOUT)
         raw_uptime = re.search('(?<=up).+(?=,\s+\d+\s+user)', output).group(0)
@@ -22,5 +22,3 @@ def add_uptime_segment():
         powerline.append(uptime, Color.CWD_FG, Color.PATH_BG)
     except OSError:
         return
-
-add_uptime_segment()

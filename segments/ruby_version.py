@@ -1,7 +1,7 @@
 import subprocess
 
 
-def add_ruby_version_segment():
+def add_ruby_version_segment(powerline):
     try:
         p1 = subprocess.Popen(["ruby", "-v"], stdout=subprocess.PIPE)
         p2 = subprocess.Popen(["sed", "s/ (.*//"], stdin=p1.stdout, stdout=subprocess.PIPE)
@@ -13,5 +13,3 @@ def add_ruby_version_segment():
         powerline.append(version, 15, 1)
     except OSError:
         return
-
-add_ruby_version_segment()

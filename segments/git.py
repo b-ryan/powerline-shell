@@ -1,5 +1,6 @@
 import re
 import subprocess
+import os
 
 GIT_SYMBOLS = {
     'detached': u'\u2693',
@@ -62,7 +63,7 @@ def _n_or_empty(_dict, _key):
     return _dict[_key] if int(_dict[_key]) > 1 else u''
 
 
-def add_git_segment():
+def add_git_segment(powerline):
     p = subprocess.Popen(['git', 'status', '--porcelain', '-b'],
                          stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                          env=git_subprocess_env)
@@ -102,7 +103,7 @@ def add_git_segment():
     _add(stats, 'untracked', Color.GIT_UNTRACKED_FG, Color.GIT_UNTRACKED_BG)
     _add(stats, 'conflicted', Color.GIT_CONFLICTED_FG, Color.GIT_CONFLICTED_BG)
 
-try:
-    add_git_segment()
-except (OSError, subprocess.CalledProcessError):
-    pass
+# try:
+#     add_git_segment()
+# except (OSError, subprocess.CalledProcessError):
+#     pass

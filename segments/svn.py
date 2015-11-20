@@ -1,6 +1,6 @@
 import subprocess
 
-def add_svn_segment():
+def add_svn_segment(powerline):
     is_svn = subprocess.Popen(['svn', 'status'],
                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     is_svn_output = is_svn.communicate()[1].decode("utf-8").strip()
@@ -17,9 +17,9 @@ def add_svn_segment():
         changes = output.strip()
         powerline.append(' %s ' % changes, Color.SVN_CHANGES_FG, Color.SVN_CHANGES_BG)
 
-try:
-    add_svn_segment()
-except OSError:
-    pass
-except subprocess.CalledProcessError:
-    pass
+# try:
+#     add_svn_segment()
+# except OSError:
+#     pass
+# except subprocess.CalledProcessError:
+#     pass
