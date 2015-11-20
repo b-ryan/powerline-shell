@@ -5,8 +5,10 @@ def get_hg_status():
     has_modified_files = False
     has_untracked_files = False
     has_missing_files = False
-    output = subprocess.Popen(['hg', 'status'],
-            stdout=subprocess.PIPE).communicate()[0]
+
+    p = subprocess.Popen(['hg', 'status'], stdout=subprocess.PIPE)
+    output = p.communicate()[0].decode("utf-8")
+
     for line in output.split('\n'):
         if line == '':
             continue

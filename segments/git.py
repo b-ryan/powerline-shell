@@ -33,10 +33,9 @@ def _get_git_detached_branch():
     p = subprocess.Popen(['git', 'describe', '--tags', '--always'],
                          stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                          env=git_subprocess_env)
-    detached_ref = p.communicate()[0].rstrip('\n')
+    detached_ref = p.communicate()[0].decode("utf-8").rstrip('\n')
     if p.returncode == 0:
-        branch = u'{} {}'.format(GIT_SYMBOLS['detached'],
-                                 detached_ref.decode('utf-8'))
+        branch = u'{} {}'.format(GIT_SYMBOLS['detached'], detached_ref)
     else:
         branch = 'Big Bang'
     return branch
@@ -71,7 +70,7 @@ def add_git_segment():
     if p.returncode != 0:
         return
 
-    status = pdata[0].splitlines()
+    status = pdata[0].decode("utf-8").splitlines()
 
     branch_info = parse_git_branch_info(status)
     stats = parse_git_stats(status)
