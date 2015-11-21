@@ -47,6 +47,8 @@ def get_fg_bg(name):
 
 def add_cwd_segment():
     cwd = powerline.cwd or os.getenv('PWD')
+    if not py3:
+        cwd = cwd.decode("utf-8")
     cwd = replace_home_dir(cwd)
 
     if powerline.args.cwd_mode == 'plain':
