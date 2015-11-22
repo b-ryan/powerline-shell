@@ -161,6 +161,11 @@ settings.
 
 # Changes
 
+2015-11-21
+
+* Fixes for Python 3 compatibility
+  ([@b-ryan](https://github.com/milkbikis/powerline-shell/pull/211))
+
 2015-11-18
 
 * The git segment has gotten a makeover
