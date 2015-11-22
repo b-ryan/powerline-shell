@@ -3,8 +3,14 @@ import re
 import subprocess
 
 def add_jobs_segment():
-    pppid = subprocess.Popen(['ps', '-p', str(os.getppid()), '-oppid='], stdout=subprocess.PIPE).communicate()[0].strip()
-    output = subprocess.Popen(['ps', '-a', '-o', 'ppid'], stdout=subprocess.PIPE).communicate()[0]
+    pppid_proc = subprocess.Popen(['ps', '-p', str(os.getppid()), '-oppid='],
+                                  stdout=subprocess.PIPE)
+    pppid = pppid_proc.communicate()[0].decode("utf-8").strip()
+
+    output_proc = subprocess.Popen(['ps', '-a', '-o', 'ppid'],
+                                   stdout=subprocess.PIPE)
+    output = output_proc.communicate()[0].decode("utf-8")
+
     num_jobs = len(re.findall(str(pppid), output)) - 1
 
     if num_jobs > 0:

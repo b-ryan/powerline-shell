@@ -6,8 +6,12 @@ import argparse
 import os
 import sys
 
+py3 = sys.version_info.major == 3
+
+
 def warn(msg):
     print('[powerline-bash] ', msg)
+
 
 class Powerline:
     symbols = {
@@ -67,8 +71,12 @@ class Powerline:
             separator_fg if separator_fg is not None else bg))
 
     def draw(self):
-        return (''.join(self.draw_segment(i) for i in range(len(self.segments)))
-                + self.reset).encode('utf-8') + ' '
+        text = (''.join(self.draw_segment(i) for i in range(len(self.segments)))
+                + self.reset) + ' '
+        if py3:
+            return text
+        else:
+            return text.encode('utf-8')
 
     def draw_segment(self, idx):
         segment = self.segments[idx]
