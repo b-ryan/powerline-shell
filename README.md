@@ -161,6 +161,11 @@ settings.
 
 # Changes
 
+2015-11-25
+
+* `virtual_env` segment now supports environments made with `conda`
+  ([@ceholden](https://github.com/milkbikis/powerline-shell/pull/198))
+
 2015-11-21
 
 * Fixes for Python 3 compatibility
