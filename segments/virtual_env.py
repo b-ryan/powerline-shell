@@ -1,7 +1,7 @@
 import os
 
 def add_virtual_env_segment():
-    env = os.getenv('VIRTUAL_ENV')
+    env = os.getenv('VIRTUAL_ENV') or os.getenv('CONDA_ENV_PATH')
     if env is None:
         return
 
