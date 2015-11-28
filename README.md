@@ -85,40 +85,46 @@ There are a few optional arguments which can be seen by running `powerline-shell
 ### Bash:
 Add the following to your `.bashrc` (or `.profile` on Mac):
 
-        function _update_ps1() {
-           PS1="$(~/powerline-shell.py $? 2> /dev/null)"
-        }
+```
+function _update_ps1() {
+    PS1="$(~/powerline-shell.py $? 2> /dev/null)"
+}
 
-        if [ "$TERM" != "linux" ]; then
-            PROMPT_COMMAND="_update_ps1; $PROMPT_COMMAND"
-        fi
+if [ "$TERM" != "linux" ]; then
+    PROMPT_COMMAND="_update_ps1; $PROMPT_COMMAND"
+fi
+```
 
 ### ZSH:
 Add the following to your `.zshrc`:
 
-        function powerline_precmd() {
-          PS1="$(~/powerline-shell.py $? --shell zsh 2> /dev/null)"
-        }
+```
+function powerline_precmd() {
+    PS1="$(~/powerline-shell.py $? --shell zsh 2> /dev/null)"
+}
 
-        function install_powerline_precmd() {
-          for s in "${precmd_functions[@]}"; do
-            if [ "$s" = "powerline_precmd" ]; then
-              return
-            fi
-          done
-          precmd_functions+=(powerline_precmd)
-        }
+function install_powerline_precmd() {
+  for s in "${precmd_functions[@]}"; do
+    if [ "$s" = "powerline_precmd" ]; then
+      return
+    fi
+  done
+  precmd_functions+=(powerline_precmd)
+}
 
-        if [ "$TERM" != "linux" ]; then
-            install_powerline_precmd
-        fi
+if [ "$TERM" != "linux" ]; then
+    install_powerline_precmd
+fi
+```
 
 ### Fish:
 Redefine `fish_prompt` in ~/.config/fish/config.fish:
 
-        function fish_prompt
-            ~/powerline-shell.py $status --shell bare ^/dev/null
-        end
+```
+function fish_prompt
+    ~/powerline-shell.py $status --shell bare ^/dev/null
+end
+```
 
 # Customization
 
