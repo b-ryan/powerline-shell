@@ -1,6 +1,4 @@
 #! /usr/bin/env python
-
-from colortrans import *
 from colorsys import hls_to_rgb, rgb_to_hls
 # md5 deprecated since Python 2.5
 try:
@@ -8,6 +6,9 @@ try:
 except ImportError:
     from hashlib import md5
 from sys import argv
+
+# Original, non-relative import errors on Python3
+from .colortrans import *
 
 
 def getOppositeColor(r,g,b):
