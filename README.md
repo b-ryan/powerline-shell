@@ -167,6 +167,11 @@ settings.
 
 # Changes
 
+2015-12-26
+
+* Python3 fixes for `lib/color_compliment.py`.
+  ([@ceholden](https://github.com/milkbikis/powerline-shell/pull/220))
+
 2015-11-25
 
 * `virtual_env` segment now supports environments made with `conda`
