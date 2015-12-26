@@ -173,6 +173,12 @@ settings.
 
 2015-12-26
 
+* Beginnings of unit testing for segments. Included in this change was a
+  refactor of the way segments are added to powerline. Now, instead of looking
+  for a global `powerline` object, `powerline` is passed into the function to
+  add the segment. Segments will also no longer add the segments by calling the
+  `add` function themselves.
+  ([@b-ryan](https://github.com/milkbikis/powerline-shell/pull/212))
 * Python3 fixes for `lib/color_compliment.py`.
   ([@ceholden](https://github.com/milkbikis/powerline-shell/pull/220))
 
