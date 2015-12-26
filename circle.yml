@@ -1,0 +1,5 @@
+dependencies:
+    pre:
+        - sudo pip install -r dev_requirements.txt
+        - git config --global user.email "tester@example.com"
+        - git config --global user.name "Tester McGee"

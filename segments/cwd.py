@@ -28,7 +28,7 @@ def requires_special_home_display(name):
     return (name == '~' and Color.HOME_SPECIAL_DISPLAY)
 
 
-def maybe_shorten_name(name):
+def maybe_shorten_name(powerline, name):
     """If the user has asked for each directory name to be shortened, will
     return the name up to their specified length. Otherwise returns the full
     name."""
@@ -45,7 +45,7 @@ def get_fg_bg(name):
     return (Color.PATH_FG, Color.PATH_BG,)
 
 
-def add_cwd_segment():
+def add_cwd_segment(powerline):
     cwd = powerline.cwd or os.getenv('PWD')
     if not py3:
         cwd = cwd.decode("utf-8")
@@ -86,7 +86,5 @@ def add_cwd_segment():
             separator = None
             separator_fg = None
 
-        powerline.append(' %s ' % maybe_shorten_name(name), fg, bg,
+        powerline.append(' %s ' % maybe_shorten_name(powerline, name), fg, bg,
                          separator, separator_fg)
-
-add_cwd_segment()

@@ -1,5 +1,6 @@
 import re
 import subprocess
+import os
 
 GIT_SYMBOLS = {
     'detached': u'\u2693',
@@ -11,17 +12,24 @@ GIT_SYMBOLS = {
     'conflicted': u'\u273C'
 }
 
-git_subprocess_env = {
-    # LANG is specified to ensure git always uses a language we are expecting.
-    # Otherwise we may be unable to parse the output.
-    "LANG": "C",
+def get_PATH():
+    """Normally gets the PATH from the OS. This function exists to enable
+    easily mocking the PATH in tests.
+    """
+    return os.getenv("PATH")
 
-    # https://github.com/milkbikis/powerline-shell/pull/126
-    "HOME": os.getenv("HOME"),
+def git_subprocess_env():
+    return {
+        # LANG is specified to ensure git always uses a language we are expecting.
+        # Otherwise we may be unable to parse the output.
+        "LANG": "C",
 
-    # https://github.com/milkbikis/powerline-shell/pull/153
-    "PATH": os.getenv("PATH"),
-}
+        # https://github.com/milkbikis/powerline-shell/pull/126
+        "HOME": os.getenv("HOME"),
+
+        # https://github.com/milkbikis/powerline-shell/pull/153
+        "PATH": get_PATH(),
+    }
 
 
 def parse_git_branch_info(status):
@@ -32,7 +40,7 @@ def parse_git_branch_info(status):
 def _get_git_detached_branch():
     p = subprocess.Popen(['git', 'describe', '--tags', '--always'],
                          stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                         env=git_subprocess_env)
+                         env=git_subprocess_env())
     detached_ref = p.communicate()[0].decode("utf-8").rstrip('\n')
     if p.returncode == 0:
         branch = u'{} {}'.format(GIT_SYMBOLS['detached'], detached_ref)
@@ -62,10 +70,15 @@ def _n_or_empty(_dict, _key):
     return _dict[_key] if int(_dict[_key]) > 1 else u''
 
 
-def add_git_segment():
-    p = subprocess.Popen(['git', 'status', '--porcelain', '-b'],
-                         stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                         env=git_subprocess_env)
+def add_git_segment(powerline):
+    try:
+        p = subprocess.Popen(['git', 'status', '--porcelain', '-b'],
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                             env=git_subprocess_env())
+    except OSError:
+        # Popen will throw an OSError if git is not found
+        return
+
     pdata = p.communicate()
     if p.returncode != 0:
         return
@@ -101,8 +114,3 @@ def add_git_segment():
     _add(stats, 'notstaged', Color.GIT_NOTSTAGED_FG, Color.GIT_NOTSTAGED_BG)
     _add(stats, 'untracked', Color.GIT_UNTRACKED_FG, Color.GIT_UNTRACKED_BG)
     _add(stats, 'conflicted', Color.GIT_CONFLICTED_FG, Color.GIT_CONFLICTED_BG)
-
-try:
-    add_git_segment()
-except (OSError, subprocess.CalledProcessError):
-    pass

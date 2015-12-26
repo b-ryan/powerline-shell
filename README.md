@@ -151,6 +151,10 @@ scenario.
 Make sure you introduce new default colors in `themes/default.py` for every new
 segment you create. Test your segment with this theme first.
 
+You should add tests for your segment as best you are able. Unit and
+integration tests are both welcome. Run your tests with the `nosetests` command
+after install the requirements in `dev_requirements.txt`.
+
 ### Themes
 
 The `themes` directory stores themes for your prompt, which are basically color

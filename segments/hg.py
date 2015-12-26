@@ -20,7 +20,7 @@ def get_hg_status():
             has_modified_files = True
     return has_modified_files, has_untracked_files, has_missing_files
 
-def add_hg_segment():
+def add_hg_segment(powerline):
     branch = os.popen('hg branch 2> /dev/null').read().rstrip()
     if len(branch) == 0:
         return False
@@ -37,5 +37,3 @@ def add_hg_segment():
             extra += '!'
         branch += (' ' + extra if extra != '' else '')
     return powerline.append(' %s ' % branch, fg, bg)
-
-add_hg_segment()

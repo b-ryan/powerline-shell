@@ -2,7 +2,7 @@ import os
 import re
 import subprocess
 
-def add_jobs_segment():
+def add_jobs_segment(powerline):
     pppid_proc = subprocess.Popen(['ps', '-p', str(os.getppid()), '-oppid='],
                                   stdout=subprocess.PIPE)
     pppid = pppid_proc.communicate()[0].decode("utf-8").strip()
@@ -15,5 +15,3 @@ def add_jobs_segment():
 
     if num_jobs > 0:
         powerline.append(' %d ' % num_jobs, Color.JOBS_FG, Color.JOBS_BG)
-
-add_jobs_segment()

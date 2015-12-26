@@ -12,7 +12,7 @@ def get_fossil_status():
 
     return has_modified_files, has_untracked_files, has_missing_files
 
-def add_fossil_segment():
+def _add_fossil_segment(powerline):
     subprocess.Popen(['fossil'], stdout=subprocess.PIPE).communicate()[0]
     branch = ''.join([i.replace('*','').strip() for i in os.popen("fossil branch 2> /dev/null").read().strip().split("\n") if i.startswith('*')])
     if len(branch) == 0:
@@ -32,9 +32,19 @@ def add_fossil_segment():
         branch += (' ' + extra if extra != '' else '')
     powerline.append(' %s ' % branch, fg, bg)
 
-try:
-    add_fossil_segment()
-except OSError:
-    pass
-except subprocess.CalledProcessError:
-    pass
+def add_fossil_segment(powerline):
+    """Wraps _add_fossil_segment in exception handling."""
+
+    # FIXME This function was added when introducing a testing framework,
+    # during which the 'powerline' object was passed into the
+    # `add_[segment]_segment` functions instead of being a global variable. At
+    # that time it was unclear whether the below exceptions could actually be
+    # thrown. It would be preferable to find out whether they ever will. If so,
+    # write a comment explaining when. Otherwise remove.
+
+    try:
+        _add_fossil_segment(powerline)
+    except OSError:
+        pass
+    except subprocess.CalledProcessError:
+        pass

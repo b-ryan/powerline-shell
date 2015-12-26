@@ -1,4 +1,4 @@
-def add_term_title_segment():
+def add_set_term_title_segment(powerline):
     term = os.getenv('TERM')
     if not (('xterm' in term) or ('rxvt' in term)):
         return
@@ -13,5 +13,3 @@ def add_term_title_segment():
 
     powerline.append(set_title, None, None, '')
 
-
-add_term_title_segment()
