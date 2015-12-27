@@ -100,7 +100,7 @@ def add_git_segment(powerline):
         bg = Color.REPO_DIRTY_BG
         fg = Color.REPO_DIRTY_FG
 
-    powerline.append(' %s ' % branch, fg, bg)
+    powerline.append(' ' + u'\ue0a0' + ' %s ' % branch, fg, bg)
 
     def _add(_dict, _key, fg, bg):
         if _dict[_key]:
