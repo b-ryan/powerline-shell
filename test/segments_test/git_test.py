@@ -3,14 +3,17 @@ import mock
 import tempfile
 import shutil
 import sh
+import powerline_shell_base as p
 import segments.git as git
+
+git.Color = mock.MagicMock()
+git.RepoStats = p.RepoStats
 
 
 class GitTest(unittest.TestCase):
 
     def setUp(self):
         self.powerline = mock.MagicMock()
-        git.Color = mock.MagicMock()
 
         self.dirname = tempfile.mkdtemp()
         sh.cd(self.dirname)
