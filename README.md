@@ -37,9 +37,12 @@ A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash/ZS
         CHROOT=`ls -di / | awk '{if ($1 != "2") print 1; else print 0;}'`
         function _update_ps1() {
             if [ "$TERM" != "linux" ] ; then
-                PREV=$?
-                EXTRA=`logname`@`hostname`
-                export PS1="$(~/.powerline-shell.py ${PREV} --width ${COLUMNS} --chroot ${CHROOT} --extra ${EXTRA})"
+               if [ "$(uname)" == "Darwin" ]; then
+                  update_terminal_cwd
+               fi
+               PREV=$?
+               EXTRA=`logname`@`hostname`
+               export PS1="$(~/.powerline-shell.py ${PREV} --width ${COLUMNS} --chroot ${CHROOT} --extra ${EXTRA})"
             fi
         }
 
