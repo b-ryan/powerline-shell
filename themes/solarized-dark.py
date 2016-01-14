@@ -33,3 +33,6 @@ class Color(DefaultColor):
 
     VIRTUAL_ENV_BG = 15
     VIRTUAL_ENV_FG = 2
+
+    AWS_PROFILE_FG = 7
+    AWS_PROFILE_BG = 2

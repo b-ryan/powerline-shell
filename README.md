@@ -171,6 +171,12 @@ settings.
 
 # Changes
 
+2016-01-14
+
+* AWS profle support added per the `AWS_DEFAULT_PROFILE` setup described in [the AWS docs](http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html)
+* `$ export AWS_DEFAULT_PROFILE=<NAME>`
+
+
 2015-12-26
 
 * Beginnings of unit testing for segments. Included in this change was a

@@ -1,3 +1,6 @@
 powerline-shell.py
 *.py[co]
 config.py
+
+.DS_Store
+*sublime*
