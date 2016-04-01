@@ -118,7 +118,7 @@ class RepoStats:
             self.staged,
             self.conflicted,
         ]
-        return (True if sum(qualifiers) > 0 else False)
+        return sum(qualifiers) > 0
 
     def __getitem__(self, _key):
         return getattr(self, _key)

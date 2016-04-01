@@ -9,6 +9,9 @@ class RepoStatsTest(unittest.TestCase):
         self.repo_stats.not_staged = 1
         self.repo_stats.conflicted = 4
 
+    def test_dirty(self):
+        self.assertTrue(self.repo_stats.dirty)
+
     def test_simple(self):
         self.assertEqual(self.repo_stats.untracked, 0)
 
