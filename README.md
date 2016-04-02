@@ -87,7 +87,7 @@ Add the following to your `.bashrc` (or `.profile` on Mac):
 
 ```
 function _update_ps1() {
-    PS1="$(~/powerline-shell.py $? 2> /dev/null)"
+    PS1="$(/usr/bin/python ~/powerline-shell.py $? 2> /dev/null)"
 }
 
 if [ "$TERM" != "linux" ]; then
@@ -100,7 +100,7 @@ Add the following to your `.zshrc`:
 
 ```
 function powerline_precmd() {
-    PS1="$(~/powerline-shell.py $? --shell zsh 2> /dev/null)"
+    PS1="$(/usr/bin/python ~/powerline-shell.py $? --shell zsh 2> /dev/null)"
 }
 
 function install_powerline_precmd() {
@@ -122,7 +122,7 @@ Redefine `fish_prompt` in ~/.config/fish/config.fish:
 
 ```
 function fish_prompt
-    ~/powerline-shell.py $status --shell bare ^/dev/null
+    /usr/bin/python ~/powerline-shell.py $status --shell bare ^/dev/null
 end
 ```
 
