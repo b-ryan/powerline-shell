@@ -13,6 +13,11 @@ def warn(msg):
     print('[powerline-bash] ', msg)
 
 
+if py3:
+    def unicode(x):
+        return x
+
+
 class Powerline:
     symbols = {
         'compatible': {
