@@ -1,5 +1,9 @@
 # Changes
 
+2016-04-16
+
+* Fix issue around unicode function for python 3
+
 2016-04-01
 
 * Refactor of the way the git segment manages data about git's state.
