@@ -87,7 +87,8 @@ Add the following to your `.bashrc` (or `.profile` on Mac):
 
 ```
 function _update_ps1() {
-    PS1="$(/usr/bin/python ~/powerline-shell.py $? 2> /dev/null)"
+    POWERLINE_PYTHON="$(which python2.7 || which python2)"
+    PS1="$("$POWERLINE_PYTHON" ~/powerline-shell.py $? 2> /dev/null)"
 }
 
 if [ "$TERM" != "linux" ]; then
