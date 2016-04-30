@@ -37,12 +37,16 @@ def maybe_shorten_name(powerline, name):
     return name
 
 
-def get_fg_bg(name):
+def get_fg_bg(name, is_last_dir):
     """Returns the foreground and background color to use for the given name.
     """
     if requires_special_home_display(name):
         return (Color.HOME_FG, Color.HOME_BG,)
-    return (Color.PATH_FG, Color.PATH_BG,)
+
+    if is_last_dir:
+        return (Color.CWD_FG, Color.PATH_BG,)
+    else:
+        return (Color.PATH_FG, Color.PATH_BG,)
 
 
 def add_cwd_segment(powerline):
@@ -77,11 +81,11 @@ def add_cwd_segment(powerline):
         names = names[-1:]
 
     for i, name in enumerate(names):
-        fg, bg = get_fg_bg(name)
+        is_last_dir = (i == len(names) - 1)
+        fg, bg = get_fg_bg(name, is_last_dir)
 
         separator = powerline.separator_thin
         separator_fg = Color.SEPARATOR_FG
-        is_last_dir = (i == len(names) - 1)
         if requires_special_home_display(name) or is_last_dir:
             separator = None
             separator_fg = None
