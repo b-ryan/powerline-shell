@@ -8,4 +8,5 @@ def add_virtual_env_segment(powerline):
     env_name = os.path.basename(env)
     bg = Color.VIRTUAL_ENV_BG
     fg = Color.VIRTUAL_ENV_FG
-    powerline.append(' %s ' % env_name, fg, bg)
+    env_name_mod = u" \U0001F40D  {} ".format(env_name)
+    powerline.append(env_name_mod, fg, bg)
