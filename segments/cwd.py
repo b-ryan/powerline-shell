@@ -50,7 +50,7 @@ def add_cwd_segment(powerline):
     if not py3:
         cwd = cwd.decode("utf-8")
     if os.name == 'nt':
-        cwd = cwd.replace("/", "\\")
+        cwd = cwd.replace("/", os.sep)
     cwd = replace_home_dir(cwd)
 
     if powerline.args.cwd_mode == 'plain':
