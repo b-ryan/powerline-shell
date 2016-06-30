@@ -7,21 +7,21 @@ class Color(DefaultColor):
     HOSTNAME_BG = 10
 
     HOME_SPECIAL_DISPLAY = False
-    PATH_FG = 14
-    PATH_BG = 0
-    CWD_FG = 14
+    PATH_FG = 10
+    PATH_BG = 7
+    CWD_FG = 0
     SEPARATOR_FG = 14
 
     READONLY_BG = 1
     READONLY_FG = 7
 
-    REPO_CLEAN_FG = 14
-    REPO_CLEAN_BG = 8
+    REPO_CLEAN_FG = 0
+    REPO_CLEAN_BG = 15
     REPO_DIRTY_FG = 1
-    REPO_DIRTY_BG = 8
+    REPO_DIRTY_BG = 15
 
     JOBS_FG = 4
-    JOBS_BG = 8
+    JOBS_BG = 7
 
     CMD_PASSED_FG = 15
     CMD_PASSED_BG = 2
