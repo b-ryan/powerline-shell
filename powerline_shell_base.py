@@ -60,7 +60,7 @@ class Powerline:
 
     def color(self, prefix, code):
         if code is None:
-            return ''
+            return self.reset
         else:
             return self.color_template % ('[%s;5;%sm' % (prefix, code))
 
@@ -72,7 +72,7 @@ class Powerline:
 
     def append(self, content, fg, bg, separator=None, separator_fg=None):
         self.segments.append((content, fg, bg,
-            separator if separator is not None else self.separator,
+            separator if separator is not None else self.separator if bg is not None else ''
             separator_fg if separator_fg is not None else bg))
 
     def draw(self):
@@ -88,8 +88,8 @@ class Powerline:
         next_segment = self.segments[idx + 1] if idx < len(self.segments)-1 else None
 
         return ''.join((
-            self.fgcolor(segment[1]),
             self.bgcolor(segment[2]),
+            self.fgcolor(segment[1]),
             segment[0],
             self.bgcolor(next_segment[2]) if next_segment else self.reset,
             self.fgcolor(segment[4]),
