@@ -72,7 +72,7 @@ class Powerline:
 
     def append(self, content, fg, bg, separator=None, separator_fg=None):
         self.segments.append((content, fg, bg,
-            separator if separator is not None else self.separator if bg is not None else ''
+            separator if separator is not None else self.separator if bg is not None else '',
             separator_fg if separator_fg is not None else bg))
 
     def draw(self):
