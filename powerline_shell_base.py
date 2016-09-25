@@ -71,7 +71,7 @@ class Powerline:
         return self.color('48', code)
 
     def append(self, content, fg, bg, separator=None, separator_fg=None):
-        self.segments.append((content, fg, bg,
+        self.segments.append((content.replace('$', '\$'), fg, bg,
             separator if separator is not None else self.separator,
             separator_fg if separator_fg is not None else bg))
 
