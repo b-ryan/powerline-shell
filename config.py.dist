@@ -39,6 +39,10 @@ SEGMENTS = [
 # Show the current svn branch and status
     'svn',
 
+# Show the current bzr branch and status
+
+    'bzr',
+
 # Show the current fossil branch and status
     'fossil',
 
