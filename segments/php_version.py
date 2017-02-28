@@ -1,7 +1,7 @@
 import subprocess
 
 
-def add_php_version_segment():
+def add_php_version_segment(powerline):
     try:
         output = subprocess.check_output(['php', '-r', 'echo PHP_VERSION;'], stderr=subprocess.STDOUT)
         if '-' in output:
@@ -12,5 +12,3 @@ def add_php_version_segment():
         powerline.append(version, 15, 4)
     except OSError:
         return
-
-add_php_version_segment()

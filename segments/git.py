@@ -1,61 +1,90 @@
 import re
 import subprocess
+import os
 
-def get_git_status():
-    has_pending_commits = True
-    has_untracked_files = False
-    origin_position = ""
-    output = subprocess.Popen(['git', 'status', '--ignore-submodules'],
-            env={"LANG": "C", "HOME": os.getenv("HOME")}, stdout=subprocess.PIPE).communicate()[0]
-    for line in output.split('\n'):
-        origin_status = re.findall(
-            r"Your branch is (ahead|behind).*?(\d+) comm", line)
-        diverged_status = re.findall(r"and have (\d+) and (\d+) different commits each", line)
-        if origin_status:
-            origin_position = " %d" % int(origin_status[0][1])
-            if origin_status[0][0] == 'behind':
-                origin_position += u'\u21E3'
-            if origin_status[0][0] == 'ahead':
-                origin_position += u'\u21E1'
-        if diverged_status:
-            origin_position = " %d%c %d%c" % (int(diverged_status[0][0]), u'\u21E1', int(diverged_status[0][1]), u'\u21E3')
+def get_PATH():
+    """Normally gets the PATH from the OS. This function exists to enable
+    easily mocking the PATH in tests.
+    """
+    return os.getenv("PATH")
 
-        if line.find('nothing to commit') >= 0:
-            has_pending_commits = False
-        if line.find('Untracked files') >= 0:
-            has_untracked_files = True
-    return has_pending_commits, has_untracked_files, origin_position
+def git_subprocess_env():
+    return {
+        # LANG is specified to ensure git always uses a language we are expecting.
+        # Otherwise we may be unable to parse the output.
+        "LANG": "C",
+
+        # https://github.com/milkbikis/powerline-shell/pull/126
+        "HOME": os.getenv("HOME"),
+
+        # https://github.com/milkbikis/powerline-shell/pull/153
+        "PATH": get_PATH(),
+    }
 
 
-def add_git_segment():
-    # See http://git-blame.blogspot.com/2013/06/checking-current-branch-programatically.html
-    p = subprocess.Popen(['git', 'symbolic-ref', '-q', 'HEAD'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    out, err = p.communicate()
+def parse_git_branch_info(status):
+    info = re.search('^## (?P<local>\S+?)''(\.{3}(?P<remote>\S+?)( \[(ahead (?P<ahead>\d+)(, )?)?(behind (?P<behind>\d+))?\])?)?$', status[0])
+    return info.groupdict() if info else None
 
-    if 'Not a git repo' in err:
+
+def _get_git_detached_branch():
+    p = subprocess.Popen(['git', 'describe', '--tags', '--always'],
+                         stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                         env=git_subprocess_env())
+    detached_ref = p.communicate()[0].decode("utf-8").rstrip('\n')
+    if p.returncode == 0:
+        branch = u'{} {}'.format(RepoStats.symbols['detached'], detached_ref)
+    else:
+        branch = 'Big Bang'
+    return branch
+
+
+def parse_git_stats(status):
+    stats = RepoStats()
+    for statusline in status[1:]:
+        code = statusline[:2]
+        if code == '??':
+            stats.untracked += 1
+        elif code in ('DD', 'AU', 'UD', 'UA', 'DU', 'AA', 'UU'):
+            stats.conflicted += 1
+        else:
+            if code[1] != ' ':
+                stats.not_staged += 1
+            if code[0] != ' ':
+                stats.staged += 1
+
+    return stats
+
+
+def add_git_segment(powerline):
+    try:
+        p = subprocess.Popen(['git', 'status', '--porcelain', '-b'],
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                             env=git_subprocess_env())
+    except OSError:
+        # Popen will throw an OSError if git is not found
         return
 
-    if out:
-        branch = out[len('refs/heads/'):].rstrip()
-    else:
-        branch = '(Detached)'
+    pdata = p.communicate()
+    if p.returncode != 0:
+        return
 
-    has_pending_commits, has_untracked_files, origin_position = get_git_status()
-    branch += origin_position
-    if has_untracked_files:
-        branch += ' +'
+    status = pdata[0].decode("utf-8").splitlines()
+    stats = parse_git_stats(status)
+    branch_info = parse_git_branch_info(status)
+
+    if branch_info:
+        stats.ahead = branch_info["ahead"]
+        stats.behind = branch_info["behind"]
+        branch = branch_info['local']
+    else:
+        branch = _get_git_detached_branch()
 
     bg = Color.REPO_CLEAN_BG
     fg = Color.REPO_CLEAN_FG
-    if has_pending_commits:
+    if stats.dirty:
         bg = Color.REPO_DIRTY_BG
         fg = Color.REPO_DIRTY_FG
 
     powerline.append(' %s ' % branch, fg, bg)
-
-try:
-    add_git_segment()
-except OSError:
-    pass
-except subprocess.CalledProcessError:
-    pass
+    stats.add_to_powerline(powerline, Color)
