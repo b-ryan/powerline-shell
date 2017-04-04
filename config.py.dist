@@ -48,6 +48,9 @@ SEGMENTS = [
 # Show the last command's exit code if it was non-zero
 #    'exit_code',
 
+# Adds a line break
+#    'newline',
+
 # Shows a '#' if the current user is root, '$' otherwise
 # Also, changes color if the last command exited with a non-zero error code
     'root',
