@@ -31,7 +31,7 @@ def getOppositeColor(r,g,b):
     m = max(opp)
     if m > 255: #colorsys module doesn't give caps to their conversions
         opp = [ x*254/m for x in opp]
-    return tuple([ int(x) for x in opp])
+    return tuple([max(int(x), 0) for x in opp])
 
 def stringToHashToColorAndOpposite(string):
     # Python3: Unicode string must be encoded before digest
