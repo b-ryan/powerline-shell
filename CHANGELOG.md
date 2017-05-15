@@ -1,5 +1,10 @@
 # Changes
 
+2017-05-15
+
+* Fix the `set_term_title` segment for ZSH
+  ([@themiwi](https://github.com/banga/powerline-shell/pull/255))
+
 2016-04-16
 
 * Fix issue around unicode function for python 3
