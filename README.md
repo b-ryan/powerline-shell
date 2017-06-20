@@ -25,6 +25,7 @@ ZSH and Fish:
   - [Adding, Removing and Re-arranging segments](#adding-removing-and-re-arranging-segments)
   - [Contributing new types of segments](#contributing-new-types-of-segments)
   - [Themes](#themes)
+- [Troubleshooting](#troubleshooting)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -204,3 +205,9 @@ A script for testing color combinations is provided at `themes/colortest.py`.
 Note that the colors you see may vary depending on your terminal. When designing
 a theme, please test your theme on multiple terminals, especially with default
 settings.
+
+## Troubleshooting
+
+See the [FAQ](https://github.com/banga/powerline-shell/wiki/FAQ). If you
+continue to have issues, please open an
+[issue](https://github.com/banga/powerline-shell/issues/new).
