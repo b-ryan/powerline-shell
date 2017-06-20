@@ -4,6 +4,8 @@
 
 * Add `newline` segment
   ([@ffried](https://github.com/banga/powerline-shell/pull/266))
+* Add `npm_version` segment
+  ([@WileESpaghetti](https://github.com/banga/powerline-shell/pull/265))
 
 2017-05-15
 
