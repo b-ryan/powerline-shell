@@ -6,6 +6,8 @@
   ([@ffried](https://github.com/banga/powerline-shell/pull/266))
 * Add `npm_version` segment
   ([@WileESpaghetti](https://github.com/banga/powerline-shell/pull/265))
+* Fix issue with conda environments
+  ([@drorata](https://github.com/banga/powerline-shell/pull/257))
 
 2017-05-15
 
