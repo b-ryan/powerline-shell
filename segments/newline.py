@@ -1,2 +1,2 @@
 def add_newline_segment(powerline):
-    powerline.append("\n", -1, -1, '')
+    powerline.append("\nabc\n", Color.RESET, Color.RESET, separator='')

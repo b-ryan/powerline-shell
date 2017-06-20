@@ -61,7 +61,7 @@ class Powerline:
     def color(self, prefix, code):
         if code is None:
             return ''
-        elif code is -1:
+        elif code == Color.RESET:
             return self.reset
         else:
             return self.color_template % ('[%s;5;%sm' % (prefix, code))
