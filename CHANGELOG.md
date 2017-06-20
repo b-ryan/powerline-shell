@@ -8,6 +8,8 @@
   ([@WileESpaghetti](https://github.com/banga/powerline-shell/pull/265))
 * Fix issue with conda environments
   ([@drorata](https://github.com/banga/powerline-shell/pull/257))
+* Fix jobs segment for Cygwin
+  ([@themiwi](https://github.com/banga/powerline-shell/pull/256))
 
 2017-05-15
 
