@@ -1,5 +1,10 @@
 # Changes
 
+2017-06-20
+
+* Add `newline` segment
+  ([@ffried](https://github.com/banga/powerline-shell/pull/266))
+
 2017-05-15
 
 * Fix the `set_term_title` segment for ZSH
