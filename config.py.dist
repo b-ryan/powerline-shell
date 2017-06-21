@@ -14,7 +14,7 @@ SEGMENTS = [
     'virtual_env',
 
 # Show current ruby environment (see http://rbenv.org/)
-    'rbenv',    
+#   'rbenv',
 
 # Show the current user's username as in ordinary prompts
     'username',

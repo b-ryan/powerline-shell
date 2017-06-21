@@ -1,5 +1,10 @@
 # Changes
 
+2017-06-21
+
+* Add `rbenv` segment
+  ([@dogo](https://github.com/banga/powerline-shell/pull/260))
+
 2017-06-20
 
 * Add `newline` segment
