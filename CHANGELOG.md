@@ -4,6 +4,8 @@
 
 * Add `rbenv` segment
   ([@dogo](https://github.com/banga/powerline-shell/pull/260))
+* Fix path segment so that current directory is emphasized
+  ([@inamiy](https://github.com/banga/powerline-shell/pull/235))
 
 2017-06-20
 
