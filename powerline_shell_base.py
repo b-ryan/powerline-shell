@@ -52,6 +52,7 @@ class Powerline:
         mode, shell = args.mode, args.shell
         self.color_template = self.color_templates[shell]
         self.reset = self.color_template % '[0m'
+        self.bold = self.color_template % '[1m'
         self.lock = Powerline.symbols[mode]['lock']
         self.network = Powerline.symbols[mode]['network']
         self.separator = Powerline.symbols[mode]['separator']
@@ -72,10 +73,11 @@ class Powerline:
     def bgcolor(self, code):
         return self.color('48', code)
 
-    def append(self, content, fg, bg, separator=None, separator_fg=None):
+    def append(self, content, fg, bg, separator=None, separator_fg=None, bold=False):
         self.segments.append((content, fg, bg,
             separator if separator is not None else self.separator,
-            separator_fg if separator_fg is not None else bg))
+            separator_fg if separator_fg is not None else bg,
+            bold))
 
     def draw(self):
         text = (''.join(self.draw_segment(i) for i in range(len(self.segments)))
@@ -92,7 +94,7 @@ class Powerline:
         return ''.join((
             self.fgcolor(segment[1]),
             self.bgcolor(segment[2]),
-            segment[0],
+            ''.join((self.bold, segment[0], self.reset)) if segment[5] else segment[0],
             self.bgcolor(next_segment[2]) if next_segment else self.reset,
             self.fgcolor(segment[4]),
             segment[3]))
