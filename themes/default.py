@@ -60,6 +60,9 @@ class DefaultColor:
 
     VIRTUAL_ENV_BG = 35  # a mid-tone green
     VIRTUAL_ENV_FG = 00
+    
+    DOCKER_MACHINE_FG = 177 # light purple
+    DOCKER_MACHINE_BG = 55 # purple
 
 class Color(DefaultColor):
     """
