@@ -2,24 +2,12 @@ import re
 import subprocess
 import os
 
-def get_PATH():
-    """Normally gets the PATH from the OS. This function exists to enable
-    easily mocking the PATH in tests.
-    """
-    return os.getenv("PATH")
-
 def git_subprocess_env():
-    return {
+    return dict(os.environ).update({
         # LANG is specified to ensure git always uses a language we are expecting.
         # Otherwise we may be unable to parse the output.
         "LANG": "C",
-
-        # https://github.com/milkbikis/powerline-shell/pull/126
-        "HOME": os.getenv("HOME"),
-
-        # https://github.com/milkbikis/powerline-shell/pull/153
-        "PATH": get_PATH(),
-    }
+    })
 
 
 def parse_git_branch_info(status):
