@@ -45,6 +45,10 @@ SEGMENTS = [
 # Show the current fossil branch and status
     'fossil',
 
+# Show the current bazaar branch and status
+
+    'bzr',
+
 # Show number of running jobs
     'jobs',
 
