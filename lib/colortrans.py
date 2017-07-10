@@ -281,10 +281,6 @@ RGB2SHORT_DICT = {
     (255, 255, 215): 230,
     (255, 255, 255): 231}
 
-
-def hexstr2num(hexstr):
-    return int(hexstr, 16)
-
 def rgb2short(r, g, b):
     """ Find the closest xterm-256 approximation to the given RGB value.
     @param r,g,b: each is a number between 0-255 for the Red, Green, and Blue values
