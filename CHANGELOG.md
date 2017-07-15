@@ -1,5 +1,28 @@
 # Changes
 
+2017-06-21
+
+* Add `rbenv` segment
+  ([@dogo](https://github.com/banga/powerline-shell/pull/260))
+* Fix path segment so that current directory is emphasized
+  ([@inamiy](https://github.com/banga/powerline-shell/pull/235))
+
+2017-06-20
+
+* Add `newline` segment
+  ([@ffried](https://github.com/banga/powerline-shell/pull/266))
+* Add `npm_version` segment
+  ([@WileESpaghetti](https://github.com/banga/powerline-shell/pull/265))
+* Fix issue with conda environments
+  ([@drorata](https://github.com/banga/powerline-shell/pull/257))
+* Fix jobs segment for Cygwin
+  ([@themiwi](https://github.com/banga/powerline-shell/pull/256))
+
+2017-05-15
+
+* Fix the `set_term_title` segment for ZSH
+  ([@themiwi](https://github.com/banga/powerline-shell/pull/255))
+
 2016-04-16
 
 * Fix issue around unicode function for python 3
