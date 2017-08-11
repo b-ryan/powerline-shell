@@ -37,7 +37,16 @@ if __name__ == "__main__":
         # add_segment__[segment] that accepts the powerline object
         source += 'add_{}_segment(powerline)\n'.format(segment)
 
-    source += 'sys.stdout.write(powerline.draw())\n'
+    source += ("text = powerline.draw()\n" +
+               "try:\n" +
+               "    sys.stdout.write(powerline.draw())\n" +
+               "except UnicodeEncodeError:\n" +
+               "    bytes = text.encode('utf-8', 'replace')\n" +
+               "    if hasattr(sys.stdout, 'buffer'):\n" +
+               "        sys.stdout.buffer.write(bytes)\n" +
+               "    else:\n" +
+               "        text = bytes.decode('utf-8', 'strict')\n" +
+               "        sys.stdout.write(text)\n")
 
     try:
         open(OUTPUT_FILE, 'w').write(source)
