@@ -3,6 +3,11 @@ class DefaultColor:
     This class should have the default colors for every segment.
     Please test every new segment with this theme first.
     """
+    # RESET is not a real color code. It is used as in indicator
+    # within the code that any foreground / background color should
+    # be cleared
+    RESET = -1
+
     USERNAME_FG = 250
     USERNAME_BG = 240
     USERNAME_ROOT_BG = 124

@@ -13,6 +13,9 @@ SEGMENTS = [
 # Show current virtual environment (see http://www.virtualenv.org/)
     'virtual_env',
 
+# Show current ruby environment (see http://rbenv.org/)
+#   'rbenv',
+
 # Show the current user's username as in ordinary prompts
     'username',
 
@@ -47,6 +50,9 @@ SEGMENTS = [
 
 # Show the last command's exit code if it was non-zero
 #    'exit_code',
+
+# Adds a line break
+#    'newline',
 
 # Shows a '#' if the current user is root, '$' otherwise
 # Also, changes color if the last command exited with a non-zero error code
