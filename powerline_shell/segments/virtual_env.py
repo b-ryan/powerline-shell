@@ -6,6 +6,6 @@ def add_virtual_env_segment(powerline):
         return
 
     env_name = os.path.basename(env)
-    bg = Color.VIRTUAL_ENV_BG
-    fg = Color.VIRTUAL_ENV_FG
+    bg = powerline.theme.VIRTUAL_ENV_BG
+    fg = powerline.theme.VIRTUAL_ENV_FG
     powerline.append(' %s ' % env_name, fg, bg)

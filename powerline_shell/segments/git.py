@@ -1,12 +1,15 @@
 import re
 import subprocess
 import os
+from ..repos import RepoStats
+
 
 def get_PATH():
     """Normally gets the PATH from the OS. This function exists to enable
     easily mocking the PATH in tests.
     """
     return os.getenv("PATH")
+
 
 def git_subprocess_env():
     return {
@@ -80,11 +83,11 @@ def add_git_segment(powerline):
     else:
         branch = _get_git_detached_branch()
 
-    bg = Color.REPO_CLEAN_BG
-    fg = Color.REPO_CLEAN_FG
+    bg = powerline.theme.REPO_CLEAN_BG
+    fg = powerline.theme.REPO_CLEAN_FG
     if stats.dirty:
-        bg = Color.REPO_DIRTY_BG
-        fg = Color.REPO_DIRTY_FG
+        bg = powerline.theme.REPO_DIRTY_BG
+        fg = powerline.theme.REPO_DIRTY_FG
 
     powerline.append(' %s ' % branch, fg, bg)
-    stats.add_to_powerline(powerline, Color)
+    stats.add_to_powerline(powerline, powerline.theme)

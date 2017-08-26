@@ -16,7 +16,7 @@ def _add_svn_segment(powerline):
     output = p2.communicate()[0].decode("utf-8").strip()
     if len(output) > 0 and int(output) > 0:
         changes = output.strip()
-        powerline.append(' %s ' % changes, Color.SVN_CHANGES_FG, Color.SVN_CHANGES_BG)
+        powerline.append(' %s ' % changes, powerline.theme.SVN_CHANGES_FG, powerline.theme.SVN_CHANGES_BG)
 
 
 def add_svn_segment(powerline):

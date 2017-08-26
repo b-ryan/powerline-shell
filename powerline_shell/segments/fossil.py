@@ -18,12 +18,12 @@ def _add_fossil_segment(powerline):
     if len(branch) == 0:
         return
 
-    bg = Color.REPO_CLEAN_BG
-    fg = Color.REPO_CLEAN_FG
+    bg = powerline.theme.REPO_CLEAN_BG
+    fg = powerline.theme.REPO_CLEAN_FG
     has_modified_files, has_untracked_files, has_missing_files = get_fossil_status()
     if has_modified_files or has_untracked_files or has_missing_files:
-        bg = Color.REPO_DIRTY_BG
-        fg = Color.REPO_DIRTY_FG
+        bg = powerline.theme.REPO_DIRTY_BG
+        fg = powerline.theme.REPO_DIRTY_FG
         extra = ''
         if has_untracked_files:
             extra += '+'

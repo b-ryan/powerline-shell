@@ -10,7 +10,7 @@ import sys
 # Original, non-relative import errors on Python3
 from .colortrans import *
 
-py3 = sys.version_info[0] == 3
+py3 = sys.version_info.major == 3
 
 
 def getOppositeColor(r,g,b):

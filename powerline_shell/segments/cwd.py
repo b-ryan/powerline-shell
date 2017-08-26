@@ -1,6 +1,8 @@
 import os
+import sys
 
 ELLIPSIS = u'\u2026'
+py3 = sys.version_info.major == 3
 
 
 def replace_home_dir(cwd):
@@ -22,10 +24,10 @@ def split_path_into_names(cwd):
     return names
 
 
-def requires_special_home_display(name):
+def requires_special_home_display(powerline, name):
     """Returns true if the given directory name matches the home indicator and
     the chosen theme should use a special home indicator display."""
-    return (name == '~' and Color.HOME_SPECIAL_DISPLAY)
+    return (name == '~' and powerline.theme.HOME_SPECIAL_DISPLAY)
 
 
 def maybe_shorten_name(powerline, name):
@@ -37,16 +39,16 @@ def maybe_shorten_name(powerline, name):
     return name
 
 
-def get_fg_bg(name, is_last_dir):
+def get_fg_bg(powerline, name, is_last_dir):
     """Returns the foreground and background color to use for the given name.
     """
-    if requires_special_home_display(name):
-        return (Color.HOME_FG, Color.HOME_BG,)
+    if requires_special_home_display(powerline, name):
+        return (powerline.theme.HOME_FG, powerline.theme.HOME_BG,)
 
     if is_last_dir:
-        return (Color.CWD_FG, Color.PATH_BG,)
+        return (powerline.theme.CWD_FG, powerline.theme.PATH_BG,)
     else:
-        return (Color.PATH_FG, Color.PATH_BG,)
+        return (powerline.theme.PATH_FG, powerline.theme.PATH_BG,)
 
 
 def add_cwd_segment(powerline):
@@ -56,7 +58,7 @@ def add_cwd_segment(powerline):
     cwd = replace_home_dir(cwd)
 
     if powerline.args.cwd_mode == 'plain':
-        powerline.append(' %s ' % (cwd,), Color.CWD_FG, Color.PATH_BG)
+        powerline.append(' %s ' % (cwd,), powerline.theme.CWD_FG, powerline.theme.PATH_BG)
         return
 
     names = split_path_into_names(cwd)
@@ -82,11 +84,11 @@ def add_cwd_segment(powerline):
 
     for i, name in enumerate(names):
         is_last_dir = (i == len(names) - 1)
-        fg, bg = get_fg_bg(name, is_last_dir)
+        fg, bg = get_fg_bg(powerline, name, is_last_dir)
 
         separator = powerline.separator_thin
-        separator_fg = Color.SEPARATOR_FG
-        if requires_special_home_display(name) or is_last_dir:
+        separator_fg = powerline.theme.SEPARATOR_FG
+        if requires_special_home_display(powerline, name) or is_last_dir:
             separator = None
             separator_fg = None
 
