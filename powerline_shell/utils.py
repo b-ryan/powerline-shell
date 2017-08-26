@@ -1,3 +1,13 @@
+import sys
+import threading
+
+py3 = sys.version_info.major == 3
+
+if py3:
+    def unicode(x):
+        return x
+
+
 class RepoStats(object):
     symbols = {
         'detached': u'\u2693',
@@ -43,14 +53,31 @@ class RepoStats(object):
         """
         return unicode(self[_key]) if int(self[_key]) > 1 else u''
 
-    def add_to_powerline(self, powerline, color):
+    def add_to_powerline(self, powerline):
         def add(_key, fg, bg):
             if self[_key]:
                 s = u" {}{} ".format(self.n_or_empty(_key), self.symbols[_key])
                 powerline.append(s, fg, bg)
+        color = powerline.theme
         add('ahead', color.GIT_AHEAD_FG, color.GIT_AHEAD_BG)
         add('behind', color.GIT_BEHIND_FG, color.GIT_BEHIND_BG)
         add('staged', color.GIT_STAGED_FG, color.GIT_STAGED_BG)
         add('not_staged', color.GIT_NOTSTAGED_FG, color.GIT_NOTSTAGED_BG)
         add('untracked', color.GIT_UNTRACKED_FG, color.GIT_UNTRACKED_BG)
         add('conflicted', color.GIT_CONFLICTED_FG, color.GIT_CONFLICTED_BG)
+
+
+def warn(msg):
+    print('[powerline-bash] ', msg)
+
+
+class BasicSegment(object):
+    def __init__(self, powerline):
+        self.powerline = powerline
+
+
+class ThreadedSegment(threading.Thread):
+    def __init__(self, powerline):
+        super(ThreadedSegment, self).__init__()
+        self.powerline = powerline
+        self.start()

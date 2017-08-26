@@ -1,7 +1,7 @@
 import re
 import subprocess
 import os
-from ..repos import RepoStats
+from ..utils import RepoStats, ThreadedSegment
 
 
 def get_PATH():
@@ -59,18 +59,18 @@ def parse_git_stats(status):
     return stats
 
 
-def add_git_segment(powerline):
+def build_stats():
     try:
         p = subprocess.Popen(['git', 'status', '--porcelain', '-b'],
                              stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                              env=git_subprocess_env())
     except OSError:
         # Popen will throw an OSError if git is not found
-        return
+        return None
 
     pdata = p.communicate()
     if p.returncode != 0:
-        return
+        return None
 
     status = pdata[0].decode("utf-8").splitlines()
     stats = parse_git_stats(status)
@@ -82,12 +82,22 @@ def add_git_segment(powerline):
         branch = branch_info['local']
     else:
         branch = _get_git_detached_branch()
+    return stats, branch
 
-    bg = powerline.theme.REPO_CLEAN_BG
-    fg = powerline.theme.REPO_CLEAN_FG
-    if stats.dirty:
-        bg = powerline.theme.REPO_DIRTY_BG
-        fg = powerline.theme.REPO_DIRTY_FG
 
-    powerline.append(' %s ' % branch, fg, bg)
-    stats.add_to_powerline(powerline, powerline.theme)
+class Segment(ThreadedSegment):
+    def run(self):
+        self.stats, self.branch = build_stats()
+
+    def add_to_powerline(self):
+        self.join()
+        if not self.stats:
+            return
+        bg = self.powerline.theme.REPO_CLEAN_BG
+        fg = self.powerline.theme.REPO_CLEAN_FG
+        if self.stats.dirty:
+            bg = self.powerline.theme.REPO_DIRTY_BG
+            fg = self.powerline.theme.REPO_DIRTY_FG
+
+        self.powerline.append(" " + self.branch + " ", fg, bg)
+        self.stats.add_to_powerline(self.powerline)

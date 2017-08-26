@@ -1,8 +1,8 @@
 import os
 import sys
+from ..utils import warn, py3, BasicSegment
 
 ELLIPSIS = u'\u2026'
-py3 = sys.version_info.major == 3
 
 
 def replace_home_dir(cwd):
@@ -94,3 +94,8 @@ def add_cwd_segment(powerline):
 
         powerline.append(' %s ' % maybe_shorten_name(powerline, name), fg, bg,
                          separator, separator_fg)
+
+
+class Segment(BasicSegment):
+    def add_to_powerline(self):
+        add_cwd_segment(self.powerline)

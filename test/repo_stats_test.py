@@ -1,6 +1,6 @@
 import unittest
 import powerline_shell_base as p
-from powerline_shell.repos import RepoStats
+from powerline_shell.utils import RepoStats
 
 
 class RepoStatsTest(unittest.TestCase):

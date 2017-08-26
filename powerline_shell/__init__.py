@@ -7,20 +7,7 @@ import sys
 import config
 import importlib
 from .themes.default import DefaultColor
-
-py3 = sys.version_info.major == 3
-
-if py3:
-    def unicode(x):
-        return x
-
-
-def warn(msg):
-    print('[powerline-bash] ', msg)
-
-
-def get_default_theme():
-    return DefaultColor
+from .utils import warn, py3
 
 
 class Powerline(object):
@@ -54,7 +41,7 @@ class Powerline(object):
     def __init__(self, args, cwd, theme=None):
         self.args = args
         self.cwd = cwd
-        self.theme = theme or get_default_theme()
+        self.theme = theme or DefaultColor
         mode, shell = args.mode, args.shell
         self.color_template = self.color_templates[shell]
         self.reset = self.color_template % '[0m'
@@ -157,8 +144,10 @@ def main():
     args = arg_parser.parse_args()
 
     powerline = Powerline(args, get_valid_cwd())
-    for segment in config.SEGMENTS:
-        mod = importlib.import_module("powerline_shell.segments." + segment)
-        fn = getattr(mod, "add_" + segment + "_segment")
-        fn(powerline)
+    segments = []
+    for seg_name in config.SEGMENTS:
+        mod = importlib.import_module("powerline_shell.segments." + seg_name)
+        segments.append(getattr(mod, "Segment")(powerline))
+    for segment in segments:
+        segment.add_to_powerline()
     sys.stdout.write(powerline.draw())
