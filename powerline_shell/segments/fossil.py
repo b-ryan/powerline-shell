@@ -1,6 +1,18 @@
 import os
 import subprocess
-from ..utils import BasicSegment
+from ..utils import ThreadedSegment
+
+
+def get_fossil_branch():
+    try:
+        subprocess.Popen(['fossil'], stdout=subprocess.PIPE).communicate()
+    except OSError:
+        return None
+    return ''.join([
+        i.replace('*','').strip()
+        for i in os.popen("fossil branch 2> /dev/null").read().strip().split("\n")
+        if i.startswith('*')
+    ])
 
 
 def get_fossil_status():
@@ -8,47 +20,34 @@ def get_fossil_status():
     has_untracked_files = False
     has_missing_files = False
     output = os.popen('fossil changes 2>/dev/null').read().strip()
-    has_untracked_files = True if os.popen("fossil extras 2>/dev/null").read().strip() else False
+    has_untracked_files = bool(
+        os.popen("fossil extras 2>/dev/null").read().strip()
+    )
     has_missing_files = 'MISSING' in output
     has_modified_files = 'EDITED' in output
     return has_modified_files, has_untracked_files, has_missing_files
 
 
-def _add_fossil_segment(powerline):
-    subprocess.Popen(['fossil'], stdout=subprocess.PIPE).communicate()[0]
-    branch = ''.join([i.replace('*','').strip() for i in os.popen("fossil branch 2> /dev/null").read().strip().split("\n") if i.startswith('*')])
-    if len(branch) == 0:
-        return
-    bg = powerline.theme.REPO_CLEAN_BG
-    fg = powerline.theme.REPO_CLEAN_FG
-    has_modified_files, has_untracked_files, has_missing_files = get_fossil_status()
-    if has_modified_files or has_untracked_files or has_missing_files:
-        bg = powerline.theme.REPO_DIRTY_BG
-        fg = powerline.theme.REPO_DIRTY_FG
-        extra = ''
-        if has_untracked_files:
-            extra += '+'
-        if has_missing_files:
-            extra += '!'
-        branch += (' ' + extra if extra != '' else '')
-    powerline.append(' %s ' % branch, fg, bg)
+class Segment(ThreadedSegment):
+    def run(self):
+        self.branch = get_fossil_branch()
+        self.status = get_fossil_status() if self.branch else None
 
-
-class Segment(BasicSegment):
     def add_to_powerline(self):
-        """Wraps _add_fossil_segment in exception handling."""
+        self.join()
         powerline = self.powerline
-
-        # FIXME This function was added when introducing a testing framework,
-        # during which the 'powerline' object was passed into the
-        # `add_[segment]_segment` functions instead of being a global variable. At
-        # that time it was unclear whether the below exceptions could actually be
-        # thrown. It would be preferable to find out whether they ever will. If so,
-        # write a comment explaining when. Otherwise remove.
-
-        try:
-            _add_fossil_segment(powerline)
-        except OSError:
-            pass
-        except subprocess.CalledProcessError:
-            pass
+        if not self.branch or not self.status:
+            return
+        has_modified, has_untracked, has_missing = self.status
+        bg = powerline.theme.REPO_CLEAN_BG
+        fg = powerline.theme.REPO_CLEAN_FG
+        if has_modified or has_untracked or has_missing:
+            bg = powerline.theme.REPO_DIRTY_BG
+            fg = powerline.theme.REPO_DIRTY_FG
+            extra = ''
+            if has_untracked:
+                extra += '+'
+            if has_missing:
+                extra += '!'
+            self.branch += (' ' + extra if extra != '' else '')
+        powerline.append(' %s ' % self.branch, fg, bg)
