@@ -4,8 +4,8 @@ from __future__ import print_function
 import argparse
 import os
 import sys
-import config
 import importlib
+import json
 from .themes.default import DefaultColor
 from .utils import warn, py3
 
@@ -142,10 +142,11 @@ def main():
     arg_parser.add_argument('prev_error', nargs='?', type=int, default=0,
             help='Error code returned by the last command')
     args = arg_parser.parse_args()
-
+    with open("config.json") as f:
+        config = json.loads(f.read())
     powerline = Powerline(args, get_valid_cwd())
     segments = []
-    for seg_name in config.SEGMENTS:
+    for seg_name in config["segments"]:
         mod = importlib.import_module("powerline_shell.segments." + seg_name)
         segments.append(getattr(mod, "Segment")(powerline))
     for segment in segments:

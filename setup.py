@@ -7,7 +7,11 @@ setup(name="powerline-shell",
       author="Buck Ryan",
       url="httpss://github.com/banga/powerline-shell",
       classifiers=[],
-      py_modules=["powerline_shell"],
+      packages=[
+          "powerline_shell",
+          "powerline_shell.segments",
+          "powerline_shell.themes",
+      ],
       install_requires=[
           "argparse",
       ],
@@ -15,5 +19,4 @@ setup(name="powerline-shell",
           [console_scripts]
           powerline-shell=powerline_shell:main
       """,
-      packages=["powerline_shell"],
 )
