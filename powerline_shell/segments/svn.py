@@ -1,4 +1,5 @@
 import subprocess
+from ..utils import BasicSegment
 
 
 def _add_svn_segment(powerline):
@@ -19,19 +20,21 @@ def _add_svn_segment(powerline):
         powerline.append(' %s ' % changes, powerline.theme.SVN_CHANGES_FG, powerline.theme.SVN_CHANGES_BG)
 
 
-def add_svn_segment(powerline):
-    """Wraps _add_svn_segment in exception handling."""
+class Segment(BasicSegment):
+    def add_to_powerline(self):
+        """Wraps _add_svn_segment in exception handling."""
+        powerline = self.powerline
 
-    # FIXME This function was added when introducing a testing framework,
-    # during which the 'powerline' object was passed into the
-    # `add_[segment]_segment` functions instead of being a global variable. At
-    # that time it was unclear whether the below exceptions could actually be
-    # thrown. It would be preferable to find out whether they ever will. If so,
-    # write a comment explaining when. Otherwise remove.
+        # FIXME This function was added when introducing a testing framework,
+        # during which the 'powerline' object was passed into the
+        # `add_[segment]_segment` functions instead of being a global variable. At
+        # that time it was unclear whether the below exceptions could actually be
+        # thrown. It would be preferable to find out whether they ever will. If so,
+        # write a comment explaining when. Otherwise remove.
 
-    try:
-        _add_svn_segment(powerline)
-    except OSError:
-        pass
-    except subprocess.CalledProcessError:
-        pass
+        try:
+            _add_svn_segment(powerline)
+        except OSError:
+            pass
+        except subprocess.CalledProcessError:
+            pass
