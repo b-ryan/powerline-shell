@@ -6,7 +6,7 @@ except ImportError:
     from hashlib import md5
 import sys
 from .colortrans import *
-from ..utils import py3
+from .utils import py3
 
 
 def getOppositeColor(r,g,b):

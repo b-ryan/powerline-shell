@@ -10,6 +10,36 @@ from .themes.default import DefaultColor
 from .utils import warn, py3
 
 
+def get_valid_cwd():
+    """ We check if the current working directory is valid or not. Typically
+        happens when you checkout a different branch on git that doesn't have
+        this directory.
+        We return the original cwd because the shell still considers that to be
+        the working directory, so returning our guess will confuse people
+    """
+    # Prefer the PWD environment variable. Python's os.getcwd function follows
+    # symbolic links, which is undesirable. But if PWD is not set then fall
+    # back to this func
+    try:
+        cwd = os.getenv('PWD') or os.getcwd()
+    except:
+        warn("Your current directory is invalid. If you open a ticket at " +
+            "https://github.com/milkbikis/powerline-shell/issues/new " +
+            "we would love to help fix the issue.")
+        sys.stdout.write("> ")
+        sys.exit(1)
+
+    parts = cwd.split(os.sep)
+    up = cwd
+    while parts and not os.path.exists(up):
+        parts.pop()
+        up = os.sep.join(parts)
+    if cwd != up:
+        warn("Your current directory is invalid. Lowest valid directory: "
+            + up)
+    return cwd
+
+
 class Powerline(object):
     symbols = {
         'compatible': {
@@ -38,11 +68,13 @@ class Powerline(object):
         'bare': '%s',
     }
 
-    def __init__(self, args, cwd, theme=None):
+    def __init__(self, args, config, theme=None):
         self.args = args
-        self.cwd = cwd
+        self.config = config
         self.theme = theme or DefaultColor
-        mode, shell = args.mode, args.shell
+        self.cwd = get_valid_cwd()
+        mode = config.get("mode", "patched")
+        shell = config.get("shell", "bash")
         self.color_template = self.color_templates[shell]
         self.reset = self.color_template % '[0m'
         self.lock = Powerline.symbols[mode]['lock']
@@ -50,6 +82,9 @@ class Powerline(object):
         self.separator = Powerline.symbols[mode]['separator']
         self.separator_thin = Powerline.symbols[mode]['separator_thin']
         self.segments = []
+
+    def segment_conf(self, seg_name, key, default=None):
+        return self.config.get(seg_name, {}).get(key, default)
 
     def color(self, prefix, code):
         if code is None:
@@ -91,60 +126,33 @@ class Powerline(object):
             segment[3]))
 
 
-def get_valid_cwd():
-    """ We check if the current working directory is valid or not. Typically
-        happens when you checkout a different branch on git that doesn't have
-        this directory.
-        We return the original cwd because the shell still considers that to be
-        the working directory, so returning our guess will confuse people
-    """
-    # Prefer the PWD environment variable. Python's os.getcwd function follows
-    # symbolic links, which is undesirable. But if PWD is not set then fall
-    # back to this func
-    try:
-        cwd = os.getenv('PWD') or os.getcwd()
-    except:
-        warn("Your current directory is invalid. If you open a ticket at " +
-            "https://github.com/milkbikis/powerline-shell/issues/new " +
-            "we would love to help fix the issue.")
-        sys.stdout.write("> ")
-        sys.exit(1)
-
-    parts = cwd.split(os.sep)
-    up = cwd
-    while parts and not os.path.exists(up):
-        parts.pop()
-        up = os.sep.join(parts)
-    if cwd != up:
-        warn("Your current directory is invalid. Lowest valid directory: "
-            + up)
-    return cwd
+def find_config():
+    for location in [
+        "powerline-shell.json",
+        "~/.powerline-shell.json",
+    ]:
+        full = os.path.expanduser(location)
+        if os.path.exists(full):
+            return full
 
 
 def main():
     arg_parser = argparse.ArgumentParser()
-    arg_parser.add_argument('--cwd-mode', action='store',
-            help='How to display the current directory', default='fancy',
-            choices=['fancy', 'plain', 'dironly'])
-    arg_parser.add_argument('--cwd-only', action='store_true',
-            help='Deprecated. Use --cwd-mode=dironly')
-    arg_parser.add_argument('--cwd-max-depth', action='store', type=int,
-            default=5, help='Maximum number of directories to show in path')
-    arg_parser.add_argument('--cwd-max-dir-size', action='store', type=int,
-            help='Maximum number of letters displayed for each directory in the path')
-    arg_parser.add_argument('--colorize-hostname', action='store_true',
-            help='Colorize the hostname based on a hash of itself.')
-    arg_parser.add_argument('--mode', action='store', default='patched',
-            help='The characters used to make separators between segments',
-            choices=['patched', 'compatible', 'flat'])
     arg_parser.add_argument('--shell', action='store', default='bash',
-            help='Set this to your shell type', choices=['bash', 'zsh', 'bare'])
+                            help='Set this to your shell type',
+                            choices=['bash', 'zsh', 'bare'])
     arg_parser.add_argument('prev_error', nargs='?', type=int, default=0,
-            help='Error code returned by the last command')
+                            help='Error code returned by the last command')
     args = arg_parser.parse_args()
-    with open("config.json") as f:
+
+    config_path = find_config()
+    if not config_path:
+        warn("No config found")
+        return 1
+    with open(config_path) as f:
         config = json.loads(f.read())
-    powerline = Powerline(args, get_valid_cwd())
+
+    powerline = Powerline(args, config)
     segments = []
     for seg_name in config["segments"]:
         mod = importlib.import_module("powerline_shell.segments." + seg_name)

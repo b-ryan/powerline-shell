@@ -5,6 +5,10 @@ from ..utils import warn, py3, BasicSegment
 ELLIPSIS = u'\u2026'
 
 
+def _mode(powerline):
+    return powerline.segment_conf("cwd", "mode", "fancy")
+
+
 def replace_home_dir(cwd):
     home = os.getenv('HOME')
     if cwd.startswith(home):
@@ -34,8 +38,9 @@ def maybe_shorten_name(powerline, name):
     """If the user has asked for each directory name to be shortened, will
     return the name up to their specified length. Otherwise returns the full
     name."""
-    if powerline.args.cwd_max_dir_size:
-        return name[:powerline.args.cwd_max_dir_size]
+    max_size = powerline.segment_conf("cwd", "max_dir_size")
+    if max_size:
+        return name[:max_size]
     return name
 
 
@@ -57,15 +62,15 @@ def add_cwd_segment(powerline):
         cwd = cwd.decode("utf-8")
     cwd = replace_home_dir(cwd)
 
-    if powerline.args.cwd_mode == 'plain':
+    if _mode(powerline) == 'plain':
         powerline.append(' %s ' % (cwd,), powerline.theme.CWD_FG, powerline.theme.PATH_BG)
         return
 
     names = split_path_into_names(cwd)
 
-    max_depth = powerline.args.cwd_max_depth
+    max_depth = powerline.segment_conf("cwd", "max_depth", 5)
     if max_depth <= 0:
-        warn("Ignoring --cwd-max-depth argument since it's not greater than 0")
+        warn("Ignoring cwd.max_depth option since it's not greater than 0")
     elif len(names) > max_depth:
         # https://github.com/milkbikis/powerline-shell/issues/148
         # n_before is the number is the number of directories to put before the
@@ -77,7 +82,7 @@ def add_cwd_segment(powerline):
         n_before = 2 if max_depth > 2 else max_depth - 1
         names = names[:n_before] + [ELLIPSIS] + names[n_before - max_depth:]
 
-    if (powerline.args.cwd_mode == 'dironly' or powerline.args.cwd_only):
+    if _mode(powerline) == "dironly":
         # The user has indicated they only want the current directory to be
         # displayed, so chop everything else off
         names = names[-1:]

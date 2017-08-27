@@ -6,3 +6,4 @@ powerline_shell.egg-info/
 /dist/
 tags
 config.json
+powerline-shell.json
