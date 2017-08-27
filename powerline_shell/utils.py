@@ -75,9 +75,11 @@ class BasicSegment(object):
     def __init__(self, powerline):
         self.powerline = powerline
 
+    def start(self):
+        pass
+
 
 class ThreadedSegment(threading.Thread):
     def __init__(self, powerline):
         super(ThreadedSegment, self).__init__()
         self.powerline = powerline
-        self.start()

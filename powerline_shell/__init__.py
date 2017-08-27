@@ -148,7 +148,9 @@ def main():
     segments = []
     for seg_name in config["segments"]:
         mod = importlib.import_module("powerline_shell.segments." + seg_name)
-        segments.append(getattr(mod, "Segment")(powerline))
+        segment = getattr(mod, "Segment")(powerline)
+        segment.start()
+        segments.append(segment)
     for segment in segments:
         segment.add_to_powerline()
     sys.stdout.write(powerline.draw())

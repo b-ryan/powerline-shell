@@ -66,11 +66,11 @@ def build_stats():
                              env=git_subprocess_env())
     except OSError:
         # Popen will throw an OSError if git is not found
-        return None
+        return (None, None)
 
     pdata = p.communicate()
     if p.returncode != 0:
-        return None
+        return (None, None)
 
     status = pdata[0].decode("utf-8").splitlines()
     stats = parse_git_stats(status)
