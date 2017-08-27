@@ -134,6 +134,20 @@ def find_config():
         if os.path.exists(full):
             return full
 
+DEFAULT_CONFIG = {
+    "segments": [
+        'virtual_env',
+        'username',
+        'hostname',
+        'ssh',
+        'cwd',
+        'git',
+        'hg',
+        'jobs',
+        'root',
+    ]
+}
+
 
 def main():
     arg_parser = argparse.ArgumentParser()
@@ -145,11 +159,11 @@ def main():
     args = arg_parser.parse_args()
 
     config_path = find_config()
-    if not config_path:
-        warn("No config found")
-        return 1
-    with open(config_path) as f:
-        config = json.loads(f.read())
+    if config_path:
+        with open(config_path) as f:
+            config = json.loads(f.read())
+    else:
+        config = DEFAULT_CONFIG
 
     theme_name = config.get("theme", "default")
     mod = importlib.import_module("powerline_shell.themes." + theme_name)
