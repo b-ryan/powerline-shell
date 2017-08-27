@@ -1,14 +1,18 @@
 import subprocess
-from ..utils import BasicSegment
+from ..utils import ThreadedSegment
 
 
-class Segment(BasicSegment):
-    def add_to_powerline(self):
-        powerline = self.powerline
+class Segment(ThreadedSegment):
+    def run(self):
         try:
             p1 = subprocess.Popen(["node", "--version"], stdout=subprocess.PIPE)
-            version = p1.communicate()[0].decode("utf-8").rstrip()
-            version = "node " + version
-            powerline.append(version, 15, 18)
+            self.version = p1.communicate()[0].decode("utf-8").rstrip()
         except OSError:
+            self.version = None
+
+    def add_to_powerline(self):
+        self.join()
+        if not self.version:
             return
+        # FIXME no hard-coded colors
+        self.powerline.append("node " + self.version, 15, 18)

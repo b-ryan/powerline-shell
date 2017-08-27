@@ -1,17 +1,17 @@
 import subprocess
-from ..utils import BasicSegment
+from ..utils import ThreadedSegment
 
 
-class Segment(BasicSegment):
-    def add_to_powerline(self):
-        powerline = self.powerline
+class Segment(ThreadedSegment):
+    def run(self):
         try:
             output = subprocess.check_output(['php', '-r', 'echo PHP_VERSION;'],
                                              stderr=subprocess.STDOUT)
-            if '-' in output:
-                version = ' %s ' % output.split('-')[0]
-            else:
-                version = ' %s ' % output
-            powerline.append(version, 15, 4)
+            self.version = output.split('-')[0] if '-' in output else output
         except OSError:
-            return
+            self.version = None
+
+    def add_to_powerline(self):
+        self.join()
+        # FIXME no hard-coded colors
+        self.powerline.append(" " + version + " ", 15, 4)
