@@ -13,5 +13,7 @@ class Segment(ThreadedSegment):
 
     def add_to_powerline(self):
         self.join()
+        if not self.version:
+            return
         # FIXME no hard-coded colors
-        self.powerline.append(" " + version + " ", 15, 4)
+        self.powerline.append(" " + self.version + " ", 15, 4)
