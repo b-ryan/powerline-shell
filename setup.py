@@ -5,7 +5,7 @@ setup(name="powerline-shell",
       version="0.1.0-alpha",
       description="A pretty prompt for your shell",
       author="Buck Ryan",
-      url="httpss://github.com/banga/powerline-shell",
+      url="https://github.com/banga/powerline-shell",
       classifiers=[],
       packages=[
           "powerline_shell",
