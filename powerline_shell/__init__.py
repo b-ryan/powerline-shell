@@ -54,8 +54,8 @@ class Powerline(object):
             'separator_thin': u'\uE0B1'
         },
         'flat': {
-            'lock': '',
-            'network': '',
+            'lock': u'\uE0A2',
+            'network': u'\uE0A2',
             'separator': '',
             'separator_thin': ''
         },
@@ -151,12 +151,18 @@ DEFAULT_CONFIG = {
 
 def main():
     arg_parser = argparse.ArgumentParser()
+    arg_parser.add_argument('--generate-config', action='store_true',
+                            help='Generate the default config and print it to stdout')
     arg_parser.add_argument('--shell', action='store', default='bash',
                             help='Set this to your shell type',
                             choices=['bash', 'zsh', 'bare'])
     arg_parser.add_argument('prev_error', nargs='?', type=int, default=0,
                             help='Error code returned by the last command')
     args = arg_parser.parse_args()
+
+    if args.generate_config:
+        print(json.dumps(DEFAULT_CONFIG, indent=2))
+        return 0
 
     config_path = find_config()
     if config_path:
@@ -179,3 +185,4 @@ def main():
     for segment in segments:
         segment.add_to_powerline()
     sys.stdout.write(powerline.draw())
+    return 0

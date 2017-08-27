@@ -5,10 +5,6 @@ from ..utils import warn, py3, BasicSegment
 ELLIPSIS = u'\u2026'
 
 
-def _mode(powerline):
-    return powerline.segment_conf("cwd", "mode", "fancy")
-
-
 def replace_home_dir(cwd):
     home = os.getenv('HOME')
     if cwd.startswith(home):
@@ -62,7 +58,7 @@ def add_cwd_segment(powerline):
         cwd = cwd.decode("utf-8")
     cwd = replace_home_dir(cwd)
 
-    if _mode(powerline) == 'plain':
+    if powerline.segment_conf("cwd", "mode") == 'plain':
         powerline.append(' %s ' % (cwd,), powerline.theme.CWD_FG, powerline.theme.PATH_BG)
         return
 
@@ -82,7 +78,7 @@ def add_cwd_segment(powerline):
         n_before = 2 if max_depth > 2 else max_depth - 1
         names = names[:n_before] + [ELLIPSIS] + names[n_before - max_depth:]
 
-    if _mode(powerline) == "dironly":
+    if powerline.segment_conf("cwd", "mode") == "dironly":
         # The user has indicated they only want the current directory to be
         # displayed, so chop everything else off
         names = names[-1:]

@@ -17,14 +17,16 @@ ZSH and Fish:
 
 - [Version Control](#version-control)
 - [Setup](#setup)
-  - [All Shells](#all-shells)
   - [Bash](#bash)
   - [ZSH](#zsh)
   - [Fish](#fish)
 - [Customization](#customization)
+  - [Config File](#config-file)
   - [Adding, Removing and Re-arranging segments](#adding-removing-and-re-arranging-segments)
+  - [Changing the Look](#changing-the-look)
+    - [Themes](#themes)
+  - [Segment Configuration](#segment-configuration)
   - [Contributing new types of segments](#contributing-new-types-of-segments)
-  - [Themes](#themes)
 - [Troubleshooting](#troubleshooting)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -68,53 +70,13 @@ setting your $TERM to `xterm-256color`, because that works for me.
     commit](https://github.com/milkbikis/powerline-shell/commit/2a84ecc) in
     your copy
 
-- Clone this repository somewhere:
+- Install using pip:
 
 ```
-git clone https://github.com/milkbikis/powerline-shell
+pip install --index-url https://test.pypi.org/simple/ powerline-shell
 ```
 
-- Copy `config.py.dist` to `config.py` and edit it to configure the segments
-  you want. Then run
-
-```
-./install.py
-```
-
-This will generate `powerline-shell.py`
-
-- (optional) Create a symlink to this python script in your home:
-
-```
-ln -s <path/to/powerline-shell.py> ~/powerline-shell.py
-```
-
-If you don't want the symlink, just modify the path in the commands below
-
-- For python2.6 you have to install argparse
-
-```
-pip install argparse
-```
-
-### All Shells
-
-There are a few optional arguments which can be seen by running
-`powerline-shell.py --help`.
-
-```
-  --cwd-mode {fancy,plain,dironly}
-                        How to display the current directory
-  --cwd-max-depth CWD_MAX_DEPTH
-                        Maximum number of directories to show in path
-  --cwd-max-dir-size CWD_MAX_DIR_SIZE
-                        Maximum number of letters displayed for each directory
-                        in the path
-  --colorize-hostname   Colorize the hostname based on a hash of itself.
-  --mode {patched,compatible,flat}
-                        The characters used to make separators between
-                        segments
-```
+- Setup your shell prompt using the instructions for your shell below.
 
 ### Bash
 
@@ -122,7 +84,7 @@ Add the following to your `.bashrc` (or `.profile` on Mac):
 
 ```
 function _update_ps1() {
-    PS1="$(~/powerline-shell.py $? 2> /dev/null)"
+    PS1="$(powerline-shell $?)"
 }
 
 if [ "$TERM" != "linux" ]; then
@@ -136,7 +98,7 @@ Add the following to your `.zshrc`:
 
 ```
 function powerline_precmd() {
-    PS1="$(~/powerline-shell.py $? --shell zsh 2> /dev/null)"
+    PS1="$(powerline-shell --shell zsh $?)"
 }
 
 function install_powerline_precmd() {
@@ -159,27 +121,115 @@ Redefine `fish_prompt` in ~/.config/fish/config.fish:
 
 ```
 function fish_prompt
-    ~/powerline-shell.py $status --shell bare ^/dev/null
+    powerline-shell --shell bare $status
 end
 ```
 
 ## Customization
 
+### Config File
+
+Powerline-shell is customizable through the use of a config file. This file is
+expected to be located at `~/.powerline-shell.json`. You can generate the
+default config at this location using:
+
+```
+powerline-shell --generate-config > ~/.powerline-shell.json
+```
+
 ### Adding, Removing and Re-arranging segments
 
-The `config.py` file defines which segments are drawn and in which order. Simply
-comment out and rearrange segment names to get your desired arrangement. Every
-time you change `config.py`, run `install.py`, which will generate a new
-`powerline-shell.py` customized to your configuration. You should see the new
-prompt immediately.
+Once you have generated your config file, you can now start adding or removing
+"segments" - the building blocks of your shell. The list of segments available
+are:
+
+- `cwd` - Shows your current working directory. See [Segment
+  Configuration](#segment-configuration) for some options.
+- `exit_code` - When the previous command ends in a non-zero status, shows the
+  value of the exist status in red.
+- `fossil` - Details about the current Fossil repo.
+- `git` - Details about the current Git repo.
+- `hg` - Details about the current Mercurial repo.
+- `hostname` - Current machine's hostname.
+- `jobs` - Number of background jobs currently running.
+- `newline` - Inserts a newline into the prompt.
+- `node_version` - `node --version`
+- `npm_version` - `npm --version`
+- `php_version` - Version of php on the machine
+- `rbenv` - `rbenv local`
+- `read_only` - Shows a lock icon if the current directory is read-only.
+- `root` - Shows a `#` if logged in as root, `$` otherwise.
+- `ruby_version` - `ruby --version`
+- `set_term_title` - If able, sets the title of your terminal to include some
+  useful info.
+- `ssh` - If logged into over SSH, shows a network icon.
+- `svn` - Details about the current SVN repo.
+- `time` - Shows the current time
+- `uptime` - Uptime of the current machine
+- `username` - Name of the logged-in user
+- `virtual_env` - Shows the name of the current virtual env or conda env.
+
+### Changing the Look
+
+There are a few optional arguments which can be seen by running
+`powerline-shell.py --help`.
+
+```
+  --mode {patched,compatible,flat}
+                        The characters used to make separators between
+                        segments
+```
+
+#### Themes
+
+The `powerline_shell/themes` directory stores themes for your prompt, which are
+basically color values used by segments. The `default.py` defines a default
+theme which can be used standalone, and every other theme falls back to it if
+they miss colors for any segments. Create new themes by copying any other
+existing theme and changing the values. To use a theme, set the `theme`
+variable in `~/.powerline-shell.json` to the name of your theme.
+
+A script for testing color combinations is provided at `colortest.py`. Note
+that the colors you see may vary depending on your terminal. When designing a
+theme, please test your theme on multiple terminals, especially with default
+settings.
+
+### Segment Configuration
+
+Some segments support additional configuration. The options for the segment are
+nested under the name of the segment itself. For example, all of the options
+for the `cwd` segment are set in `~/.powerline-shell.py` like:
+
+```
+{
+    "segments": [...],
+    "cwd": {
+        options go here
+    }
+}
+```
+
+The options for the `cwd` segment are:
+
+- `mode`: If "plain" then simple text will be used to show the cwd. If
+  "dironly," only the current directory will be shown. Otherwise expands the
+  cwd into individual directories.
+- `max_depth`: Maximum number of directories to show in path
+- `max_dir_size`: Maximum number of characters displayed for each directory in
+  the path
+
+The `hostname` segment provides one option:
+
+- `colorize`: If true, the hostname will be colorized based on a hash of
+  itself.
 
 ### Contributing new types of segments
 
-The `segments` directory contains python scripts which are injected as is into
-a single file `powerline_shell_base.py`. Each segment script defines a function
-that inserts one or more segments into the prompt. If you want to add a new
-segment, simply create a new file in the segments directory and add its name to
-the `config.py` file at the appropriate location.
+The `powerline_shell/segments` directory contains python scripts which are
+injected as is into a single file `powerline_shell_base.py`. Each segment
+script defines a function that inserts one or more segments into the prompt. If
+you want to add a new segment, simply create a new file in the segments
+directory.
 
 Make sure that your script does not introduce new globals which might conflict
 with other scripts. Your script should fail silently and run quickly in any
@@ -190,21 +240,7 @@ segment you create. Test your segment with this theme first.
 
 You should add tests for your segment as best you are able. Unit and
 integration tests are both welcome. Run your tests with the `nosetests` command
-after install the requirements in `dev_requirements.txt`.
-
-### Themes
-
-The `themes` directory stores themes for your prompt, which are basically color
-values used by segments. The `default.py` defines a default theme which can be
-used standalone, and every other theme falls back to it if they miss colors for
-any segments. Create new themes by copying any other existing theme and
-changing the values. To use a theme, set the `THEME` variable in `config.py` to
-the name of your theme.
-
-A script for testing color combinations is provided at `themes/colortest.py`.
-Note that the colors you see may vary depending on your terminal. When designing
-a theme, please test your theme on multiple terminals, especially with default
-settings.
+after install the requirements in `requirements-dev.txt`.
 
 ## Troubleshooting
 
