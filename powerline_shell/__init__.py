@@ -6,7 +6,6 @@ import os
 import sys
 import importlib
 import json
-from .themes.default import DefaultColor
 from .utils import warn, py3
 
 
@@ -68,10 +67,10 @@ class Powerline(object):
         'bare': '%s',
     }
 
-    def __init__(self, args, config, theme=None):
+    def __init__(self, args, config, theme):
         self.args = args
         self.config = config
-        self.theme = theme or DefaultColor
+        self.theme = theme
         self.cwd = get_valid_cwd()
         mode = config.get("mode", "patched")
         shell = config.get("shell", "bash")
@@ -152,7 +151,11 @@ def main():
     with open(config_path) as f:
         config = json.loads(f.read())
 
-    powerline = Powerline(args, config)
+    theme_name = config.get("theme", "default")
+    mod = importlib.import_module("powerline_shell.themes." + theme_name)
+    theme = getattr(mod, "Color")
+
+    powerline = Powerline(args, config, theme)
     segments = []
     for seg_name in config["segments"]:
         mod = importlib.import_module("powerline_shell.segments." + seg_name)

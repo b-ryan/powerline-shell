@@ -1,4 +1,4 @@
-class DefaultColor:
+class DefaultColor(object):
     """
     This class should have the default colors for every segment.
     Please test every new segment with this theme first.

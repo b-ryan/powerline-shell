@@ -1,6 +1,8 @@
-# Basic theme which only uses colors in 0-15 range
+from .default import DefaultColor
+
 
 class Color(DefaultColor):
+    """Basic theme which only uses colors in 0-15 range"""
     USERNAME_FG = 8
     USERNAME_BG = 15
     USERNAME_ROOT_BG = 1

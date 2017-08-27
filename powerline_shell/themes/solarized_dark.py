@@ -1,3 +1,6 @@
+from .default import DefaultColor
+
+
 class Color(DefaultColor):
     USERNAME_FG = 15
     USERNAME_BG = 4
