@@ -23,8 +23,8 @@ ZSH and Fish:
 - [Customization](#customization)
   - [Config File](#config-file)
   - [Adding, Removing and Re-arranging segments](#adding-removing-and-re-arranging-segments)
-  - [Changing the Look](#changing-the-look)
-    - [Themes](#themes)
+  - [Segment Separator](#segment-separator)
+  - [Themes](#themes)
   - [Segment Configuration](#segment-configuration)
   - [Contributing new types of segments](#contributing-new-types-of-segments)
 - [Troubleshooting](#troubleshooting)
@@ -169,18 +169,19 @@ are:
 - `username` - Name of the logged-in user
 - `virtual_env` - Shows the name of the current virtual env or conda env.
 
-### Changing the Look
+### Segment Separator
 
-There are a few optional arguments which can be seen by running
-`powerline-shell.py --help`.
+By default, a unicode character (resembling the > symbol) is used to separate
+each segment. This can be changed by changing the "mode" option in the config
+file. The available modes are:
 
-```
-  --mode {patched,compatible,flat}
-                        The characters used to make separators between
-                        segments
-```
+- `patched` - The default
+- `compatible` - Attempts to use characters that may already be available using
+  your chosen font.
+- `flat` - No separator is used between segments, giving each segment a
+  rectangular appearance (and also saves space).
 
-#### Themes
+### Themes
 
 The `powerline_shell/themes` directory stores themes for your prompt, which are
 basically color values used by segments. The `default.py` defines a default
