@@ -43,5 +43,5 @@ class Segment(ThreadedSegment):
                 extra += '+'
             if has_missing:
                 extra += '!'
-            branch += (' ' + extra if extra != '' else '')
-        return powerline.append(' %s ' % branch, fg, bg)
+            self.branch += (' ' + extra if extra != '' else '')
+        return self.powerline.append(' %s ' % self.branch, fg, bg)
