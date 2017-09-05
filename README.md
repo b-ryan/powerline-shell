@@ -137,6 +137,9 @@ default config at this location using:
 powerline-shell --generate-config > ~/.powerline-shell.json
 ```
 
+(You can see an example config file
+[here](https://github.com/b-ryan/dotfiles/blob/master/home/powerline-shell.json))
+
 ### Adding, Removing and Re-arranging segments
 
 Once you have generated your config file, you can now start adding or removing
