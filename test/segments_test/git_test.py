@@ -25,7 +25,7 @@ class GitTest(unittest.TestCase):
         sh.git("add", filename)
         sh.git("commit", "-m", "add file " + filename)
 
-    def _new_branch(self, branch):
+    def _checkout_new_branch(self, branch):
         sh.git("checkout", "-b", branch)
 
     def _get_commit_hash(self):
@@ -57,7 +57,7 @@ class GitTest(unittest.TestCase):
 
     def test_different_branch(self):
         self._add_and_commit("foo")
-        self._new_branch("bar")
+        self._checkout_new_branch("bar")
         self.segment.start()
         self.segment.add_to_powerline()
         self.assertEqual(self.powerline.append.call_args[0][0], ' bar ')
