@@ -73,7 +73,7 @@ setting your $TERM to `xterm-256color`, because that works for me.
 - Install using pip:
 
 ```
-pip install --index-url https://test.pypi.org/simple/ powerline-shell
+pip install powerline-shell
 ```
 
 - Setup your shell prompt using the instructions for your shell below.
