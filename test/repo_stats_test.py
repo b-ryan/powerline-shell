@@ -1,11 +1,11 @@
 import unittest
-import powerline_shell_base as p
+from powerline_shell.utils import RepoStats
 
 
 class RepoStatsTest(unittest.TestCase):
 
     def setUp(self):
-        self.repo_stats = p.RepoStats()
+        self.repo_stats = RepoStats()
         self.repo_stats.not_staged = 1
         self.repo_stats.conflicted = 4
 
