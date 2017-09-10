@@ -2,7 +2,7 @@
 from setuptools import setup, find_packages
 
 setup(name="powerline-shell",
-      version="0.1.0-alpha",
+      version="0.1.0",
       description="A pretty prompt for your shell",
       author="Buck Ryan",
       url="https://github.com/banga/powerline-shell",

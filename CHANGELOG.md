@@ -1,5 +1,13 @@
 # Changes
 
+2017-09-10
+
+* Complete overhaul of the project
+  ([@b-ryan](https://github.com/banga/powerline-shell/pull/280))
+  * There is now a PyPi package
+  * It's significantly faster now
+  * Configuration and installation is brand new. See README.md
+
 2017-06-21
 
 * Add `rbenv` segment
