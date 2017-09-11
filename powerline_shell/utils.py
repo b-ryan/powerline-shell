@@ -1,7 +1,7 @@
 import sys
 import threading
 
-py3 = sys.version_info.major == 3
+py3 = sys.version_info[0] == 3
 
 if py3:
     def unicode(x):
