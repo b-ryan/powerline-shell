@@ -1,5 +1,12 @@
 # Changes
 
+Unreleased
+
+* Rewrite SVN segment to be consistent with git
+* Remove duplicate function in colortrans.py
+  ([@jmtd](https://github.com/banga/powerline-shell/pull/273))
+* Make python 3 check compatible with older Python versions
+
 2017-09-10
 
 * Complete overhaul of the project
