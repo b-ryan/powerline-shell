@@ -6,6 +6,8 @@ Unreleased
 * Remove duplicate function in colortrans.py
   ([@jmtd](https://github.com/banga/powerline-shell/pull/273))
 * Make python 3 check compatible with older Python versions
+* New theme! `solarized_light`
+  ([@ruturajv](https://github.com/banga/powerline-shell/pull/143)
 
 2017-09-10
 
