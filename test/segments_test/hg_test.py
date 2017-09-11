@@ -46,4 +46,3 @@ class HgTest(unittest.TestCase):
         self.segment.start()
         self.segment.add_to_powerline()
         self.assertEqual(self.powerline.append.call_args[0][0], " default ")
-
