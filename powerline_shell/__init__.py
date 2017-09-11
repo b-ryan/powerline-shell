@@ -7,6 +7,7 @@ import sys
 import importlib
 import json
 from .utils import warn, py3
+import re
 
 
 def get_valid_cwd():
@@ -100,7 +101,8 @@ class Powerline(object):
         return self.color('48', code)
 
     def append(self, content, fg, bg, separator=None, separator_fg=None):
-        self.segments.append((content, fg, bg,
+        sanitized = re.sub(r"([`$])", r"\\\1", content)
+        self.segments.append((sanitized, fg, bg,
             separator if separator is not None else self.separator,
             separator_fg if separator_fg is not None else bg))
 
