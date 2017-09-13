@@ -47,12 +47,12 @@ def parse_git_stats(status):
     for statusline in status[1:]:
         code = statusline[:2]
         if code == '??':
-            stats.untracked += 1
+            stats.new += 1
         elif code in ('DD', 'AU', 'UD', 'UA', 'DU', 'AA', 'UU'):
             stats.conflicted += 1
         else:
             if code[1] != ' ':
-                stats.not_staged += 1
+                stats.changed += 1
             if code[0] != ' ':
                 stats.staged += 1
 
