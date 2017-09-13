@@ -2,6 +2,8 @@
 
 Unreleased
 
+* Add Bazaar segment
+  ([@emansije](https://github.com/banga/powerline-shell/pull/283))
 * Rewrite SVN segment to be consistent with git
 * Remove duplicate function in colortrans.py
   ([@jmtd](https://github.com/banga/powerline-shell/pull/273))
