@@ -30,11 +30,9 @@ def parse_bzr_stats(status):
             setattr(stats, statustype, getattr(stats, statustype) + 1)
         elif statusline == "added:":
             statustype = "staged"
-        elif statusline in ("removed:", "missing:"):
-            statustype = "conflicted"
         elif statusline == "unknown:":
             statustype = "untracked"
-        else:  # renamed, modified or kind changed
+        else:  # removed, missing, renamed, modified or kind changed
             statustype = "not_staged"
     return stats
 
