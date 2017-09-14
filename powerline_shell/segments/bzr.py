@@ -24,16 +24,16 @@ def _get_bzr_branch():
 
 def parse_bzr_stats(status):
     stats = RepoStats()
-    statustype = "not_staged"
+    statustype = "changed"
     for statusline in status:
         if statusline[:2] == "  ":
             setattr(stats, statustype, getattr(stats, statustype) + 1)
         elif statusline == "added:":
             statustype = "staged"
         elif statusline == "unknown:":
-            statustype = "untracked"
+            statustype = "new"
         else:  # removed, missing, renamed, modified or kind changed
-            statustype = "not_staged"
+            statustype = "changed"
     return stats
 
 
