@@ -14,24 +14,24 @@ class RepoStats(object):
         'ahead': u'\u2B06',
         'behind': u'\u2B07',
         'staged': u'\u2714',
-        'not_staged': u'\u270E',
-        'untracked': u'\u2753',
+        'changed': u'\u270E',
+        'new': u'\u2753',
         'conflicted': u'\u273C'
     }
 
     def __init__(self):
         self.ahead = 0
         self.behind = 0
-        self.untracked = 0
-        self.not_staged = 0
+        self.new = 0
+        self.changed = 0
         self.staged = 0
         self.conflicted = 0
 
     @property
     def dirty(self):
         qualifiers = [
-            self.untracked,
-            self.not_staged,
+            self.new,
+            self.changed,
             self.staged,
             self.conflicted,
         ]
@@ -45,11 +45,11 @@ class RepoStats(object):
         the value of the property as a string when the value is greater than
         1. When it is not greater than one, returns an empty string.
 
-        As an example, if you want to show an icon for untracked files, but you
-        only want a number to appear next to the icon when there are more than
-        one untracked files, you can do:
+        As an example, if you want to show an icon for new files, but you only
+        want a number to appear next to the icon when there are more than one
+        new file, you can do:
 
-            segment = repo_stats.n_or_empty("untracked") + icon_string
+            segment = repo_stats.n_or_empty("new") + icon_string
         """
         return unicode(self[_key]) if int(self[_key]) > 1 else u''
 
@@ -62,8 +62,8 @@ class RepoStats(object):
         add('ahead', color.GIT_AHEAD_FG, color.GIT_AHEAD_BG)
         add('behind', color.GIT_BEHIND_FG, color.GIT_BEHIND_BG)
         add('staged', color.GIT_STAGED_FG, color.GIT_STAGED_BG)
-        add('not_staged', color.GIT_NOTSTAGED_FG, color.GIT_NOTSTAGED_BG)
-        add('untracked', color.GIT_UNTRACKED_FG, color.GIT_UNTRACKED_BG)
+        add('changed', color.GIT_NOTSTAGED_FG, color.GIT_NOTSTAGED_BG)
+        add('new', color.GIT_UNTRACKED_FG, color.GIT_UNTRACKED_BG)
         add('conflicted', color.GIT_CONFLICTED_FG, color.GIT_CONFLICTED_BG)
 
 
