@@ -1,6 +1,6 @@
 # Changes
 
-Unreleased
+2017-09-13 (version 0.2.0)
 
 * Add Bazaar segment
   ([@emansije](https://github.com/banga/powerline-shell/pull/283))

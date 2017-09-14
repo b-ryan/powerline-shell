@@ -146,6 +146,7 @@ Once you have generated your config file, you can now start adding or removing
 "segments" - the building blocks of your shell. The list of segments available
 are:
 
+- `bzr` - Details about the current Bazaar repo.
 - `cwd` - Shows your current working directory. See [Segment
   Configuration](#segment-configuration) for some options.
 - `exit_code` - When the previous command ends in a non-zero status, shows the
