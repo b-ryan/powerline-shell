@@ -1,5 +1,9 @@
 # Changes
 
+2017-09-16 (version 0.2.1)
+
+* Fix issues preventing fish shell from rendering.
+
 2017-09-13 (version 0.2.0)
 
 * Add Bazaar segment
