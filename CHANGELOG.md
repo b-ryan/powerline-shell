@@ -1,5 +1,10 @@
 # Changes
 
+2017-09-18 (version 0.2.2)
+
+* Fix python3 issue in uptime segment. Fixes
+  [#291](https://github.com/banga/powerline-shell/issues/291).
+
 2017-09-16 (version 0.2.1)
 
 * Fix issues preventing fish shell from rendering.
