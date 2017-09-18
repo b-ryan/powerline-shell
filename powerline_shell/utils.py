@@ -5,7 +5,7 @@ py3 = sys.version_info[0] == 3
 
 if py3:
     def unicode(x):
-        return x
+        return str(x)
 
 
 class RepoStats(object):
