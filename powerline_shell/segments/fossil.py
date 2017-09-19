@@ -50,7 +50,7 @@ def build_stats():
         return (None, None)
     changes = os.popen("fossil changes 2>/dev/null").read().strip().split("\n")
     extra = os.popen("fossil extras 2>/dev/null").read().strip().split("\n")
-    extra = ["EXTRA " + filename for filename in extra]
+    extra = ["EXTRA " + filename for filename in extra if filename != ""]
     if changes == extra == ['']:
         return (RepoStats(), branch)
     status = [line for line in changes + extra if line != '']
