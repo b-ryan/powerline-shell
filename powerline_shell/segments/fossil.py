@@ -25,12 +25,12 @@ def _get_fossil_branch():
 
 def parse_fossil_stats(status):
     stats = RepoStats()
-    for filestatus in [line.split()[0] for line in status]:
-        if filestatus == "ADDED":
+    for line in status:
+        if line.startswith("ADDED"):
             stats.staged += 1
-        elif filestatus == "EXTRA":
+        elif line.startswith("EXTRA"):
             stats.new += 1
-        elif filestatus == "CONFLICT":
+        elif line.startswith("CONFLICT"):
             stats.conflicted += 1
         else:
             stats.changed += 1
@@ -48,11 +48,12 @@ def build_stats():
     branch = _get_fossil_branch()
     if branch == "":
         return (None, None)
-    status = os.popen("fossil changes 2>/dev/null").read().strip().split("\n")
+    changes = os.popen("fossil changes 2>/dev/null").read().strip().split("\n")
     extra = os.popen("fossil extras 2>/dev/null").read().strip().split("\n")
-    status += ["EXTRA " + filename for filename in extra if filename != ""]
-    if status == ['']:
+    extra = ["EXTRA " + filename for filename in extra]
+    if changes == extra == ['']:
         return (RepoStats(), branch)
+    status = [line for line in changes + extra if line != '']
     stats = parse_fossil_stats(status)
     return stats, branch
 
