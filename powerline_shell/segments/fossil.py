@@ -1,6 +1,6 @@
 import os
 import subprocess
-from ..utils import RepoStats, ThreadedSegment
+from ..utils import RepoStats, BasicSegment
 
 
 def get_PATH():
@@ -37,6 +37,14 @@ def parse_fossil_stats(status):
     return stats
 
 
+def _get_fossil_status():
+    changes = os.popen("fossil changes 2>/dev/null").read().strip().split("\n")
+    extra = os.popen("fossil extras 2>/dev/null").read().strip().split("\n")
+    extra = ["EXTRA      " + filename for filename in extra if filename != ""]
+    status = [line for line in changes + extra if line != '']
+    return status
+
+
 def build_stats():
     try:
         subprocess.Popen(['fossil'], stdout=subprocess.PIPE,
@@ -48,22 +56,17 @@ def build_stats():
     branch = _get_fossil_branch()
     if branch == "":
         return (None, None)
-    changes = os.popen("fossil changes 2>/dev/null").read().strip().split("\n")
-    extra = os.popen("fossil extras 2>/dev/null").read().strip().split("\n")
-    extra = ["EXTRA " + filename for filename in extra if filename != ""]
-    if changes == extra == ['']:
+    status = _get_fossil_status()
+    if status == []:
         return (RepoStats(), branch)
-    status = [line for line in changes + extra if line != '']
     stats = parse_fossil_stats(status)
     return stats, branch
 
 
-class Segment(ThreadedSegment):
-    def run(self):
-        self.stats, self.branch = build_stats()
+class Segment(BasicSegment):
 
     def add_to_powerline(self):
-        self.join()
+        self.stats, self.branch = build_stats()
         if not self.stats:
             return
         bg = self.powerline.theme.REPO_CLEAN_BG
