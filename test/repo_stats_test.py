@@ -19,7 +19,7 @@ class RepoStatsTest(unittest.TestCase):
         self.assertEqual(self.repo_stats.n_or_empty("changed"), u"")
 
     def test_n_or_empty__n(self):
-        self.assertEqual(self.repo_stats.n_or_empty("conflicted"), u"4")
+        self.assertEqual(self.repo_stats.n_or_empty("conflicted"), 4)
 
     def test_index(self):
         self.assertEqual(self.repo_stats["changed"], 1)
