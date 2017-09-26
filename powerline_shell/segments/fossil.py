@@ -1,6 +1,6 @@
 import os
 import subprocess
-from ..utils import RepoStats, BasicSegment
+from ..utils import RepoStats, ThreadedSegment
 
 
 def get_PATH():
@@ -63,7 +63,7 @@ def build_stats():
     return stats, branch
 
 
-class Segment(BasicSegment):
+class Segment(ThreadedSegment):
 
     def add_to_powerline(self):
         self.stats, self.branch = build_stats()

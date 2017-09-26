@@ -6,13 +6,11 @@ import sh
 import powerline_shell.segments.fossil as fossil
 from powerline_shell.utils import RepoStats
 
-
-rs = RepoStats()
 test_cases = {
-    "EXTRA      new-file": rs.symbols["new"],
-    "EDITED     modified-file": rs.symbols["changed"],
-    "CONFLICT   conflicted-file": rs.symbols["conflicted"],
-    "ADDED      added-file": rs.symbols["staged"],
+    "EXTRA      new-file": RepoStats(new=1),
+    "EDITED     modified-file": RepoStats(changed=1),
+    "CONFLICT   conflicted-file": RepoStats(conflicted=1),
+    "ADDED      added-file": RepoStats(staged=1),
 }
 
 
@@ -61,8 +59,5 @@ class FossilTest(unittest.TestCase):
     @mock.patch('powerline_shell.segments.fossil._get_fossil_status')
     def test_all(self, check_output):
         for stdout, result in test_cases.items():
-            check_output.return_value = [stdout]
-            self.segment.start()
-            self.segment.add_to_powerline()
-            self.assertEqual(self.powerline.append.call_args[0][0].split()[0],
-                             result)
+            stats = fossil.parse_fossil_stats([stdout])
+            self.assertEquals(result, stats)

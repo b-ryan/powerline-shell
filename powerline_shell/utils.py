@@ -19,13 +19,23 @@ class RepoStats(object):
         'conflicted': u'\u273C'
     }
 
-    def __init__(self):
-        self.ahead = 0
-        self.behind = 0
-        self.new = 0
-        self.changed = 0
-        self.staged = 0
-        self.conflicted = 0
+    def __init__(self, ahead=0, behind=0, new=0, changed=0, staged=0, conflicted=0):
+        self.ahead = ahead
+        self.behind = behind
+        self.new = new
+        self.changed = changed
+        self.staged = staged
+        self.conflicted = conflicted
+
+    def __eq__(self, other):
+        return (
+            self.ahead == other.ahead and
+            self.behind == other.behind and
+            self.new == other.new and
+            self.changed == other.changed and
+            self.staged == other.staged and
+            self.conflicted == other.conflicted
+        )
 
     @property
     def dirty(self):
