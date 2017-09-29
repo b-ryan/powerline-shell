@@ -1,5 +1,10 @@
 # Changes
 
+Unreleased
+
+* Redo Fossil segment to be consistent with git, svn, etc.
+  ([@emansije](https://github.com/banga/powerline-shell/pull/286))
+
 2017-09-18 (version 0.2.2)
 
 * Fix python3 issue in uptime segment. Fixes
