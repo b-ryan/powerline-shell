@@ -83,6 +83,10 @@ def add_cwd_segment(powerline):
         # displayed, so chop everything else off
         names = names[-1:]
 
+    if powerline.segment_conf("cwd", "mode") == "compact":
+        # Like plain but uses max_depth.
+        names = [os.path.join(*names)]
+
     for i, name in enumerate(names):
         is_last_dir = (i == len(names) - 1)
         fg, bg = get_fg_bg(powerline, name, is_last_dir)
