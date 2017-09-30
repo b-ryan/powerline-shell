@@ -74,8 +74,7 @@ class Powerline(object):
         self.theme = theme
         self.cwd = get_valid_cwd()
         mode = config.get("mode", "patched")
-        shell = config.get("shell", "bash")
-        self.color_template = self.color_templates[shell]
+        self.color_template = self.color_templates[args.shell]
         self.reset = self.color_template % '[0m'
         self.lock = Powerline.symbols[mode]['lock']
         self.network = Powerline.symbols[mode]['network']

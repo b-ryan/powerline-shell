@@ -20,10 +20,10 @@ class Segment(BasicSegment):
         stats = RepoStats()
         for line in stdout.splitlines():
             if line[0] == "?":
-                stats.untracked += 1
+                stats.new += 1
             elif line[0] == "C":
                 stats.conflicted += 1
             elif line[0] in ["A", "D", "I", "M", "R", "!", "~"]:
-                stats.not_staged += 1
+                stats.changed += 1
 
         stats.add_to_powerline(self.powerline)
