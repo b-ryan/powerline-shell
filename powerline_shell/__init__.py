@@ -100,8 +100,7 @@ class Powerline(object):
         return self.color('48', code)
 
     def append(self, content, fg, bg, separator=None, separator_fg=None):
-        sanitized = re.sub(r"([`$])", r"\\\1", content)
-        self.segments.append((sanitized, fg, bg,
+        self.segments.append((content, fg, bg,
             separator if separator is not None else self.separator,
             separator_fg if separator_fg is not None else bg))
 
@@ -115,12 +114,16 @@ class Powerline(object):
 
     def draw_segment(self, idx):
         segment = self.segments[idx]
+        if self.args.shell == "bash":
+            sanitized = re.sub(r"([`$])", r"\\\1", segment[0])
+        else:
+            sanitized = segment[0]
         next_segment = self.segments[idx + 1] if idx < len(self.segments)-1 else None
 
         return ''.join((
             self.fgcolor(segment[1]),
             self.bgcolor(segment[2]),
-            segment[0],
+            sanitized,
             self.bgcolor(next_segment[2]) if next_segment else self.reset,
             self.fgcolor(segment[4]),
             segment[3]))
