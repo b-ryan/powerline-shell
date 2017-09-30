@@ -4,6 +4,9 @@ Unreleased
 
 * Redo Fossil segment to be consistent with git, svn, etc.
   ([@emansije](https://github.com/banga/powerline-shell/pull/286))
+* Fix subshell execution in bash described by
+  [pw3nage](https://github.com/njhartwell/pw3nage)
+  ([@b-ryan](https://github.com/banga/powerline-shell/pull/282))
 
 2017-09-18 (version 0.2.2)
 
