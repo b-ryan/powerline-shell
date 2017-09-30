@@ -1,6 +1,6 @@
 # Changes
 
-Unreleased
+2017-09-30 (version 0.3.1)
 
 * Fix username segment's background color after "su" command
   ([@Fak3](https://github.com/banga/powerline-shell/pull/175))
