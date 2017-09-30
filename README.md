@@ -1,93 +1,90 @@
-A Powerline style prompt for your shell
-=======================================
+# A Powerline style prompt for your shell
 
-A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash, ZSH and Fish:
+A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash,
+ZSH and Fish:
 
-![MacVim+Solarized+Powerline+CtrlP](https://raw.github.com/milkbikis/dotfiles-mac/master/bash-powerline-screenshot.png)
+![MacVim+Solarized+Powerline+CtrlP](https://raw.github.com/banga/powerline-shell/master/bash-powerline-screenshot.png)
 
-*  Shows some important details about the git/svn/hg/fossil branch (see below)
-*  Changes color if the last command exited with a failure code
-*  If you're too deep into a directory tree, shortens the displayed path with an ellipsis
-*  Shows the current Python [virtualenv](http://www.virtualenv.org/) environment
-*  It's easy to customize and extend. See below for details.
+- Shows some important details about the git/svn/hg/fossil branch (see below)
+- Changes color if the last command exited with a failure code
+- If you're too deep into a directory tree, shortens the displayed path with an ellipsis
+- Shows the current Python [virtualenv](http://www.virtualenv.org/) environment
+- It's easy to customize and extend. See below for details.
 
-### Version Control
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Version Control](#version-control)
+- [Setup](#setup)
+  - [Bash](#bash)
+  - [ZSH](#zsh)
+  - [Fish](#fish)
+- [Customization](#customization)
+  - [Config File](#config-file)
+  - [Adding, Removing and Re-arranging segments](#adding-removing-and-re-arranging-segments)
+  - [Segment Separator](#segment-separator)
+  - [Themes](#themes)
+  - [Segment Configuration](#segment-configuration)
+  - [Contributing new types of segments](#contributing-new-types-of-segments)
+- [Troubleshooting](#troubleshooting)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+## Version Control
 
 All of the version control systems supported by powerline shell give you a
 quick look into the state of your repo:
 
-* The current branch is displayed and changes background color when the
+- The current branch is displayed and changes background color when the
   branch is dirty.
-* When the local branch differs from the remote, the difference in number
+- When the local branch differs from the remote, the difference in number
   of commits is shown along with `⇡` or `⇣` indicating whether a git push
   or pull is pending
 
 In addition, git has a few extra symbols:
 
-* `✎` -- a file has been modified, but not staged for commit
-* `✔` -- a file is staged for commit
-* `✼` -- a file has conflicts
+- `✎` -- a file has been modified, but not staged for commit
+- `✔` -- a file is staged for commit
+- `✼` -- a file has conflicts
 
 FIXME
-    *  A `+` appears when untracked files are present (except for git, which
-       uses `?` instead)
+
+- A `+` appears when untracked files are present (except for git, which uses
+  `?` instead)
 
 Each of these will have a number next to it if more than one file matches.
 
-# Setup
+## Setup
 
 This script uses ANSI color codes to display colors in a terminal. These are
 notoriously non-portable, so may not work for you out of the box, but try
 setting your $TERM to `xterm-256color`, because that works for me.
 
-* Patch the font you use for your terminal: see https://github.com/Lokaltog/powerline-fonts
+- Patch the font you use for your terminal: see
+  [powerline-fonts](https://github.com/Lokaltog/powerline-fonts)
+  - If you struggle too much to get working fonts in your terminal, you can use
+    "compatible" mode.
+  - If you're using old patched fonts, you have to use the older symbols.
+    Basically reverse [this
+    commit](https://github.com/milkbikis/powerline-shell/commit/2a84ecc) in
+    your copy
 
-  * If you struggle too much to get working fonts in your terminal, you can use "compatible" mode.
-  * If you're using old patched fonts, you have to use the older symbols. Basically reverse [this commit](https://github.com/milkbikis/powerline-shell/commit/2a84ecc) in your copy
-
-* Clone this repository somewhere:
-
-        git clone https://github.com/milkbikis/powerline-shell
-
-* Copy `config.py.dist` to `config.py` and edit it to configure the segments you want. Then run
-
-        ./install.py
-
-  * This will generate `powerline-shell.py`
-
-* (optional) Create a symlink to this python script in your home:
-
-        ln -s <path/to/powerline-shell.py> ~/powerline-shell.py
-
-  * If you don't want the symlink, just modify the path in the commands below
-
-* For python2.6 you have to install argparse
-
-        pip install argparse
-
-### All Shells:
-There are a few optional arguments which can be seen by running `powerline-shell.py --help`.
+- Install using pip:
 
 ```
-  --cwd-mode {fancy,plain,dironly}
-                        How to display the current directory
-  --cwd-max-depth CWD_MAX_DEPTH
-                        Maximum number of directories to show in path
-  --cwd-max-dir-size CWD_MAX_DIR_SIZE
-                        Maximum number of letters displayed for each directory
-                        in the path
-  --colorize-hostname   Colorize the hostname based on a hash of itself.
-  --mode {patched,compatible,flat}
-                        The characters used to make separators between
-                        segments
+pip install powerline-shell
 ```
 
-### Bash:
+- Setup your shell prompt using the instructions for your shell below.
+
+### Bash
+
 Add the following to your `.bashrc` (or `.profile` on Mac):
 
 ```
 function _update_ps1() {
-    PS1="$(~/powerline-shell.py $? 2> /dev/null)"
+    PS1="$(powerline-shell $?)"
 }
 
 if [ "$TERM" != "linux" ]; then
@@ -95,12 +92,13 @@ if [ "$TERM" != "linux" ]; then
 fi
 ```
 
-### ZSH:
+### ZSH
+
 Add the following to your `.zshrc`:
 
 ```
 function powerline_precmd() {
-    PS1="$(~/powerline-shell.py $? --shell zsh 2> /dev/null)"
+    PS1="$(powerline-shell --shell zsh $?)"
 }
 
 function install_powerline_precmd() {
@@ -117,32 +115,126 @@ if [ "$TERM" != "linux" ]; then
 fi
 ```
 
-### Fish:
+### Fish
+
 Redefine `fish_prompt` in ~/.config/fish/config.fish:
 
 ```
 function fish_prompt
-    ~/powerline-shell.py $status --shell bare ^/dev/null
+    powerline-shell --shell bare $status
 end
 ```
 
-# Customization
+## Customization
+
+### Config File
+
+Powerline-shell is customizable through the use of a config file. This file is
+expected to be located at `~/.powerline-shell.json`. You can generate the
+default config at this location using:
+
+```
+powerline-shell --generate-config > ~/.powerline-shell.json
+```
+
+(You can see an example config file
+[here](https://github.com/b-ryan/dotfiles/blob/master/home/powerline-shell.json))
 
 ### Adding, Removing and Re-arranging segments
 
-The `config.py` file defines which segments are drawn and in which order. Simply
-comment out and rearrange segment names to get your desired arrangement. Every
-time you change `config.py`, run `install.py`, which will generate a new
-`powerline-shell.py` customized to your configuration. You should see the new
-prompt immediately.
+Once you have generated your config file, you can now start adding or removing
+"segments" - the building blocks of your shell. The list of segments available
+are:
+
+- `bzr` - Details about the current Bazaar repo.
+- `cwd` - Shows your current working directory. See [Segment
+  Configuration](#segment-configuration) for some options.
+- `exit_code` - When the previous command ends in a non-zero status, shows the
+  value of the exist status in red.
+- `fossil` - Details about the current Fossil repo.
+- `git` - Details about the current Git repo.
+- `hg` - Details about the current Mercurial repo.
+- `hostname` - Current machine's hostname.
+- `jobs` - Number of background jobs currently running.
+- `newline` - Inserts a newline into the prompt.
+- `node_version` - `node --version`
+- `npm_version` - `npm --version`
+- `php_version` - Version of php on the machine
+- `rbenv` - `rbenv local`
+- `read_only` - Shows a lock icon if the current directory is read-only.
+- `root` - Shows a `#` if logged in as root, `$` otherwise.
+- `ruby_version` - `ruby --version`
+- `set_term_title` - If able, sets the title of your terminal to include some
+  useful info.
+- `ssh` - If logged into over SSH, shows a network icon.
+- `svn` - Details about the current SVN repo.
+- `time` - Shows the current time
+- `uptime` - Uptime of the current machine
+- `username` - Name of the logged-in user
+- `virtual_env` - Shows the name of the current virtual env or conda env.
+
+### Segment Separator
+
+By default, a unicode character (resembling the > symbol) is used to separate
+each segment. This can be changed by changing the "mode" option in the config
+file. The available modes are:
+
+- `patched` - The default
+- `compatible` - Attempts to use characters that may already be available using
+  your chosen font.
+- `flat` - No separator is used between segments, giving each segment a
+  rectangular appearance (and also saves space).
+
+### Themes
+
+The `powerline_shell/themes` directory stores themes for your prompt, which are
+basically color values used by segments. The `default.py` defines a default
+theme which can be used standalone, and every other theme falls back to it if
+they miss colors for any segments. Create new themes by copying any other
+existing theme and changing the values. To use a theme, set the `theme`
+variable in `~/.powerline-shell.json` to the name of your theme.
+
+A script for testing color combinations is provided at `colortest.py`. Note
+that the colors you see may vary depending on your terminal. When designing a
+theme, please test your theme on multiple terminals, especially with default
+settings.
+
+### Segment Configuration
+
+Some segments support additional configuration. The options for the segment are
+nested under the name of the segment itself. For example, all of the options
+for the `cwd` segment are set in `~/.powerline-shell.py` like:
+
+```
+{
+    "segments": [...],
+    "cwd": {
+        options go here
+    }
+}
+```
+
+The options for the `cwd` segment are:
+
+- `mode`: If "plain" then simple text will be used to show the cwd. If
+  "dironly," only the current directory will be shown. Otherwise expands the
+  cwd into individual directories.
+- `max_depth`: Maximum number of directories to show in path
+- `max_dir_size`: Maximum number of characters displayed for each directory in
+  the path
+
+The `hostname` segment provides one option:
+
+- `colorize`: If true, the hostname will be colorized based on a hash of
+  itself.
 
 ### Contributing new types of segments
 
-The `segments` directory contains python scripts which are injected as is into
-a single file `powerline_shell_base.py`. Each segment script defines a function
-that inserts one or more segments into the prompt. If you want to add a new
-segment, simply create a new file in the segments directory and add its name to
-the `config.py` file at the appropriate location.
+The `powerline_shell/segments` directory contains python scripts which are
+injected as is into a single file `powerline_shell_base.py`. Each segment
+script defines a function that inserts one or more segments into the prompt. If
+you want to add a new segment, simply create a new file in the segments
+directory.
 
 Make sure that your script does not introduce new globals which might conflict
 with other scripts. Your script should fail silently and run quickly in any
@@ -153,102 +245,10 @@ segment you create. Test your segment with this theme first.
 
 You should add tests for your segment as best you are able. Unit and
 integration tests are both welcome. Run your tests with the `nosetests` command
-after install the requirements in `dev_requirements.txt`.
+after install the requirements in `requirements-dev.txt`.
 
-### Themes
+## Troubleshooting
 
-The `themes` directory stores themes for your prompt, which are basically color
-values used by segments. The `default.py` defines a default theme which can be
-used standalone, and every other theme falls back to it if they miss colors for
-any segments. Create new themes by copying any other existing theme and
-changing the values. To use a theme, set the `THEME` variable in `config.py` to
-the name of your theme.
-
-A script for testing color combinations is provided at `themes/colortest.py`.
-Note that the colors you see may vary depending on your terminal. When designing
-a theme, please test your theme on multiple terminals, especially with default
-settings.
-
-# Changes
-
-2016-01-14
-
-* AWS profle support added per the `AWS_DEFAULT_PROFILE` setup described in [the AWS docs](http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html)
-* `$ export AWS_DEFAULT_PROFILE=<NAME>`
-
-
-2015-12-26
-
-* Beginnings of unit testing for segments. Included in this change was a
-  refactor of the way segments are added to powerline. Now, instead of looking
-  for a global `powerline` object, `powerline` is passed into the function to
-  add the segment. Segments will also no longer add the segments by calling the
-  `add` function themselves.
-  ([@b-ryan](https://github.com/milkbikis/powerline-shell/pull/212))
-* Python3 fixes for `lib/color_compliment.py`.
-  ([@ceholden](https://github.com/milkbikis/powerline-shell/pull/220))
-
-2015-11-25
-
-* `virtual_env` segment now supports environments made with `conda`
-  ([@ceholden](https://github.com/milkbikis/powerline-shell/pull/198))
-
-2015-11-21
-
-* Fixes for Python 3 compatibility
-  ([@b-ryan](https://github.com/milkbikis/powerline-shell/pull/211))
-
-2015-11-18
-
-* The git segment has gotten a makeover
-  ([@MartinWetterwald](https://github.com/milkbikis/powerline-shell/pull/136))
-* Fix git segment when git is not on the standard PATH
-  ([@andrejgl](https://github.com/milkbikis/powerline-shell/pull/153))
-* Fix `--cwd-max-depth` showing duplicates when it's <= 2
-  ([@b-ryan](https://github.com/milkbikis/powerline-shell/pull/209))
-* Add padding around `exit_code` segment
-  ([@phatblat](https://github.com/milkbikis/powerline-shell/pull/205))
-
-2015-10-02
-
-* New option (`--cwd-max-dir-size`) which allows you to limit each directory
-  that is displayed to a number of characters. This currently does not apply
-  if you are using `--cwd-mode plain`.
-  ([@mart-e](https://github.com/milkbikis/powerline-shell/pull/127))
-
-2015-08-26
-
-* New `plain` mode of displaying the current working directory which can be
-  used by adding `--cwd-only plain` to `powerline-shell.py`.
-  This deprecates the `--cwd-only` option. `--cwd-mode dironly` can be used
-  instead. ([@paol](https://github.com/milkbikis/powerline-shell/pull/156))
-
-2015-08-18
-
-* New `time` segment
-  ([@filipebarros](https://github.com/milkbikis/powerline-shell/pull/107))
-
-2015-08-01
-
-* Use `print` function for some python3 compatibility
-  ([@strycore](https://github.com/milkbikis/powerline-shell/pull/195))
-
-2015-07-31
-
-* The current working directory no longer follows symbolic links
-* New `exit_code` segment
-  ([@disruptek](https://github.com/milkbikis/powerline-shell/pull/129))
-
-2015-07-30
-
-* Fix ZSH root indicator
-  ([@nkcfan](https://github.com/milkbikis/powerline-shell/pull/150))
-* Add uptime segment
-  ([@marcioAlmada](https://github.com/milkbikis/powerline-shell/pull/139))
-
-2015-07-27
-
-* Use `python2` instead of `python` in hashbangs
-  ([@Undeterminant](https://github.com/milkbikis/powerline-shell/pull/100))
-* Add `node_version` segment
-  ([@mmilleruva](https://github.com/milkbikis/powerline-shell/pull/189))
+See the [FAQ](https://github.com/banga/powerline-shell/wiki/FAQ). If you
+continue to have issues, please open an
+[issue](https://github.com/banga/powerline-shell/issues/new).
