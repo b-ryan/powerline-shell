@@ -153,6 +153,11 @@ Once you have generated your config file, you can now start adding or removing
 "segments" - the building blocks of your shell. The list of segments available
 are:
 
+- `aws_profile` - Show which AWS profile is in use. See the
+  [AWS](http://docs.aws.amazon.com/cli/latest/userguide/cli-multiple-profiles.html)
+  documentation.
+- `battery` - See percentage of battery charged and an icon when the battery is
+  charging.
 - `bzr` - Details about the current Bazaar repo.
 - `cwd` - Shows your current working directory. See [Segment
   Configuration](#segment-configuration) for some options.
