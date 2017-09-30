@@ -4,6 +4,9 @@ Unreleased
 
 * Fix username segment's background color after "su" command
   ([@Fak3](https://github.com/banga/powerline-shell/pull/175))
+* New `battery` segment which shows the percentage your battery is charged and
+  an icon when your battery is charging.
+  ([@wattengard](https://github.com/banga/powerline-shell/pull/204))
 
 2017-09-30 (version 0.3.0)
 
