@@ -7,6 +7,8 @@ Unreleased
 * Fix subshell execution in bash described by
   [pw3nage](https://github.com/njhartwell/pw3nage)
   ([@b-ryan](https://github.com/banga/powerline-shell/pull/282))
+* Change SSH segment to just use the text `SSH` instead of showing a lock
+  symbol. Closes [#287](https://github.com/banga/powerline-shell/issues/287).
 
 2017-09-18 (version 0.2.2)
 
