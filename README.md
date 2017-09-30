@@ -73,7 +73,14 @@ setting your $TERM to `xterm-256color`, because that works for me.
 - Install using pip:
 
 ```
-pip install powerline-shell
+pip install --user powerline-shell
+```
+
+PS: If you want to install powerline-shell for all users simply omit the `--user` flag
+
+- Install using the git version:
+```
+python setup.py install --user
 ```
 
 - Setup your shell prompt using the instructions for your shell below.
