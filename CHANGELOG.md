@@ -7,6 +7,8 @@ Unreleased
 * New `battery` segment which shows the percentage your battery is charged and
   an icon when your battery is charging.
   ([@wattengard](https://github.com/banga/powerline-shell/pull/204))
+* New `aws_profile` segment which shows which AWS profile you are using.
+  ([@bryangrimes](https://github.com/banga/powerline-shell/pull/223))
 
 2017-09-30 (version 0.3.0)
 
