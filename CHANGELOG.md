@@ -1,6 +1,6 @@
 # Changes
 
-Unreleased
+2017-09-30 (version 0.3.0)
 
 * Redo Fossil segment to be consistent with git, svn, etc.
   ([@emansije](https://github.com/banga/powerline-shell/pull/286))
