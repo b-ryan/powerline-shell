@@ -57,6 +57,13 @@ class HgTest(unittest.TestCase):
         self.segment.add_to_powerline()
         self.assertEqual(self.powerline.append.call_args[0][0], " default ")
 
+    def test_different_branch(self):
+        self._add_and_commit("foo")
+        self._checkout_new_branch("bar")
+        self.segment.start()
+        self.segment.add_to_powerline()
+        self.assertEqual(self.powerline.append.call_args[0][0], " bar ")
+
     @mock.patch('powerline_shell.segments.hg._get_hg_status')
     def test_all(self, check_output):
         for stdout, result in test_cases.items():
