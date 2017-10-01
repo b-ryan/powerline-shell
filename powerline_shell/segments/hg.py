@@ -35,6 +35,12 @@ def parse_hg_stats(status):
     return stats
 
 
+def _get_hg_status(output):
+    """This function exists to enable mocking the `hg status` output in tests.
+    """
+    return output[0].decode("utf-8").splitlines()
+
+
 def build_stats():
     try:
         p = subprocess.Popen(["hg", "status"],
@@ -47,7 +53,7 @@ def build_stats():
     pdata = p.communicate()
     if p.returncode != 0:
         return None, None
-    status = pdata[0].decode("utf-8").splitlines()
+    status = _get_hg_status(pdata)
     stats = parse_hg_stats(status)
     branch = _get_hg_branch()
     return stats, branch
