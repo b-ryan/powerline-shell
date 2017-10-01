@@ -7,6 +7,7 @@ import sys
 import importlib
 import json
 from .utils import warn, py3
+import re
 
 
 def get_valid_cwd():
@@ -49,13 +50,13 @@ class Powerline(object):
         },
         'patched': {
             'lock': u'\uE0A2',
-            'network': u'\uE0A2',
+            'network': 'SSH',
             'separator': u'\uE0B0',
             'separator_thin': u'\uE0B1'
         },
         'flat': {
             'lock': u'\uE0A2',
-            'network': u'\uE0A2',
+            'network': 'SSH',
             'separator': '',
             'separator_thin': ''
         },
@@ -73,8 +74,7 @@ class Powerline(object):
         self.theme = theme
         self.cwd = get_valid_cwd()
         mode = config.get("mode", "patched")
-        shell = config.get("shell", "bash")
-        self.color_template = self.color_templates[shell]
+        self.color_template = self.color_templates[args.shell]
         self.reset = self.color_template % '[0m'
         self.lock = Powerline.symbols[mode]['lock']
         self.network = Powerline.symbols[mode]['network']
@@ -114,12 +114,16 @@ class Powerline(object):
 
     def draw_segment(self, idx):
         segment = self.segments[idx]
+        if self.args.shell == "bash":
+            sanitized = re.sub(r"([`$])", r"\\\1", segment[0])
+        else:
+            sanitized = segment[0]
         next_segment = self.segments[idx + 1] if idx < len(self.segments)-1 else None
 
         return ''.join((
             self.fgcolor(segment[1]),
             self.bgcolor(segment[2]),
-            segment[0],
+            sanitized,
             self.bgcolor(next_segment[2]) if next_segment else self.reset,
             self.fgcolor(segment[4]),
             segment[3]))

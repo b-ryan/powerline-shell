@@ -26,7 +26,7 @@ class DefaultColor(object):
     READONLY_BG = 124
     READONLY_FG = 254
 
-    SSH_BG = 166 # medium orange
+    SSH_BG = 166  # medium orange
     SSH_FG = 254
 
     REPO_CLEAN_BG = 148  # a light green color
@@ -60,6 +60,14 @@ class DefaultColor(object):
 
     VIRTUAL_ENV_BG = 35  # a mid-tone green
     VIRTUAL_ENV_FG = 00
+
+    BATTERY_NORMAL_BG = 22
+    BATTERY_NORMAL_FG = 7
+    BATTERY_LOW_BG = 196
+    BATTERY_LOW_FG = 7
+
+    AWS_PROFILE_FG = 39
+    AWS_PROFILE_BG = 238
 
 class Color(DefaultColor):
     """

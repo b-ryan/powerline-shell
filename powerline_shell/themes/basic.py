@@ -11,18 +11,18 @@ class Color(DefaultColor):
     HOSTNAME_BG = 7
 
     HOME_SPECIAL_DISPLAY = False
-    PATH_BG = 8 # dark grey
-    PATH_FG = 7 # light grey
-    CWD_FG = 15 # white
+    PATH_BG = 8  # dark grey
+    PATH_FG = 7  # light grey
+    CWD_FG = 15  # white
     SEPARATOR_FG = 7
 
     READONLY_BG = 1
     READONLY_FG = 15
 
-    REPO_CLEAN_BG = 2  # green
-    REPO_CLEAN_FG = 0  # black
-    REPO_DIRTY_BG = 1  # red
-    REPO_DIRTY_FG = 15 # white
+    REPO_CLEAN_BG = 2   # green
+    REPO_CLEAN_FG = 0   # black
+    REPO_DIRTY_BG = 1   # red
+    REPO_DIRTY_FG = 15  # white
 
     JOBS_FG = 14
     JOBS_BG = 8
@@ -37,3 +37,6 @@ class Color(DefaultColor):
 
     VIRTUAL_ENV_BG = 2
     VIRTUAL_ENV_FG = 0
+
+    AWS_PROFILE_FG = 14
+    AWS_PROFILE_BG = 8

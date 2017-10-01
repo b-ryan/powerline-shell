@@ -7,3 +7,5 @@ powerline_shell.egg-info/
 tags
 config.json
 powerline-shell.json
+.DS_Store
+*sublime*
