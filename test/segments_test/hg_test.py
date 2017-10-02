@@ -4,6 +4,16 @@ import tempfile
 import shutil
 import sh
 import powerline_shell.segments.hg as hg
+from powerline_shell.utils import RepoStats
+
+
+test_cases = {
+    "? new-file": RepoStats(new=1),
+    "M modified-file": RepoStats(changed=1),
+    "R removed-file": RepoStats(changed=1),
+    "! missing-file": RepoStats(changed=1),
+    "A added-file": RepoStats(staged=1),
+}
 
 
 class HgTest(unittest.TestCase):
@@ -46,3 +56,16 @@ class HgTest(unittest.TestCase):
         self.segment.start()
         self.segment.add_to_powerline()
         self.assertEqual(self.powerline.append.call_args[0][0], " default ")
+
+    def test_different_branch(self):
+        self._add_and_commit("foo")
+        self._checkout_new_branch("bar")
+        self.segment.start()
+        self.segment.add_to_powerline()
+        self.assertEqual(self.powerline.append.call_args[0][0], " bar ")
+
+    @mock.patch('powerline_shell.segments.hg._get_hg_status')
+    def test_all(self, check_output):
+        for stdout, result in test_cases.items():
+            stats = hg.parse_hg_stats([stdout])
+            self.assertEquals(result, stats)
