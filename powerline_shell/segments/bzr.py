@@ -37,6 +37,12 @@ def parse_bzr_stats(status):
     return stats
 
 
+def _get_bzr_status(output):
+    """This function exists to enable mocking the `bzr status` output in tests.
+    """
+    return output[0].decode("utf-8").splitlines()
+
+
 def build_stats():
     try:
         p = subprocess.Popen(['bzr', 'status'],
@@ -48,7 +54,7 @@ def build_stats():
     pdata = p.communicate()
     if p.returncode != 0:
         return (None, None)
-    status = pdata[0].decode("utf-8").splitlines()
+    status = _get_bzr_status(pdata)
     stats = parse_bzr_stats(status)
     branch = _get_bzr_branch()
     return stats, branch
