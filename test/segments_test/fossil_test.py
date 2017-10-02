@@ -36,6 +36,7 @@ class FossilTest(unittest.TestCase):
 
     def _checkout_new_branch(self, branch):
         sh.fossil("branch", "new", branch, "trunk")
+        sh.fossil("checkout", branch)
 
     @mock.patch("powerline_shell.segments.fossil.get_PATH")
     def test_fossil_not_installed(self, get_PATH):
@@ -55,6 +56,13 @@ class FossilTest(unittest.TestCase):
         self.segment.start()
         self.segment.add_to_powerline()
         self.assertEqual(self.powerline.append.call_args[0][0], " trunk ")
+
+    def test_different_branch(self):
+        self._add_and_commit("foo")
+        self._checkout_new_branch("bar")
+        self.segment.start()
+        self.segment.add_to_powerline()
+        self.assertEqual(self.powerline.append.call_args[0][0], " bar ")
 
     @mock.patch('powerline_shell.segments.fossil._get_fossil_status')
     def test_all(self, check_output):
