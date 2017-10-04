@@ -1,29 +1,68 @@
-import subprocess
-from ..utils import BasicSegment, RepoStats
+import subprocess, os
+from ..utils import ThreadedSegment, RepoStats
 
 
-class Segment(BasicSegment):
+def get_PATH():
+    """Normally gets the PATH from the OS. This function exists to enable
+    easily mocking the PATH in tests.
+    """
+    return os.getenv("PATH")
+
+
+def svn_subprocess_env():
+    return {"PATH": get_PATH()}
+
+
+def parse_svn_stats(status):
+    stats = RepoStats()
+    for line in status:
+        if line[0] == "?":
+            stats.new += 1
+        elif line[0] == "C":
+            stats.conflicted += 1
+        elif line[0] in ["A", "D", "I", "M", "R", "!", "~"]:
+            stats.changed += 1
+    return stats
+
+
+def _get_svn_status(output):
+    """This function exists to enable mocking the `svn status` output in tests.
+    """
+    return output[0].decode("utf-8").splitlines()
+
+
+def build_stats():
+    try:
+        p = subprocess.Popen(['svn', 'status'],
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                             env=svn_subprocess_env())
+    except OSError:
+        # Popen will throw an OSError if svn is not found
+        return None
+    pdata = p.communicate()
+    if p.returncode != 0 or pdata[1][:22] == b'svn: warning: W155007:':
+        return None
+    status = _get_svn_status(pdata)
+    stats = parse_svn_stats(status)
+    return stats
+
+
+class Segment(ThreadedSegment):
+    def run(self):
+        self.stats = build_stats()
+
     def add_to_powerline(self):
-        is_svn = subprocess.Popen(["svn", "status"],
-                                  stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        is_svn_output = is_svn.communicate()[1].decode("utf-8").strip()
-        if len(is_svn_output) != 0:
+        self.join()
+        if not self.stats:
             return
-
-        try:
-            p1 = subprocess.Popen(["svn", "status"], stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE)
-        except OSError:
-            return
-
-        stdout = p1.communicate()[0]
-        stats = RepoStats()
-        for line in stdout.splitlines():
-            if line[0] == "?":
-                stats.new += 1
-            elif line[0] == "C":
-                stats.conflicted += 1
-            elif line[0] in ["A", "D", "I", "M", "R", "!", "~"]:
-                stats.changed += 1
-
-        stats.add_to_powerline(self.powerline)
+        bg = self.powerline.theme.REPO_CLEAN_BG
+        fg = self.powerline.theme.REPO_CLEAN_FG
+        if self.stats.dirty:
+            bg = self.powerline.theme.REPO_DIRTY_BG
+            fg = self.powerline.theme.REPO_DIRTY_FG
+        if self.powerline.segment_conf("vcs", "show_symbol"):
+            symbol = RepoStats().symbols["svn"]
+        else:
+            symbol = "svn"
+        self.powerline.append(" " + symbol + " ", fg, bg)
+        self.stats.add_to_powerline(self.powerline)
