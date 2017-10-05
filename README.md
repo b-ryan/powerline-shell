@@ -1,7 +1,7 @@
 # A Powerline style prompt for your shell
 
 A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash,
-ZSH and Fish:
+ZSH, Fish, and tcsh:
 
 ![MacVim+Solarized+Powerline+CtrlP](https://raw.github.com/banga/powerline-shell/master/bash-powerline-screenshot.png)
 
@@ -130,6 +130,14 @@ Redefine `fish_prompt` in ~/.config/fish/config.fish:
 function fish_prompt
     powerline-shell --shell bare $status
 end
+```
+
+### tcsh
+
+Add the following to your `.tcshrc`:
+
+```
+alias precmd 'set prompt="`powerline-shell --shell tcsh $?`"'
 ```
 
 ## Customization
