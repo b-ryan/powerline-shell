@@ -1,15 +1,8 @@
-FROM python:2.7-alpine
+FROM aa8y/core:python2
 
 MAINTAINER github.com/banga/powerline-shell
 
-ENV USER docker
-ENV USERNAME "Docker User"
-
-# Create a 'docker' user because we do not want to run everything as 'root'. Use 9999 as the ID
-# to keep it specific and away from the IDs in the host system.
-RUN addgroup -g 9999 $USER && \
-    adduser -u 9999 -G $USER -g "$USERNAME" -s /bin/bash -D $USER
-
+USER root
 RUN apk add --no-cache --update \
       bzr \
       fossil \
@@ -19,14 +12,14 @@ RUN apk add --no-cache --update \
       subversion && \
     rm -rf /var/cache/apk/*
 
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
-
-# Cache the dev requirements.
+# Cache the dev requirements. Directory is set in the base image.
+WORKDIR $APP_DIR
 COPY requirements-dev.txt .
-RUN pip install -r requirements-dev.txt
+RUN pip install -r requirements-dev.txt && \
+    rm -rf requirements-dev.txt
 
-USER docker
+# 'USER' is set in the base image. It points to a non-root user called 'docker'.
+USER $USER
 RUN bzr whoami "$USERNAME <$USER@example.com>" && \
     git config --global user.email "$USER@example.com" && \
     git config --global user.name "$USERNAME"
@@ -34,7 +27,7 @@ RUN bzr whoami "$USERNAME <$USER@example.com>" && \
 COPY . ./
 USER root
 RUN ./setup.py install && \
-    chown -R docker:docker .
+    chown -R $USER:$USER .
 
-USER docker
-ENTRYPOINT ["/bin/sh"]
+USER $USER
+ENTRYPOINT ["/bin/bash"]
