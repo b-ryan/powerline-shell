@@ -270,8 +270,10 @@ Make sure you introduce new default colors in `themes/default.py` for every new
 segment you create. Test your segment with this theme first.
 
 You should add tests for your segment as best you are able. Unit and
-integration tests are both welcome. Run your tests with the `nosetests` command
-after install the requirements in `requirements-dev.txt`.
+integration tests are both welcome. Run your tests by running the `test.sh`
+script. It uses `docker` to manage dependencies and the environment.
+Alternatively, you can run the `nosetests` command after installing the
+requirements in `requirements-dev.txt`.
 
 ## Troubleshooting
 
