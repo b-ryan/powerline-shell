@@ -4,6 +4,8 @@
 
 * Fix cwd bug when `$HOME` ends in a slash
   ([@tbodt](https://github.com/banga/powerline-shell/pull/309))
+* Use docker to run tests
+  ([@aa8y](https://github.com/banga/powerline-shell/pull/297))
 
 2017-10-06 (version 0.4.0)
 
