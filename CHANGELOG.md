@@ -1,6 +1,11 @@
 # Changes
 
-Unreleased
+2017-10-16 (version 0.4.1)
+
+* Fix cwd bug when `$HOME` ends in a slash
+  ([@tbodt](https://github.com/banga/powerline-shell/pull/309))
+
+2017-10-06 (version 0.4.0)
 
 * tcsh support
 
