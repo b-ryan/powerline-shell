@@ -64,6 +64,8 @@ def add_cwd_segment(powerline):
 
     names = split_path_into_names(cwd)
 
+    max_size = powerline.segment_conf("cwd", "max_dir_size")
+    last_max_size = powerline.segment_conf("cwd", "last_max_dir_size", max_size)
     max_depth = powerline.segment_conf("cwd", "max_depth", 5)
     if max_depth <= 0:
         warn("Ignoring cwd.max_depth option since it's not greater than 0")
@@ -92,10 +94,18 @@ def add_cwd_segment(powerline):
         if requires_special_home_display(powerline, name) or is_last_dir:
             separator = None
             separator_fg = None
-
-        powerline.append(' %s ' % maybe_shorten_name(powerline, name), fg, bg,
-                         separator, separator_fg)
-
+        
+        formated_name = ""
+        
+        # if last_max_size is below 0 then assume full name
+        if is_last_dir:
+            if last_max_size < 0:
+                formated_name = name
+            elif last_max_size >= 0: #yes, 0 is valid
+                formated_name = name[:last_max_size]
+        else:
+            formated_name = maybe_shorten_name(powerline, name)
+        powerline.append(' %s '%formated_name, fg, bg, separator, separator_fg)
 
 class Segment(BasicSegment):
     def add_to_powerline(self):

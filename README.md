@@ -248,6 +248,7 @@ The options for the `cwd` segment are:
 - `max_depth`: Maximum number of directories to show in path
 - `max_dir_size`: Maximum number of characters displayed for each directory in
   the path
+- `last_max_dir_size`: Maximum number of characters displayed for the last path element. Defaults to `max_dir_size`. -1 means all characters.
 
 The `hostname` segment provides one option:
 
