@@ -1,29 +1,51 @@
 import subprocess
-from ..utils import BasicSegment, RepoStats
+from ..utils import ThreadedSegment, RepoStats
 
 
-class Segment(BasicSegment):
-    def add_to_powerline(self):
-        is_svn = subprocess.Popen(["svn", "status"],
-                                  stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        is_svn_output = is_svn.communicate()[1].decode("utf-8").strip()
-        if len(is_svn_output) != 0:
-            return
+class Segment(ThreadedSegment):
+    def __init__(self, powerline):
+        super().__init__(powerline)
+        self.stats = None
+        self.revision = ""
 
+    def run(self):
         try:
-            p1 = subprocess.Popen(["svn", "status"], stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE)
+            svn_status = subprocess.Popen(["svn", "status"],
+                                          stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            svn_info = subprocess.Popen(["svn", "info"],
+                                        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            svn_stdout, svn_stderr = svn_status.communicate()
+            svn_info, _ = svn_info.communicate()
         except OSError:
             return
 
-        stdout = p1.communicate()[0]
-        stats = RepoStats()
-        for line in stdout.splitlines():
-            if line[0] == "?":
-                stats.new += 1
-            elif line[0] == "C":
-                stats.conflicted += 1
-            elif line[0] in ["A", "D", "I", "M", "R", "!", "~"]:
-                stats.changed += 1
+        if len(svn_stderr.decode("utf-8").strip()) != 0:
+            return
 
-        stats.add_to_powerline(self.powerline)
+        self.stats = RepoStats()
+        for line in svn_stdout.splitlines():
+            line = line.decode("utf-8").strip()
+            if line[0] == "?":
+                self.stats.new += 1
+            elif line[0] == "C":
+                self.stats.conflicted += 1
+            elif line[0] in ["A", "D", "I", "M", "R", "!", "~"]:
+                self.stats.changed += 1
+
+        for line in svn_info.splitlines():
+            line = line.decode("utf-8").strip()
+            if "Revision: " in line:
+                self.revision = line.split(" ", maxsplit=1)[1]
+
+    def add_to_powerline(self):
+        self.join()
+        if not self.stats:
+            return
+        bg = self.powerline.theme.REPO_CLEAN_BG
+        fg = self.powerline.theme.REPO_CLEAN_FG
+        if self.stats.dirty:
+            bg = self.powerline.theme.REPO_DIRTY_BG
+            fg = self.powerline.theme.REPO_DIRTY_FG
+
+        self.powerline.append(" rev " + self.revision + " ", fg, bg)
+        self.stats.add_to_powerline(self.powerline)
