@@ -1,7 +1,7 @@
 # A Powerline style prompt for your shell
 
 A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash,
-ZSH and Fish:
+ZSH, Fish, and tcsh:
 
 ![MacVim+Solarized+Powerline+CtrlP](https://raw.github.com/banga/powerline-shell/master/bash-powerline-screenshot.png)
 
@@ -75,14 +75,20 @@ setting your $TERM to `xterm-256color`, because that works for me.
 - Install using pip:
 
 ```
-pip install --user powerline-shell
+pip install powerline-shell
 ```
 
-PS: If you want to install powerline-shell for all users simply omit the `--user` flag
+(*You can use the
+[`--user`](https://pip.pypa.io/en/stable/user_guide/#user-installs) option to
+install for just your user, if you'd like. But you may need to fiddle with your
+`PATH` to get this working properly.*)
 
-- Install using the git version:
+- Or, install from the git repository:
+
 ```
-python setup.py install --user
+git clone https://github.com/banga/powerline-shell
+cd powerline-shell
+python setup.py install
 ```
 
 - Setup your shell prompt using the instructions for your shell below.
@@ -132,6 +138,14 @@ Redefine `fish_prompt` in ~/.config/fish/config.fish:
 function fish_prompt
     powerline-shell --shell bare $status
 end
+```
+
+### tcsh
+
+Add the following to your `.tcshrc`:
+
+```
+alias precmd 'set prompt="`powerline-shell --shell tcsh $?`"'
 ```
 
 ## Customization
@@ -268,8 +282,10 @@ Make sure you introduce new default colors in `themes/default.py` for every new
 segment you create. Test your segment with this theme first.
 
 You should add tests for your segment as best you are able. Unit and
-integration tests are both welcome. Run your tests with the `nosetests` command
-after install the requirements in `requirements-dev.txt`.
+integration tests are both welcome. Run your tests by running the `test.sh`
+script. It uses `docker` to manage dependencies and the environment.
+Alternatively, you can run the `nosetests` command after installing the
+requirements in `requirements-dev.txt`.
 
 ## Troubleshooting
 

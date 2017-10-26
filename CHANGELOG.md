@@ -1,5 +1,20 @@
 # Changes
 
+2017-10-16 (version 0.4.2)
+
+* VCS segments will use ASCII `?` instead of a unicode symbol for new files.
+
+2017-10-16 (version 0.4.1)
+
+* Fix cwd bug when `$HOME` ends in a slash
+  ([@tbodt](https://github.com/banga/powerline-shell/pull/309))
+* Use docker to run tests
+  ([@aa8y](https://github.com/banga/powerline-shell/pull/297))
+
+2017-10-06 (version 0.4.0)
+
+* tcsh support
+
 2017-09-30 (version 0.3.1)
 
 * Fix username segment's background color after "su" command

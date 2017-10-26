@@ -6,6 +6,7 @@ class Segment(BasicSegment):
         powerline = self.powerline
         root_indicators = {
             'bash': ' \\$ ',
+            'tcsh': ' %# ',
             'zsh': ' %# ',
             'bare': ' $ ',
         }

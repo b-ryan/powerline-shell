@@ -15,7 +15,7 @@ class RepoStats(object):
         'behind': u'\u2B07',
         'staged': u'\u2714',
         'changed': u'\u270E',
-        'new': u'\u2753',
+        'new': u'?',
         'conflicted': u'\u273C',
         'git': u'\uE0A0',
         'hg': u'\u263F',

@@ -1,0 +1,9 @@
+*.swp
+.git/
+.gitignore
+.travis.yml
+CHANGELOG.md
+Dockerfile
+LICENSE
+README.md
+bash-powerline-screenshot.png
