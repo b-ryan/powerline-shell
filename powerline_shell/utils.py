@@ -19,8 +19,8 @@ class RepoStats(object):
         'conflicted': u'\u273C',
         'git': u'\uE0A0',
         'hg': u'\u263F',
-        'bzr': u'\u25C8',
-        'fossil': u'\u24BB',  # or 24D5, for lowercase 'f'
+        'bzr': u'\u2B61\u20DF',
+        'fossil': u'\u2332',
         'svn': u'\u2446'
     }
 
