@@ -7,10 +7,10 @@ class Segment(BasicSegment):
         powerline = self.powerline
 
         try:
-            p1 = subprocess.Popen(["python", "--version"], stdout=subprocess.PIPE)
-            p2 = subprocess.Popen(["sed", "s/ (.*//"], stdin=p1.stdout, stdout=subprocess.PIPE)
-            version = p2.communicate()[0].decode("utf-8").rstrip()
 
+            output = subprocess.check_output(['python', '--version'],
+                                             stderr=subprocess.STDOUT)
+            version = output.rstrip().split(' ')[1]
             powerline.append(version, 15, 1)
         except OSError:
             return
