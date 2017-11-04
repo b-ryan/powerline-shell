@@ -36,7 +36,7 @@ class Segment(ThreadedSegment):
             #fish runs commands in a sub process, so you have to walk up the
             # tree one time to get back to where you were with bash or other
             # such shells
-            if pcmd=="fish":
+            if pcmd=="fish" or self.powerline.args.shell=="fish":
                 pppid = self.pidInfo(pppid, "ppid")
             
             output_proc = subprocess.Popen(['ps', '-a', '-o', 'ppid'], stdout=subprocess.PIPE)
