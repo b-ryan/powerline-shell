@@ -154,6 +154,19 @@ DEFAULT_CONFIG = {
 }
 
 
+def parseInlineSegment(dict):
+    ret = None
+    if dict is not None:
+        type = ""
+        if "type" in dict:
+            type = dict["type"]
+        if "options" in dict:
+            opt = dict["options"]
+            if "command" in opt:
+                cmd = opt["command"]
+                ret = {"type":type, "options":{"command":cmd}}
+    return ret
+
 def main():
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument('--generate-config', action='store_true',
@@ -183,8 +196,19 @@ def main():
     powerline = Powerline(args, config, theme)
     segments = []
     for seg_name in config["segments"]:
-        mod = importlib.import_module("powerline_shell.segments." + seg_name)
-        segment = getattr(mod, "Segment")(powerline)
+        segment = None
+        if seg_name is None or len(seg_name)<1:
+            continue                            #ignore bad configs
+        elif type(seg_name) is dict:
+            ret = parseInlineSegment(seg_name)
+            if ret is None:
+                continue                        #ignore bad configs
+            else:
+                mod = importlib.import_module("powerline_shell.segments.inline")
+                segment = getattr(mod, "Segment")(powerline, ret)
+        elif type(seg_name) is str:
+            mod = importlib.import_module("powerline_shell.segments." + seg_name)
+            segment = getattr(mod, "Segment")(powerline)
         segment.start()
         segments.append(segment)
     for segment in segments:
