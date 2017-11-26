@@ -259,7 +259,7 @@ The `hostname` segment provides one option:
 The options for the `battery` segment are:
 
 - `always_show_percentage`: If true, show percentage when fully charged on AC.
-- `low_battery_threshold`: Threshold percentage for low-battery indicator color.
+- `low_threshold`: Threshold percentage for low-battery indicator color.
 
 ### Contributing new types of segments
 
