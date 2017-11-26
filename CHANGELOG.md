@@ -1,5 +1,11 @@
 # Changes
 
+2017-11-25 (version 0.4.3)
+
+* New option for `cwd` segment that allows the last directory to not be
+  shortened when `max_dir_size` is used
+  ([@jceaser](https://github.com/banga/powerline-shell/pull/321)).
+
 2017-10-16 (version 0.4.2)
 
 * VCS segments will use ASCII `?` instead of a unicode symbol for new files.
