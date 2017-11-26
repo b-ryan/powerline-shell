@@ -13,6 +13,7 @@ class Segment(BasicSegment):
         else:
             warn("battery directory could not be found")
             return
+
         with open(os.path.join(dir_, "capacity")) as f:
             cap = int(f.read().strip())
         with open(os.path.join(dir_, "status")) as f:
@@ -26,7 +27,8 @@ class Segment(BasicSegment):
             pwr_fmt = u" {cap:d}% \u26A1 "
         else:
             pwr_fmt = " {cap:d}% "
-        if cap < self.powerline.segment_conf("battery", "low_battery_threshold", 20):
+
+        if cap < self.powerline.segment_conf("battery", "low_threshold", 20):
             bg = self.powerline.theme.BATTERY_LOW_BG
             fg = self.powerline.theme.BATTERY_LOW_FG
         else:
