@@ -4,7 +4,7 @@ from ..utils import ThreadedSegment, RepoStats
 
 class Segment(ThreadedSegment):
     def __init__(self, powerline):
-        super().__init__(powerline)
+        super(Segment, self).__init__(powerline)
         self.stats = None
         self.revision = ""
 
