@@ -254,17 +254,24 @@ The options for the `cwd` segment are:
 - `max_depth`: Maximum number of directories to show in path
 - `max_dir_size`: Maximum number of characters displayed for each directory in
   the path
+- `full_cwd`: If true, the last directory will not be shortened when
+  `max_dir_size` is used.
 
 The `hostname` segment provides one option:
 
 - `colorize`: If true, the hostname will be colorized based on a hash of
   itself.
 
-The `vcs` variable has one option:
+The `vcs` segment provides one option:
 
 - `show_symbol`: If `true`, the version control system segment will start with
   a symbol representing the specific version control system in use in the
   current directory.
+
+The options for the `battery` segment are:
+
+- `always_show_percentage`: If true, show percentage when fully charged on AC.
+- `low_threshold`: Threshold percentage for low-battery indicator color.
 
 ### Contributing new types of segments
 

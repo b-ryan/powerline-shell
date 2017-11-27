@@ -1,8 +1,6 @@
 from ..utils import BasicSegment, warn
 import os
 
-LOW_BATTERY_THRESHOLD = 20
-
 
 class Segment(BasicSegment):
     def add_to_powerline(self):
@@ -15,15 +13,25 @@ class Segment(BasicSegment):
         else:
             warn("battery directory could not be found")
             return
+
         with open(os.path.join(dir_, "capacity")) as f:
-            cap = f.read().strip()
+            cap = int(f.read().strip())
         with open(os.path.join(dir_, "status")) as f:
             status = f.read().strip()
-        pwr = u" \u26A1 " if status == "Charging" else u" "
-        if int(cap) < LOW_BATTERY_THRESHOLD:
+        if status == "Full":
+            if self.powerline.segment_conf("battery", "always_show_percentage", False):
+                pwr_fmt = u" {cap:d}% \U0001F50C "
+            else:
+                pwr_fmt = u" \U0001F50C "
+        elif status == "Charging":
+            pwr_fmt = u" {cap:d}% \u26A1 "
+        else:
+            pwr_fmt = " {cap:d}% "
+
+        if cap < self.powerline.segment_conf("battery", "low_threshold", 20):
             bg = self.powerline.theme.BATTERY_LOW_BG
             fg = self.powerline.theme.BATTERY_LOW_FG
         else:
             bg = self.powerline.theme.BATTERY_NORMAL_BG
             fg = self.powerline.theme.BATTERY_NORMAL_FG
-        self.powerline.append(" " + cap + "%" + pwr, fg, bg)
+        self.powerline.append(pwr_fmt.format(cap=cap), fg, bg)
