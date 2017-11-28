@@ -54,6 +54,7 @@ class Segment(BasicSegment):
         @param dir_ path to a sys class battery file
         '''
         cap = -1
+        
         with open(os.path.join(dir_, "capacity")) as f:
             cap = int(f.read().strip())
         with open(os.path.join(dir_, "status")) as f:
@@ -99,6 +100,20 @@ class Segment(BasicSegment):
         else:
             bg = self.powerline.theme.BATTERY_NORMAL_BG
             fg = self.powerline.theme.BATTERY_NORMAL_FG
+        
+        '''
+        if status == "Full":
+            if self.powerline.segment_conf("battery", "always_show_percentage", False):
+                pwr_fmt = u" {cap:d}% \U0001F50C "
+            else:
+                pwr_fmt = u" \U0001F50C "
+        elif status == "Charging":
+            pwr_fmt = u" {cap:d}% \u26A1 "
+        else:
+            pwr_fmt = " {cap:d}% "
+
+        if cap < self.powerline.segment_conf("battery", "low_threshold", 20):
+        '''
         
         ################
         # set display options based on status
