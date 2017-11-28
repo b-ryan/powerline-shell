@@ -3,6 +3,22 @@ import os, subprocess, re
 
 LOW_BATTERY_THRESHOLD = 20
 
+charge_state = {
+    "charged":"charged",
+    "discharging":"discharging",
+    "charging":"charging",
+    "finishing charge":"finishing charge",
+    
+    "full":"charged"
+}
+
+GLYPH_FULL = u"\U0001F50C"
+GLYPH_CHARGING = u"\u26A1"
+GLYPH_DISCHARGING = u"\u2301"
+
+GLYPH_BATT = u"\u2393"
+GLYPH_WALL = u"\u23E6"
+
 class Segment(BasicSegment):
     def add_to_powerline(self):
         # See discussion in https://github.com/banga/powerline-shell/pull/204
@@ -42,30 +58,68 @@ class Segment(BasicSegment):
             cap = int(f.read().strip())
         with open(os.path.join(dir_, "status")) as f:
             status = f.read().strip()
+            if status.lower() in charge_state:
+                status = charge_state[status.lowwer()]
         self.display(status, cap)
     
-    def display(self, status, cap, source="unknown"):
+    def display(self, raw_status, raw_cap, raw_source="unknown"):
         '''
-        sends formated text to powerline
-        @return status charging status is one of [charged|discharging|???]
+        sends formated text to powerline, displays lots of things when needed:
+        * battery/ac(glyph) percent_charge(number) charge_action(glyph)
+        * battery/ac glpyh always displays
+        * percent_charge may be hidden if 100
+        * charge_action always displays
+        @return status charging status is one of [charged|discharging|charging|finishing charge]
         @cap capacity 0-100 as a string
         '''
-        pwr = u"\u26A1" if status.lower() == "charging" else u" "
-        pwr = u"\u2301" if status.lower() == "discharging" else pwr
+        status = raw_status.strip().lower()
+        source = raw_source.strip().lower()
+        cap = int(raw_cap)
+        format = " {src:s} {cap:d}% {pow:s} "
         
-        src = u"\u2393" if source.lower() == "battery" else ""
-        src = u"\u23E6" if source.lower() == "power" else src
+        ################
+        # set display options based on source
+        if len(source)==0:
+            src = u""   # no source giving, display nothing
+        elif source=="battery":
+            src = GLYPH_BATT
+        elif source=="power":
+            src = GLYPH_WALL
+        else:
+            src = u""   #unknown source, display nothing
         
+        ################
+        # set display options based on capacity
         if cap<0 or 100<cap:
             warn ("'%d' is not a valid battery capacity" % cap)
-        
         if cap < self.low_battery_threshold() and source!="ac":
+            # need human to take note of this state
             bg = self.powerline.theme.BATTERY_LOW_BG
             fg = self.powerline.theme.BATTERY_LOW_FG
         else:
             bg = self.powerline.theme.BATTERY_NORMAL_BG
             fg = self.powerline.theme.BATTERY_NORMAL_FG
-        self.powerline.append(" %s %d%% %s " % (src, cap, pwr), fg, bg)
+        
+        ################
+        # set display options based on status
+        if len(status)==0:
+            pwr = u""   # no status giving, display nothing
+        elif status == "charged":
+            # show less info if charged
+            pwr = self.powerline.segment_conf("battery","g_charged", GLYPH_FULL)
+            if not self.powerline.segment_conf("battery", "always_show_percentage", False):
+                format = "{src:s} {pow:s}"
+                pwr = self.powerline.segment_conf("battery","g_charged", GLYPH_FULL)
+        elif status == "discharging":
+            pwr = self.powerline.segment_conf("battery","g_discharging", GLYPH_DISCHARGING)
+        elif status == "charging":
+            pwr = self.powerline.segment_conf("battery","g_charging", GLYPH_CHARGING)
+        elif status == "finishing charge":
+            pwr = self.powerline.segment_conf("battery","g_finishing", GLYPH_CHARGING)
+        else:
+            pwr = u""   # unknown status given, display nothing
+        
+        self.powerline.append(format.format(src=src, cap=cap, pow=pwr), fg, bg)
     
     def handle_pmset(self):
         '''
