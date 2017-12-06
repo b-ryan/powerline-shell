@@ -243,8 +243,9 @@ for the `cwd` segment are set in `~/.powerline-shell.py` like:
 The options for the `cwd` segment are:
 
 - `mode`: If "plain" then simple text will be used to show the cwd. If
-  "dironly," only the current directory will be shown. Otherwise expands the
-  cwd into individual directories.
+  "dironly," only the current directory will be shown. If "compact",
+  simple text is used but is shortened according to "max_depth" and
+  "max_dir_size". Otherwise expands the cwd into individual directories.
 - `max_depth`: Maximum number of directories to show in path
 - `max_dir_size`: Maximum number of characters displayed for each directory in
   the path
