@@ -40,7 +40,7 @@ quick look into the state of your repo:
   branch is dirty.
 - When the local branch differs from the remote, the difference in number
   of commits is shown along with `⇡` or `⇣` indicating whether a git push
-  or pull is pending
+  or pull is pending.
 
 In addition, git has a few extra symbols:
 
@@ -68,7 +68,7 @@ setting your $TERM to `xterm-256color`, because that works for me.
   - If you're using old patched fonts, you have to use the older symbols.
     Basically reverse [this
     commit](https://github.com/milkbikis/powerline-shell/commit/2a84ecc) in
-    your copy
+    your copy.
 
 - Install using pip:
 
@@ -176,7 +176,7 @@ are:
 - `cwd` - Shows your current working directory. See [Segment
   Configuration](#segment-configuration) for some options.
 - `exit_code` - When the previous command ends in a non-zero status, shows the
-  value of the exist status in red.
+  value of the exit status in red.
 - `fossil` - Details about the current Fossil repo.
 - `git` - Details about the current Git repo.
 - `hg` - Details about the current Mercurial repo.
@@ -185,7 +185,7 @@ are:
 - `newline` - Inserts a newline into the prompt.
 - `node_version` - `node --version`
 - `npm_version` - `npm --version`
-- `php_version` - Version of php on the machine
+- `php_version` - Version of php on the machine.
 - `rbenv` - `rbenv local`
 - `read_only` - Shows a lock icon if the current directory is read-only.
 - `root` - Shows a `#` if logged in as root, `$` otherwise.
@@ -194,9 +194,9 @@ are:
   useful info.
 - `ssh` - If logged into over SSH, shows a network icon.
 - `svn` - Details about the current SVN repo.
-- `time` - Shows the current time
-- `uptime` - Uptime of the current machine
-- `username` - Name of the logged-in user
+- `time` - Shows the current time.
+- `uptime` - Uptime of the current machine.
+- `username` - Name of the logged-in user.
 - `virtual_env` - Shows the name of the current virtual env or conda env.
 
 ### Segment Separator
@@ -205,7 +205,7 @@ By default, a unicode character (resembling the > symbol) is used to separate
 each segment. This can be changed by changing the "mode" option in the config
 file. The available modes are:
 
-- `patched` - The default
+- `patched` - The default.
 - `compatible` - Attempts to use characters that may already be available using
   your chosen font.
 - `flat` - No separator is used between segments, giving each segment a
@@ -245,9 +245,9 @@ The options for the `cwd` segment are:
 - `mode`: If "plain" then simple text will be used to show the cwd. If
   "dironly," only the current directory will be shown. Otherwise expands the
   cwd into individual directories.
-- `max_depth`: Maximum number of directories to show in path
+- `max_depth`: Maximum number of directories to show in path.
 - `max_dir_size`: Maximum number of characters displayed for each directory in
-  the path
+  the path.
 - `full_cwd`: If true, the last directory will not be shortened when
   `max_dir_size` is used.
 
