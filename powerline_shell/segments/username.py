@@ -17,5 +17,7 @@ class Segment(BasicSegment):
             bgcolor = powerline.theme.USERNAME_ROOT_BG
         else:
             bgcolor = powerline.theme.USERNAME_BG
-
-        powerline.append(user_prompt, powerline.theme.USERNAME_FG, bgcolor)
+        if powerline.segment_conf("username", "hide"):
+            pass
+        else:
+            powerline.append(user_prompt, powerline.theme.USERNAME_FG, bgcolor)
