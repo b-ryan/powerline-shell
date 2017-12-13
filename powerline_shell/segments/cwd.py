@@ -1,5 +1,6 @@
 import os
 import sys
+import re
 from ..utils import warn, py3, BasicSegment
 
 ELLIPSIS = u'\u2026'
@@ -11,6 +12,23 @@ def replace_home_dir(cwd):
         return '~' + cwd[len(home):]
     return cwd
 
+def replace_gsnws_root_dir(cwd):
+    gsnws = os.path.realpath(os.getenv('GSN_WS_ROOT'))
+    if cwd.startswith(gsnws):
+        pat_match = re.match('^\w{7}__ndpgsn_5_0_(?:wb__ndpgsn_5_0_(\w+)|(\w+))$', os.getenv('GSN_WS_NAME'))
+        if pat_match.group(1):
+            return pat_match.group(1) + cwd[len(gsnws):]
+        if pat_match.group(2):
+            return pat_match.group(2) + cwd[len(gsnws):]
+        return '$GSN_WS_ROOT' + cwd[len(gsnws):]
+    return cwd
+
+def replace_dir(cwd):
+    if cwd != replace_home_dir(cwd):
+        return replace_home_dir(cwd)
+    if cwd != replace_gsnws_root_dir(cwd):
+        return replace_gsnws_root_dir(cwd)
+    return cwd
 
 def split_path_into_names(cwd):
     names = cwd.split(os.sep)
@@ -56,7 +74,7 @@ def add_cwd_segment(powerline):
     cwd = powerline.cwd or os.getenv('PWD')
     if not py3:
         cwd = cwd.decode("utf-8")
-    cwd = replace_home_dir(cwd)
+    cwd = replace_dir(cwd)
 
     if powerline.segment_conf("cwd", "mode") == 'plain':
         powerline.append(' %s ' % (cwd,), powerline.theme.CWD_FG, powerline.theme.PATH_BG)
