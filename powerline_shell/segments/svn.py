@@ -13,14 +13,16 @@ def svn_subprocess_env():
     return {"PATH": get_PATH()}
 
 
-def _get_svn_branch():
-    p = subprocess.Popen(["svn", "info"],
+def _get_svn_revision():
+    p = subprocess.Popen(["svn", "info", "--xml"],
                          stdout=subprocess.PIPE,
                          stderr=subprocess.PIPE,
                          env=svn_subprocess_env())
-    working_dir_root_path = p.communicate()[0].decode("utf-8").splitlines()[1]
-    branch = os.path.basename(working_dir_root_path.split()[-1])
-    return branch
+    for line in p.communicate()[0].decode("utf-8").splitlines():
+        if "revision" in line:
+            revision = line.split("=")[1].split('"')[1]
+            break
+    return revision
 
 
 def parse_svn_stats(status):
@@ -54,13 +56,13 @@ def build_stats():
         return None, None
     status = _get_svn_status(pdata)
     stats = parse_svn_stats(status)
-    branch = _get_svn_branch()
-    return stats, branch
+    revision = _get_svn_revision()
+    return stats, revision
 
 
 class Segment(ThreadedSegment):
     def run(self):
-        self.stats, self.branch = build_stats()
+        self.stats, self.revision = build_stats()
 
     def add_to_powerline(self):
         self.join()
@@ -75,5 +77,5 @@ class Segment(ThreadedSegment):
             symbol = RepoStats().symbols["svn"] + " "
         else:
             symbol = ""
-        self.powerline.append(" " + symbol + self.branch + " ", fg, bg)
+        self.powerline.append(" " + symbol + "rev " + self.revision + " ", fg, bg)
         self.stats.add_to_powerline(self.powerline)
