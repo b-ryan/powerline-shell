@@ -39,3 +39,6 @@ class Color(DefaultColor):
 
     AWS_PROFILE_FG = 7
     AWS_PROFILE_BG = 2
+
+    GSNWS_BG = 4
+    GSNWS_FG = 7

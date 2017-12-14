@@ -15,11 +15,6 @@ def replace_home_dir(cwd):
 def replace_gsnws_root_dir(cwd):
     gsnws = os.path.realpath(os.getenv('GSN_WS_ROOT'))
     if cwd.startswith(gsnws):
-        pat_match = re.match('^\w{7}__ndpgsn_5_0_(?:wb__ndpgsn_5_0_(\w+)|(\w+))$', os.getenv('GSN_WS_NAME'))
-        if pat_match.group(1):
-            return pat_match.group(1) + cwd[len(gsnws):]
-        if pat_match.group(2):
-            return pat_match.group(2) + cwd[len(gsnws):]
         return '$GSN_WS_ROOT' + cwd[len(gsnws):]
     return cwd
 
