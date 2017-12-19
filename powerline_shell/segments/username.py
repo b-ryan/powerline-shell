@@ -12,7 +12,7 @@ class Segment(BasicSegment):
             user_prompt = " %n "
         else:
             user_prompt = " %s " % os.getenv("USER")
-    
+
         if getpass.getuser() == "root":
             bgcolor = powerline.theme.USERNAME_ROOT_BG
         else:
