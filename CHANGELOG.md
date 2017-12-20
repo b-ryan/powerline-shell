@@ -1,5 +1,10 @@
 # Changes
 
+2017-12-20 (version 0.4.5)
+
+* Fix `cwd` segment in Bash for Windows
+  ([@b-ryan](https://github.com/b-ryan/powerline-shell/pull/340))
+
 2017-12-19 (version 0.4.4)
 
 * New options and symbol for the `battery` segment
