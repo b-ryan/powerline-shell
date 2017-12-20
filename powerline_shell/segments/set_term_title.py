@@ -17,6 +17,6 @@ class Segment(BasicSegment):
             set_title = '\033]0;%s@%s: %s\007' % (
                 os.getenv('USER'),
                 socket.gethostname().split('.')[0],
-                powerline.cwd or os.getenv('PWD'),
+                powerline.cwd,
             )
         powerline.append(set_title, None, None, '')
