@@ -53,7 +53,7 @@ def get_fg_bg(powerline, name, is_last_dir):
 
 
 def add_cwd_segment(powerline):
-    cwd = powerline.cwd or os.getenv('PWD')
+    cwd = powerline.cwd
     if not py3:
         cwd = cwd.decode("utf-8")
     cwd = replace_home_dir(cwd)
