@@ -1,5 +1,10 @@
 # Changes
 
+2018-01-11 (version 0.4.6)
+
+* Fix bug in SVN segment
+  ([@kc9jud](https://github.com/b-ryan/powerline-shell/pull/347))
+
 2017-12-20 (version 0.4.5)
 
 * Fix `cwd` segment in Bash for Windows
