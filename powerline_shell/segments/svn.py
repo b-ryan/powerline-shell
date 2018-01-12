@@ -35,7 +35,7 @@ class Segment(ThreadedSegment):
         for line in svn_info.splitlines():
             line = line.decode("utf-8").strip()
             if "Revision: " in line:
-                self.revision = line.split(" ", maxsplit=1)[1]
+                self.revision = line.split(" ", 1)[1]
 
     def add_to_powerline(self):
         self.join()
