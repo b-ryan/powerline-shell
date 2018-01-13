@@ -1,6 +1,6 @@
 from ..utils import BasicSegment
 import os
-import pwd
+import getpass
 
 
 class Segment(BasicSegment):
@@ -13,7 +13,7 @@ class Segment(BasicSegment):
         else:
             user_prompt = " %s " % os.getenv("USER")
 
-        if pwd.getpwuid(os.getuid())[0] == "root":
+        if getpass.getuser() == "root":
             bgcolor = powerline.theme.USERNAME_ROOT_BG
         else:
             bgcolor = powerline.theme.USERNAME_BG

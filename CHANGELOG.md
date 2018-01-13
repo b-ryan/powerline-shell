@@ -1,5 +1,24 @@
 # Changes
 
+2018-01-11 (version 0.4.6)
+
+* Fix bug in SVN segment
+  ([@kc9jud](https://github.com/b-ryan/powerline-shell/pull/347))
+
+2017-12-20 (version 0.4.5)
+
+* Fix `cwd` segment in Bash for Windows
+  ([@b-ryan](https://github.com/b-ryan/powerline-shell/pull/340))
+
+2017-12-19 (version 0.4.4)
+
+* New options and symbol for the `battery` segment
+  ([@kc9jud](https://github.com/b-ryan/powerline-shell/pull/332))
+* Update `svn` segment to use threads
+  ([@kc9jud](https://github.com/b-ryan/powerline-shell/pull/333))
+* Fix `username` segment in cygwin
+  ([@ericLemanissier](https://github.com/b-ryan/powerline-shell/commits/master))
+
 2017-11-25 (version 0.4.3)
 
 * New option for `cwd` segment that allows the last directory to not be

@@ -36,7 +36,7 @@ def parse_svn_stats(status):
             stats.changed += 1
     return stats
 
-
+  
 def _get_svn_status(output):
     """This function exists to enable mocking the `svn status` output in tests.
     """
