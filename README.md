@@ -229,7 +229,7 @@ settings.
 
 Some segments support additional configuration. The options for the segment are
 nested under the name of the segment itself. For example, all of the options
-for the `cwd` segment are set in `~/.powerline-shell.py` like:
+for the `cwd` segment are set in `~/.powerline-shell.json` like:
 
 ```
 {
