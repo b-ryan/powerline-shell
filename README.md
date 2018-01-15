@@ -48,7 +48,7 @@ following symbols:
 - `✎` -- a file has been modified (but not staged for commit, in git)
 - `✔` -- a file is staged for commit (git) or added for tracking
 - `✼` -- a file has conflicts
-- `❓` -- a file is untracked
+- `?` -- a file is untracked
 
 Each of these will have a number next to it if more than one file matches.
 
