@@ -1,5 +1,11 @@
 # Changes
 
+2018-01-15 (version 0.4.7)
+
+* VCS segments (git, hg, etc.) can now show a symbol identifying what VPS the
+  current directory uses
+  ([@emansije](https://github.com/b-ryan/powerline-shell/pull/298))
+
 2018-01-11 (version 0.4.6)
 
 * Fix bug in SVN segment
