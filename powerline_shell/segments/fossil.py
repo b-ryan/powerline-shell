@@ -74,6 +74,9 @@ class Segment(ThreadedSegment):
         if self.stats.dirty:
             bg = self.powerline.theme.REPO_DIRTY_BG
             fg = self.powerline.theme.REPO_DIRTY_FG
-
-        self.powerline.append(" " + self.branch + " ", fg, bg)
+        if self.powerline.segment_conf("vcs", "show_symbol"):
+            symbol = RepoStats().symbols["fossil"] + " "
+        else:
+            symbol = ""
+        self.powerline.append(" " + symbol + self.branch + " ", fg, bg)
         self.stats.add_to_powerline(self.powerline)
