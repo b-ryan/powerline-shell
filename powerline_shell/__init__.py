@@ -10,18 +10,32 @@ from .utils import warn, py3
 import re
 
 
+def _current_dir():
+    """Returns the full current working directory as the user would have used
+    in their shell (ie. without following symbolic links).
+
+    With the introduction of Bash for Windows, we can't use the PWD environment
+    variable very easily. `os.sep` for windows is `\` but the PWD variable will
+    use `/`. So just always use the `os` functions for dealing with paths. This
+    also is fine because the use of PWD below is done to avoid following
+    symlinks, which Windows doesn't have.
+
+    For non-Windows systems, prefer the PWD environment variable. Python's
+    `os.getcwd` function follows symbolic links, which is undesirable."""
+    if os.name == "nt":
+        return os.getcwd()
+    return os.getenv("PWD") or os.getcwd()
+
+
 def get_valid_cwd():
-    """ We check if the current working directory is valid or not. Typically
-        happens when you checkout a different branch on git that doesn't have
-        this directory.
-        We return the original cwd because the shell still considers that to be
-        the working directory, so returning our guess will confuse people
-    """
-    # Prefer the PWD environment variable. Python's os.getcwd function follows
-    # symbolic links, which is undesirable. But if PWD is not set then fall
-    # back to this func
+    """Determine and check the current working directory for validity.
+
+    Typically, an directory arises when you checkout a different branch on git
+    that doesn't have this directory. When an invalid directory is found, a
+    warning is printed to the screen, but the directory is still returned
+    as-is, since this is what the shell considers to be the cwd."""
     try:
-        cwd = os.getenv('PWD') or os.getcwd()
+        cwd = _current_dir()
     except:
         warn("Your current directory is invalid. If you open a ticket at " +
             "https://github.com/milkbikis/powerline-shell/issues/new " +
@@ -36,7 +50,7 @@ def get_valid_cwd():
         up = os.sep.join(parts)
     if cwd != up:
         warn("Your current directory is invalid. Lowest valid directory: "
-            + up)
+             + up)
     return cwd
 
 

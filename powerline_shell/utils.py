@@ -16,7 +16,12 @@ class RepoStats(object):
         'staged': u'\u2714',
         'changed': u'\u270E',
         'new': u'?',
-        'conflicted': u'\u273C'
+        'conflicted': u'\u273C',
+        'git': u'\uE0A0',
+        'hg': u'\u263F',
+        'bzr': u'\u2B61\u20DF',
+        'fossil': u'\u2332',
+        'svn': u'\u2446'
     }
 
     def __init__(self, ahead=0, behind=0, new=0, changed=0, staged=0, conflicted=0):
