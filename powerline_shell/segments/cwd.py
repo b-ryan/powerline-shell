@@ -13,9 +13,10 @@ def replace_home_dir(cwd):
     return cwd
 
 def replace_gsnws_root_dir(cwd):
-    gsnws = os.path.realpath(os.getenv('GSN_WS_ROOT'))
-    if cwd.startswith(gsnws):
-        return '$GSN_WS_ROOT' + cwd[len(gsnws):]
+    if os.getenv('GSN_WS_ROOT'):
+        gsnws = os.path.realpath(os.getenv('GSN_WS_ROOT'))
+        if cwd.startswith(gsnws):
+            return '$GSN_WS_ROOT' + cwd[len(gsnws):]
     return cwd
 
 def replace_dir(cwd):
