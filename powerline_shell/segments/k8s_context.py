@@ -4,7 +4,11 @@ from ..utils import ThreadedSegment
 
 class Segment(ThreadedSegment):
     def add_to_powerline(self):
-        p1 = subprocess.Popen(["kubectl", "config", "current-context"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        try:
+            p1 = subprocess.Popen(["kubectl", "config", "current-context"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        except OSError:
+            return
+
         k8s_context = p1.communicate()[0].decode("utf-8").rstrip()
         if not k8s_context:
             return
