@@ -172,6 +172,7 @@ are:
 - `aws_profile` - Show which AWS profile is in use. See the
   [AWS](http://docs.aws.amazon.com/cli/latest/userguide/cli-multiple-profiles.html)
   documentation.
+- `k8s_context` - Shows the current kubernetes context.
 - `battery` - See percentage of battery charged and an icon when the battery is
   charging.
 - `bzr` - Details about the current Bazaar repo.
