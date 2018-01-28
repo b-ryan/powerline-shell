@@ -172,7 +172,6 @@ are:
 - `aws_profile` - Show which AWS profile is in use. See the
   [AWS](http://docs.aws.amazon.com/cli/latest/userguide/cli-multiple-profiles.html)
   documentation.
-- `k8s_context` - Shows the current kubernetes context.
 - `battery` - See percentage of battery charged and an icon when the battery is
   charging.
 - `bzr` - Details about the current Bazaar repo.
@@ -185,6 +184,7 @@ are:
 - `hg` - Details about the current Mercurial repo.
 - `hostname` - Current machine's hostname.
 - `jobs` - Number of background jobs currently running.
+- `k8s_context` - Shows the current kubernetes context.
 - `newline` - Inserts a newline into the prompt.
 - `node_version` - `node --version`
 - `npm_version` - `npm --version`
