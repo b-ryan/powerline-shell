@@ -6,7 +6,7 @@ import os
 import sys
 import importlib
 import json
-from .utils import warn, py3
+from .utils import warn, py3, import_file
 import re
 
 
@@ -168,6 +168,23 @@ DEFAULT_CONFIG = {
 }
 
 
+class ThemeNotFoundException(Exception):
+    pass
+
+
+def read_theme(config):
+    theme_name = config.get("theme", "default")
+    try:
+        mod = importlib.import_module("powerline_shell.themes." + theme_name)
+    except ImportError:
+        try:
+            mod = import_file("custom_theme", os.path.expanduser(theme_name))
+        except ImportError:
+            raise ThemeNotFoundException(
+                "Theme " + theme_name + " cannot be found")
+    return getattr(mod, "Color")
+
+
 def main():
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument('--generate-config', action='store_true',
@@ -190,9 +207,7 @@ def main():
     else:
         config = DEFAULT_CONFIG
 
-    theme_name = config.get("theme", "default")
-    mod = importlib.import_module("powerline_shell.themes." + theme_name)
-    theme = getattr(mod, "Color")
+    theme = read_theme(config)
 
     powerline = Powerline(args, config, theme)
     segments = []

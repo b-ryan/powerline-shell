@@ -98,3 +98,21 @@ class ThreadedSegment(threading.Thread):
     def __init__(self, powerline):
         super(ThreadedSegment, self).__init__()
         self.powerline = powerline
+
+
+def import_file(module_name, path):
+    # An implementation of https://stackoverflow.com/a/67692/683436
+    if py3 and sys.version_info[1] >= 5:
+        import importlib.util
+        spec = importlib.util.spec_from_file_location(module_name, path)
+        if not spec:
+            raise ImportError()
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        return mod
+    elif py3:
+        from importlib.machinery import SourceFileLoader
+        return SourceFileLoader(module_name, path).load_module()
+    else:
+        import imp
+        return imp.load_source(module_name, path)
