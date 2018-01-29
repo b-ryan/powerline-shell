@@ -225,7 +225,7 @@ variable in `~/.powerline-shell.json` to the name of your theme.
 A script for testing color combinations is provided at `colortest.py`. Note
 that the colors you see may vary depending on your terminal. When designing a
 theme, please test your theme on multiple terminals, especially with default
-settings.
+settings.  Theme colors are specified using [Xterm-256 color codes](https://jonasjacek.github.io/colors/). 
 
 ### Segment Configuration
 
