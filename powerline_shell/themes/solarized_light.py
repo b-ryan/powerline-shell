@@ -36,3 +36,6 @@ class Color(DefaultColor):
 
     VIRTUAL_ENV_BG = 15
     VIRTUAL_ENV_FG = 2
+
+    TIME_FG = 15
+    TIME_BG = 10

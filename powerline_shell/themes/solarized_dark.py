@@ -39,3 +39,6 @@ class Color(DefaultColor):
 
     AWS_PROFILE_FG = 7
     AWS_PROFILE_BG = 2
+
+    TIME_FG = 15
+    TIME_BG = 10
