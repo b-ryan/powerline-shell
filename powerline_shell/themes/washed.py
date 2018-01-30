@@ -1,4 +1,4 @@
-from .default import DefaultColor
+from powerline_shell.themes.default import DefaultColor
 
 
 class Color(DefaultColor):
@@ -39,3 +39,6 @@ class Color(DefaultColor):
 
     AWS_PROFILE_FG = 0
     AWS_PROFILE_BG = 7
+
+    TIME_FG = 8
+    TIME_BG = 7

@@ -69,10 +69,12 @@ class DefaultColor(object):
     AWS_PROFILE_FG = 39
     AWS_PROFILE_BG = 238
 
+    TIME_FG = 250
+    TIME_BG = 238
+
     K8S_CONTEXT_FG = 39
     K8S_CONTEXT_BG = 238
-
-
+    
 class Color(DefaultColor):
     """
     This subclass is required when the user chooses to use 'default' theme.

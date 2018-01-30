@@ -1,5 +1,12 @@
 # Changes
 
+2018-01-29 (version 0.4.8)
+
+* Bring back the ability to create custom themes
+  ([@b-ryan](https://github.com/b-ryan/powerline-shell/pull/352))
+* Add the ability to customize the `time` segment in themes
+  ([@gaurav-nelson](https://github.com/b-ryan/powerline-shell/pull/338))
+
 2018-01-15 (version 0.4.7)
 
 * VCS segments (git, hg, etc.) can now show a symbol identifying what VPS the

@@ -99,10 +99,10 @@ Add the following to your `.bashrc` (or `.profile` on Mac):
 
 ```
 function _update_ps1() {
-    PS1="$(powerline-shell $?)"
+    PS1=$(powerline-shell $?)
 }
 
-if [ "$TERM" != "linux" ]; then
+if [[ $TERM != linux && ! $PROMPT_COMMAND =~ _update_ps1 ]]; then
     PROMPT_COMMAND="_update_ps1; $PROMPT_COMMAND"
 fi
 ```
@@ -219,9 +219,20 @@ file. The available modes are:
 The `powerline_shell/themes` directory stores themes for your prompt, which are
 basically color values used by segments. The `default.py` defines a default
 theme which can be used standalone, and every other theme falls back to it if
-they miss colors for any segments. Create new themes by copying any other
-existing theme and changing the values. To use a theme, set the `theme`
-variable in `~/.powerline-shell.json` to the name of your theme.
+they miss colors for any segments.
+
+If you want to create a custom theme, start by copying one of the existing
+themes, like the
+[basic](https://github.com/b-ryan/powerline-shell/blob/master/powerline_shell/themes/basic.py).
+and update your `~/.powerline-shell.json`, setting the `"theme"` to the path of
+the file. For example your configuration might have:
+
+```
+  "theme": "~/mythemes/my-great-theme.py"
+```
+
+You can then modify the color codes to your liking. Theme colors are specified
+using [Xterm-256 color codes](https://jonasjacek.github.io/colors/).
 
 A script for testing color combinations is provided at `colortest.py`. Note
 that the colors you see may vary depending on your terminal. When designing a
