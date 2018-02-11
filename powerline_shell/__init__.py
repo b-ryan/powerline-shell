@@ -129,7 +129,7 @@ class Powerline(object):
 
     def draw_segment(self, idx):
         segment = self.segments[idx]
-        if self.args.shell == "bash":
+        if self.args.shell == "bash" and segment[0] != ' \\$ ':
             sanitized = re.sub(r"([`$])", r"\\\1", segment[0])
         else:
             sanitized = segment[0]
