@@ -13,11 +13,8 @@ class Segment(BasicSegment):
             has_cargo = c2.communicate()[0].decode("utf-8")
             if len(has_cargo) > 0:
                 p1 = subprocess.Popen(
-                    ["rustup", "toolchain", "list"], stdout=subprocess.PIPE)
-                v = p1.communicate()[0].decode("utf-8")
-                for line in v.split("\n"):
-                    if u"(default)" in line:
-                        powerline.append(line.split("-")[0], 15, 1)
-                        return
+                    ["rustc", "--version"], stdout=subprocess.PIPE)
+                line = p1.communicate()[0].decode("utf-8")
+                powerline.append(line.split(" ")[1], 232, 130)
         except OSError:
             return
