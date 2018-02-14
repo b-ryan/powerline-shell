@@ -8,7 +8,7 @@ class Segment(BasicSegment):
         powerline = self.powerline
         try:
             c1 = subprocess.Popen(["ls"], stdout=subprocess.PIPE)
-            c2 = subprocess.Popen(["grep", "Cargo.toml"],
+            c2 = subprocess.Popen(["grep", "'\(Cargo.toml\)\|\(.*.rs\)'"],
                                   stdin=c1.stdout, stdout=subprocess.PIPE)
             has_cargo = c2.communicate()[0].decode("utf-8")
             if len(has_cargo) > 0:
