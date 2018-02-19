@@ -1,5 +1,63 @@
-import subprocess
+import subprocess, os
 from ..utils import ThreadedSegment, RepoStats
+
+
+def get_PATH():
+    """Normally gets the PATH from the OS. This function exists to enable
+    easily mocking the PATH in tests.
+    """
+    return os.getenv("PATH")
+
+
+def svn_subprocess_env():
+    return {"PATH": get_PATH()}
+
+
+def _get_svn_revision():
+    p = subprocess.Popen(["svn", "info", "--xml"],
+                         stdout=subprocess.PIPE,
+                         stderr=subprocess.PIPE,
+                         env=svn_subprocess_env())
+    for line in p.communicate()[0].decode("utf-8").splitlines():
+        if "revision" in line:
+            revision = line.split("=")[1].split('"')[1]
+            break
+    return revision
+
+
+def parse_svn_stats(status):
+    stats = RepoStats()
+    for line in status:
+        if line[0] == "?":
+            stats.new += 1
+        elif line[0] == "C":
+            stats.conflicted += 1
+        elif line[0] in ["A", "D", "I", "M", "R", "!", "~"]:
+            stats.changed += 1
+    return stats
+
+
+def _get_svn_status(output):
+    """This function exists to enable mocking the `svn status` output in tests.
+    """
+    return output[0].decode("utf-8").splitlines()
+
+
+def build_stats():
+    try:
+        p = subprocess.Popen(['svn', 'status'],
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                             env=svn_subprocess_env())
+    except OSError:
+        # Popen will throw an OSError if svn is not found
+        return None
+    pdata = p.communicate()
+    if p.returncode != 0 or pdata[1][:22] == b'svn: warning: W155007:':
+        return None, None
+    status = _get_svn_status(pdata)
+    stats = parse_svn_stats(status)
+    revision = _get_svn_revision()
+    return stats, revision
 
 
 class Segment(ThreadedSegment):
@@ -9,33 +67,7 @@ class Segment(ThreadedSegment):
         self.revision = ""
 
     def run(self):
-        try:
-            svn_status = subprocess.Popen(["svn", "status"],
-                                          stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            svn_info = subprocess.Popen(["svn", "info"],
-                                        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            svn_stdout, svn_stderr = svn_status.communicate()
-            svn_info, _ = svn_info.communicate()
-        except OSError:
-            return
-
-        if len(svn_stderr.decode("utf-8").strip()) != 0:
-            return
-
-        self.stats = RepoStats()
-        for line in svn_stdout.splitlines():
-            line = line.decode("utf-8").strip()
-            if line[0] == "?":
-                self.stats.new += 1
-            elif line[0] == "C":
-                self.stats.conflicted += 1
-            elif line[0] in ["A", "D", "I", "M", "R", "!", "~"]:
-                self.stats.changed += 1
-
-        for line in svn_info.splitlines():
-            line = line.decode("utf-8").strip()
-            if "Revision: " in line:
-                self.revision = line.split(" ", 1)[1]
+        self.stats, self.revision = build_stats()
 
     def add_to_powerline(self):
         self.join()
@@ -47,8 +79,8 @@ class Segment(ThreadedSegment):
             bg = self.powerline.theme.REPO_DIRTY_BG
             fg = self.powerline.theme.REPO_DIRTY_FG
         if self.powerline.segment_conf("vcs", "show_symbol"):
-            symbol = RepoStats().symbols["svn"] + " "
+            symbol = " " + RepoStats().symbols["svn"]
         else:
             symbol = ""
-        self.powerline.append(" rev " + symbol + self.revision + " ", fg, bg)
+        self.powerline.append(symbol + " rev " + self.revision + " ", fg, bg)
         self.stats.add_to_powerline(self.powerline)
