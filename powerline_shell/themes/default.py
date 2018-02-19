@@ -72,6 +72,13 @@ class DefaultColor(object):
     TIME_FG = 250
     TIME_BG = 238
 
+    STDOUT_DEFAULT_BG = 237  # dark grey
+    STDOUT_DEFAULT_FG = 250  # light grey
+
+    ENV_DEFAULT_BG = 237  # dark grey
+    ENV_DEFAULT_FG = 250  # light grey
+
+
 class Color(DefaultColor):
     """
     This subclass is required when the user chooses to use 'default' theme.
