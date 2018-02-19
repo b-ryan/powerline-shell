@@ -1,13 +1,13 @@
 import subprocess
 import re
-from ..utils import BasicSegment
+from ..utils import BasicSegment, decode
 
 
 class Segment(BasicSegment):
     def add_to_powerline(self):
         powerline = self.powerline
         try:
-            output = subprocess.check_output(['uptime'], stderr=subprocess.STDOUT).decode("utf-8")
+            output = decode(subprocess.check_output(['uptime'], stderr=subprocess.STDOUT))
             raw_uptime = re.search('(?<=up).+(?=,\s+\d+\s+user)', output).group(0)
             day_search = re.search('\d+(?=\s+day)', output)
             days = '' if not day_search else '%sd ' % day_search.group(0)

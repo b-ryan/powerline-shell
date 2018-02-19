@@ -5,6 +5,7 @@ import shutil
 import sh
 import powerline_shell.segments.bzr as bzr
 from powerline_shell.utils import RepoStats
+from ..testing_utils import dict_side_effect_fn
 
 
 test_cases = (
@@ -22,6 +23,9 @@ class BzrTest(unittest.TestCase):
 
     def setUp(self):
         self.powerline = mock.MagicMock()
+        self.powerline.segment_conf.side_effect = dict_side_effect_fn({
+            ("vcs", "show_symbol"): False,
+        })
 
         self.dirname = tempfile.mkdtemp()
         sh.cd(self.dirname)

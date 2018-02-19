@@ -4,12 +4,16 @@ import tempfile
 import shutil
 import sh
 import powerline_shell.segments.git as git
+from ..testing_utils import dict_side_effect_fn
 
 
 class GitTest(unittest.TestCase):
 
     def setUp(self):
         self.powerline = mock.MagicMock()
+        self.powerline.segment_conf.side_effect = dict_side_effect_fn({
+            ("vcs", "show_symbol"): False,
+        })
 
         self.dirname = tempfile.mkdtemp()
         sh.cd(self.dirname)

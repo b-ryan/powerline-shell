@@ -5,6 +5,7 @@ import shutil
 import sh
 import powerline_shell.segments.fossil as fossil
 from powerline_shell.utils import RepoStats
+from ..testing_utils import dict_side_effect_fn
 
 test_cases = {
     "EXTRA      new-file": RepoStats(new=1),
@@ -18,6 +19,9 @@ class FossilTest(unittest.TestCase):
 
     def setUp(self):
         self.powerline = mock.MagicMock()
+        self.powerline.segment_conf.side_effect = dict_side_effect_fn({
+            ("vcs", "show_symbol"): False,
+        })
 
         self.dirname = tempfile.mkdtemp()
         sh.cd(self.dirname)

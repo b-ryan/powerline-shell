@@ -1,5 +1,12 @@
 # Changes
 
+2018-02-19 (version 0.4.9)
+
+* Fix root user segment
+  ([@TiGR](https://github.com/b-ryan/powerline-shell/pull/362))
+* Fixes and enhancements for SVN segment
+  ([@emansije](https://github.com/b-ryan/powerline-shell/pull/349))
+
 2018-01-29 (version 0.4.8)
 
 * Bring back the ability to create custom themes

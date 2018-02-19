@@ -4,8 +4,13 @@ import threading
 py3 = sys.version_info[0] == 3
 
 if py3:
-    def unicode(x):
+    def unicode_(x):
         return str(x)
+    def decode(x):
+        return x.decode("utf-8")
+else:
+    unicode_ = unicode
+    decode = unicode
 
 
 class RepoStats(object):
@@ -66,7 +71,7 @@ class RepoStats(object):
 
             segment = repo_stats.n_or_empty("new") + icon_string
         """
-        return unicode(self[_key]) if int(self[_key]) > 1 else u''
+        return unicode_(self[_key]) if int(self[_key]) > 1 else u''
 
     def add_to_powerline(self, powerline):
         def add(_key, fg, bg):
