@@ -87,17 +87,19 @@ def warn(msg):
 
 
 class BasicSegment(object):
-    def __init__(self, powerline):
+    def __init__(self, powerline, segment_def):
         self.powerline = powerline
+        self.segment_def = segment_def  # type: dict
 
     def start(self):
         pass
 
 
 class ThreadedSegment(threading.Thread):
-    def __init__(self, powerline):
+    def __init__(self, powerline, segment_def):
         super(ThreadedSegment, self).__init__()
         self.powerline = powerline
+        self.segment_def = segment_def  # type: dict
 
 
 def import_file(module_name, path):

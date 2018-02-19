@@ -211,9 +211,12 @@ def main():
 
     powerline = Powerline(args, config, theme)
     segments = []
-    for seg_name in config["segments"]:
-        mod = importlib.import_module("powerline_shell.segments." + seg_name)
-        segment = getattr(mod, "Segment")(powerline)
+    for seg_conf in config["segments"]:
+        if not isinstance(seg_conf, dict):
+            seg_conf = {"type": seg_conf}
+        module_name = "powerline_shell.segments." + seg_conf["type"]
+        mod = importlib.import_module(module_name)
+        segment = getattr(mod, "Segment")(powerline, seg_conf)
         segment.start()
         segments.append(segment)
     for segment in segments:
