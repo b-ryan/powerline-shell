@@ -3,6 +3,7 @@
 Unreleased
 
 * Patch environment for VCS subprocesses rather than generating a new one
+* Fix `cwd` segment so it respects `max_depth` configuration
 
 2018-02-19 (version 0.4.9)
 
