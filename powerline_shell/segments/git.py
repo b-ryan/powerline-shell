@@ -12,17 +12,16 @@ def get_PATH():
 
 
 def git_subprocess_env():
-    return {
+    env = dict(os.environ)
+    env.update({
         # LANG is specified to ensure git always uses a language we are expecting.
         # Otherwise we may be unable to parse the output.
         "LANG": "C",
 
-        # https://github.com/milkbikis/powerline-shell/pull/126
-        "HOME": os.getenv("HOME"),
-
         # https://github.com/milkbikis/powerline-shell/pull/153
         "PATH": get_PATH(),
-    }
+    })
+    return env
 
 
 def parse_git_branch_info(status):

@@ -10,7 +10,9 @@ def get_PATH():
 
 
 def svn_subprocess_env():
-    return {"PATH": get_PATH()}
+    env = dict(os.environ)
+    env.update({"PATH": get_PATH()})
+    return env
 
 
 def _get_svn_revision():

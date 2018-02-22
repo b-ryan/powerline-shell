@@ -1,5 +1,9 @@
 # Changes
 
+Unreleased
+
+* Patch environment for VCS subprocesses rather than generating a new one
+
 2018-02-19 (version 0.4.9)
 
 * Fix root user segment
