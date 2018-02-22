@@ -184,6 +184,7 @@ are:
 - `hg` - Details about the current Mercurial repo.
 - `hostname` - Current machine's hostname.
 - `jobs` - Number of background jobs currently running.
+- `k8s_context` - Shows the current kubernetes context `kubectl config current-context`.
 - `newline` - Inserts a newline into the prompt.
 - `node_version` - `node --version`
 - `npm_version` - `npm --version`

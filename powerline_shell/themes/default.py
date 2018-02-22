@@ -72,6 +72,9 @@ class DefaultColor(object):
     TIME_FG = 250
     TIME_BG = 238
 
+    K8S_CONTEXT_FG = 39
+    K8S_CONTEXT_BG = 238
+    
 class Color(DefaultColor):
     """
     This subclass is required when the user chooses to use 'default' theme.
