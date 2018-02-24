@@ -3,7 +3,7 @@
 A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash,
 ZSH, Fish, and tcsh:
 
-![MacVim+Solarized+Powerline+CtrlP](https://raw.github.com/banga/powerline-shell/master/bash-powerline-screenshot.png)
+![MacVim+Solarized+Powerline+CtrlP](https://raw.github.com/b-ryan/powerline-shell/master/bash-powerline-screenshot.png)
 
 - Shows some important details about the git/svn/hg/fossil branch (see below)
 - Changes color if the last command exited with a failure code
@@ -61,7 +61,7 @@ with an option `show_symbol` set to `true` (see
 
 This script uses ANSI color codes to display colors in a terminal. These are
 notoriously non-portable, so may not work for you out of the box, but try
-setting your $TERM to `xterm-256color`, because that works for me.
+setting your $TERM to `xterm-256color`.
 
 - Patch the font you use for your terminal: see
   [powerline-fonts](https://github.com/Lokaltog/powerline-fonts)
@@ -86,7 +86,7 @@ install for just your user, if you'd like. But you may need to fiddle with your
 - Or, install from the git repository:
 
 ```
-git clone https://github.com/banga/powerline-shell
+git clone https://github.com/b-ryan/powerline-shell
 cd powerline-shell
 python setup.py install
 ```
@@ -307,6 +307,6 @@ requirements in `requirements-dev.txt`.
 
 ## Troubleshooting
 
-See the [FAQ](https://github.com/banga/powerline-shell/wiki/FAQ). If you
+See the [FAQ](https://github.com/b-ryan/powerline-shell/wiki/FAQ). If you
 continue to have issues, please open an
-[issue](https://github.com/banga/powerline-shell/issues/new).
+[issue](https://github.com/b-ryan/powerline-shell/issues/new).
