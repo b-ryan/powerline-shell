@@ -1,11 +1,14 @@
 # Changes
 
-Unreleased
+Unreleased (version 0.5.0)
 
 * Patch environment for VCS subprocesses rather than generating a new one
 * Fix `cwd` segment so it respects `max_depth` configuration
 * Fix Ruby segment for Python 3 compatibility
   ([@Blue-Dog-Archolite](https://github.com/b-ryan/powerline-shell/pull/366))
+* Configuration is now expected to be at
+  `~/.config/powerline-shell/config.json` ([@emansije and
+  @kc9jud](https://github.com/b-ryan/powerline-shell/pull/334))
 
 2018-02-19 (version 0.4.9)
 
