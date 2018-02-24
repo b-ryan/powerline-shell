@@ -146,6 +146,7 @@ def find_config():
     for location in [
         "powerline-shell.json",
         "~/.powerline-shell.json",
+        os.path.join(os.environ.get("XDG_CONFIG_HOME", "~/.config"), "powerline-shell", "config.json"),
     ]:
         full = os.path.expanduser(location)
         if os.path.exists(full):
