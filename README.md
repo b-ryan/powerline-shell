@@ -20,6 +20,7 @@ ZSH, Fish, and tcsh:
   - [Bash](#bash)
   - [ZSH](#zsh)
   - [Fish](#fish)
+- [Build for Local Development](#build-for-local-development)
 - [Customization](#customization)
   - [Config File](#config-file)
   - [Adding, Removing and Re-arranging segments](#adding-removing-and-re-arranging-segments)
@@ -147,6 +148,25 @@ Add the following to your `.tcshrc`:
 ```
 alias precmd 'set prompt="`powerline-shell --shell tcsh $?`"'
 ```
+
+## Build for Local Development 
+
+#### Clone the repo and setup Powerline-shell in your shell prompt 
+
+#### Inside the `powerline-shell` folder, setup a Virtual Environment
+```
+virtualenv env
+source env/bin/activate
+```
+#### Install Requirements
+```
+pip install -r requirements-dev.txt
+```
+#### Run as dev
+```
+./setup.py develop
+```
+
 
 ## Customization
 
