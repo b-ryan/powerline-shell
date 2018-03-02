@@ -224,13 +224,22 @@ def main():
             try:
                 spec.loader.exec_module(mod)
                 segment = getattr(mod, "Segment")(powerline)
-            except FileNotFoundError:
+            except (FileNotFoundError, AttributeError):
                 pass
         if not segment:
-            mod = importlib.import_module(mod_name)
-            segment = getattr(mod, "Segment")(powerline)
-        segment.start()
-        segments.append(segment)
+            try:
+                mod = importlib.import_module(mod_name)
+            except ModuleNotFoundError:
+                pass
+            try:
+                segment = getattr(mod, "Segment")(powerline)
+            except AttributeError:
+                pass
+        if segment:
+            segment.start()
+            segments.append(segment)
+        else:
+            warn("Segment not found: {:s}".format(seg_name))
     for segment in segments:
         segment.add_to_powerline()
     sys.stdout.write(powerline.draw())
