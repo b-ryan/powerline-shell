@@ -8,5 +8,6 @@ powerline_shell.egg-info/
 tags
 config.json
 powerline-shell.json
+uninstall.txt
 .DS_Store
 *sublime*

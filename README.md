@@ -88,10 +88,16 @@ install for just your user, if you'd like. But you may need to fiddle with your
 ```
 git clone https://github.com/b-ryan/powerline-shell
 cd powerline-shell
-python setup.py install
+python setup.py install --record uninstall.txt
 ```
 
 - Setup your shell prompt using the instructions for your shell below.
+
+- To uninstall, run:
+
+```
+cat uninstall.txt | xargs rm -rf
+```
 
 ### Bash
 
