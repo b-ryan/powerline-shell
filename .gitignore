@@ -4,6 +4,7 @@ config.py
 powerline_shell.egg-info/
 /build/
 /dist/
+/env/
 tags
 config.json
 powerline-shell.json
