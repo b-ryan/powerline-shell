@@ -200,6 +200,7 @@ are:
 - `uptime` - Uptime of the current machine.
 - `username` - Name of the logged-in user.
 - `virtual_env` - Shows the name of the current virtual env or conda env.
+- `asciinema` - An indicador to warn that [asciinema](https://asciinema.org/) is recording.
 
 ### Segment Separator
 
