@@ -44,6 +44,15 @@ def _get_hg_status(output):
 
 
 def build_stats():
+    # check if we are in a hg dir
+    path = '/'
+    for p in os.getenv("PWD").split('/'):
+        path += p + '/'
+        if os.path.isdir(path+'.hg'):
+            break
+    else:
+        return None, None
+
     try:
         p = subprocess.Popen(["hg", "status"],
                              stdout=subprocess.PIPE,
