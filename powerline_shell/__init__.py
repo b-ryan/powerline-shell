@@ -191,6 +191,8 @@ def main():
     arg_parser.add_argument('--shell', action='store', default='bash',
                             help='Set this to your shell type',
                             choices=['bash', 'tcsh', 'zsh', 'bare'])
+    arg_parser.add_argument('--config', '-c', action='store',
+                            help='Configuration file to load')
     arg_parser.add_argument('prev_error', nargs='?', type=int, default=0,
                             help='Error code returned by the last command')
     args = arg_parser.parse_args()
@@ -199,7 +201,10 @@ def main():
         print(json.dumps(DEFAULT_CONFIG, indent=2))
         return 0
 
-    config_path = find_config()
+    if args.config:
+        config_path = args.config
+    else:
+        config_path = find_config()
     if config_path:
         with open(config_path) as f:
             config = json.loads(f.read())
