@@ -35,7 +35,7 @@ class GitTest(unittest.TestCase):
     def _get_commit_hash(self):
         return sh.git("rev-parse", "HEAD")
 
-    @mock.patch('powerline_shell.segments.git.get_PATH')
+    @mock.patch('powerline_shell.utils.get_PATH')
     def test_git_not_installed(self, get_PATH):
         get_PATH.return_value = "" # so git can't be found
         self.segment.start()

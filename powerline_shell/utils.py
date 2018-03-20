@@ -1,4 +1,5 @@
 import sys
+import os
 import threading
 
 py3 = sys.version_info[0] == 3
@@ -121,3 +122,28 @@ def import_file(module_name, path):
     else:
         import imp
         return imp.load_source(module_name, path)
+
+
+def get_PATH():
+    """Normally gets the PATH from the OS. This function exists to enable
+    easily mocking the PATH in tests.
+    """
+    return os.getenv("PATH")
+
+
+def get_subprocess_env(**envs):
+    defaults = {
+        # https://github.com/milkbikis/powerline-shell/pull/153
+        "PATH": get_PATH(),
+    }
+    defaults.update(envs)
+    env = dict(os.environ)
+    env.update(defaults)
+    return env
+
+
+def get_git_subprocess_env():
+    # LANG is specified to ensure git always uses a language we are expecting.
+    # Otherwise we may be unable to parse the output.
+    return get_subprocess_env(LANG="C")
+

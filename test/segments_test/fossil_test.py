@@ -42,7 +42,7 @@ class FossilTest(unittest.TestCase):
         sh.fossil("branch", "new", branch, "trunk")
         sh.fossil("checkout", branch)
 
-    @mock.patch("powerline_shell.segments.fossil.get_PATH")
+    @mock.patch("powerline_shell.utils.get_PATH")
     def test_fossil_not_installed(self, get_PATH):
         get_PATH.return_value = "" # so fossil can't be found
         self.segment.start()

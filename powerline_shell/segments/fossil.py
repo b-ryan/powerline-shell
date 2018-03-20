@@ -1,19 +1,6 @@
 import os
 import subprocess
-from ..utils import RepoStats, ThreadedSegment
-
-
-def get_PATH():
-    """Normally gets the PATH from the OS. This function exists to enable
-    easily mocking the PATH in tests.
-    """
-    return os.getenv("PATH")
-
-
-def fossil_subprocess_env():
-    env = dict(os.environ)
-    env.update({"PATH": get_PATH()})
-    return env
+from ..utils import RepoStats, ThreadedSegment, get_subprocess_env
 
 
 def _get_fossil_branch():
@@ -51,7 +38,7 @@ def build_stats():
     try:
         subprocess.Popen(['fossil'], stdout=subprocess.PIPE,
                          stderr=subprocess.PIPE,
-                         env=fossil_subprocess_env()).communicate()
+                         env=get_subprocess_env()).communicate()
     except OSError:
         # Popen will throw an OSError if fossil is not found
         return (None, None)
