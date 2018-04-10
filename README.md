@@ -153,8 +153,8 @@ alias precmd 'set prompt="`powerline-shell --shell tcsh $?`"'
 ### Config File
 
 Powerline-shell is customizable through the use of a config file. This file is
-expected to be located at `~/.powerline-shell.json`. You can generate the
-default config at this location using:
+expected to be located at `~/.config/powerline-shell/config.json`. You can
+generate the default config at this location using:
 
 ```
 powerline-shell --generate-config > ~/.powerline-shell.json
