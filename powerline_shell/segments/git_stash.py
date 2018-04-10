@@ -1,7 +1,5 @@
 import subprocess
-from ..utils import ThreadedSegment, get_git_subprocess_env
-
-STASH_SYMBOL = u'\u2398'
+from ..utils import RepoStats, ThreadedSegment, get_git_subprocess_env
 
 
 def get_stash_count():
@@ -32,5 +30,5 @@ class Segment(ThreadedSegment):
         fg = self.powerline.theme.GIT_STASH_FG
 
         sc = self.stash_count if self.stash_count > 1 else ''
-        stash_str = u' {}{} '.format(sc, STASH_SYMBOL)
+        stash_str = u' {}{} '.format(sc, RepoStats.symbols['stash'])
         self.powerline.append(stash_str, fg, bg)
