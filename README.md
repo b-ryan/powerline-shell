@@ -181,6 +181,7 @@ are:
   value of the exit status in red.
 - `fossil` - Details about the current Fossil repo.
 - `git` - Details about the current Git repo.
+- `git_stash` - Number of stashes in the current Git repo.
 - `hg` - Details about the current Mercurial repo.
 - `hostname` - Current machine's hostname.
 - `jobs` - Number of background jobs currently running.

@@ -1,27 +1,6 @@
 import re
 import subprocess
-import os
-from ..utils import RepoStats, ThreadedSegment
-
-
-def get_PATH():
-    """Normally gets the PATH from the OS. This function exists to enable
-    easily mocking the PATH in tests.
-    """
-    return os.getenv("PATH")
-
-
-def git_subprocess_env():
-    env = dict(os.environ)
-    env.update({
-        # LANG is specified to ensure git always uses a language we are expecting.
-        # Otherwise we may be unable to parse the output.
-        "LANG": "C",
-
-        # https://github.com/milkbikis/powerline-shell/pull/153
-        "PATH": get_PATH(),
-    })
-    return env
+from ..utils import RepoStats, ThreadedSegment, get_git_subprocess_env
 
 
 def parse_git_branch_info(status):
@@ -32,7 +11,7 @@ def parse_git_branch_info(status):
 def _get_git_detached_branch():
     p = subprocess.Popen(['git', 'describe', '--tags', '--always'],
                          stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                         env=git_subprocess_env())
+                         env=get_git_subprocess_env())
     detached_ref = p.communicate()[0].decode("utf-8").rstrip('\n')
     if p.returncode == 0:
         branch = u'{} {}'.format(RepoStats.symbols['detached'], detached_ref)
@@ -62,7 +41,7 @@ def build_stats():
     try:
         p = subprocess.Popen(['git', 'status', '--porcelain', '-b'],
                              stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                             env=git_subprocess_env())
+                             env=get_git_subprocess_env())
     except OSError:
         # Popen will throw an OSError if git is not found
         return (None, None)

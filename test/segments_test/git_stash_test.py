@@ -3,23 +3,18 @@ import mock
 import tempfile
 import shutil
 import sh
-import powerline_shell.segments.git as git
-from ..testing_utils import dict_side_effect_fn
+import powerline_shell.segments.git_stash as git_stash
 
 
-class GitTest(unittest.TestCase):
+class GitStashTest(unittest.TestCase):
 
     def setUp(self):
         self.powerline = mock.MagicMock()
-        self.powerline.segment_conf.side_effect = dict_side_effect_fn({
-            ("vcs", "show_symbol"): False,
-        })
-
         self.dirname = tempfile.mkdtemp()
         sh.cd(self.dirname)
         sh.git("init", ".")
 
-        self.segment = git.Segment(self.powerline)
+        self.segment = git_stash.Segment(self.powerline)
 
     def tearDown(self):
         shutil.rmtree(self.dirname)
@@ -29,11 +24,11 @@ class GitTest(unittest.TestCase):
         sh.git("add", filename)
         sh.git("commit", "-m", "add file " + filename)
 
-    def _checkout_new_branch(self, branch):
-        sh.git("checkout", "-b", branch)
+    def _overwrite_file(self, filename, content):
+        sh.echo(content, _out=filename)
 
-    def _get_commit_hash(self):
-        return sh.git("rev-parse", "HEAD")
+    def _stash(self):
+        sh.git("stash")
 
     @mock.patch('powerline_shell.utils.get_PATH')
     def test_git_not_installed(self, get_PATH):
@@ -48,33 +43,34 @@ class GitTest(unittest.TestCase):
         self.segment.add_to_powerline()
         self.assertEqual(self.powerline.append.call_count, 0)
 
-    def test_big_bang(self):
-        self.segment.start()
-        self.segment.add_to_powerline()
-        self.assertEqual(self.powerline.append.call_args[0][0], ' Big Bang ')
-
-    def test_master_branch(self):
+    def test_no_stashes(self):
         self._add_and_commit("foo")
         self.segment.start()
         self.segment.add_to_powerline()
-        self.assertEqual(self.powerline.append.call_args[0][0], ' master ')
+        self.assertEqual(self.powerline.append.call_count, 0)
 
-    def test_different_branch(self):
+    def test_one_stash(self):
         self._add_and_commit("foo")
-        self._checkout_new_branch("bar")
+        self._overwrite_file("foo", "some new content")
+        self._stash()
         self.segment.start()
         self.segment.add_to_powerline()
-        self.assertEqual(self.powerline.append.call_args[0][0], ' bar ')
+        expected = u' {} '.format(git_stash.STASH_SYMBOL)
+        self.assertEqual(self.powerline.append.call_args[0][0], expected)
 
-    def test_detached(self):
+    def test_multiple_stashes(self):
         self._add_and_commit("foo")
-        commit_hash = self._get_commit_hash()
-        self._add_and_commit("bar")
-        sh.git("checkout", "HEAD^")
+
+        self._overwrite_file("foo", "some new content")
+        self._stash()
+
+        self._overwrite_file("foo", "some different content")
+        self._stash()
+
+        self._overwrite_file("foo", "more different content")
+        self._stash()
+
         self.segment.start()
         self.segment.add_to_powerline()
-
-        # In detached mode, we output a unicode symbol and then the shortened
-        # commit hash.
-        self.assertIn(self.powerline.append.call_args[0][0].split()[1],
-                      commit_hash)
+        expected = u' 3{} '.format(git_stash.STASH_SYMBOL)
+        self.assertEqual(self.powerline.append.call_args[0][0], expected)
