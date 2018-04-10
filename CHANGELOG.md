@@ -9,6 +9,8 @@ Unreleased (version 0.5.0)
 * Configuration is now expected to be at
   `~/.config/powerline-shell/config.json` ([@emansije and
   @kc9jud](https://github.com/b-ryan/powerline-shell/pull/334))
+* New `git_stash` segment
+  ([@apinkney97](https://github.com/b-ryan/powerline-shell/pull/379))
 
 2018-02-19 (version 0.4.9)
 
