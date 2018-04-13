@@ -1,6 +1,10 @@
 # Changes
 
-Unreleased (version 0.5.0)
+2018-04-13 (version 0.5.1)
+
+* Fix Python 3 compatibility of `git_stash` segment
+
+2018-04-10 (version 0.5.0)
 
 * Patch environment for VCS subprocesses rather than generating a new one
 * Fix `cwd` segment so it respects `max_depth` configuration
