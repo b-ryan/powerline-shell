@@ -14,7 +14,7 @@ def get_stash_count():
     if p.returncode != 0:
         return 0
 
-    return pdata[0].count('\n')
+    return pdata[0].count(b'\n')
 
 
 class Segment(ThreadedSegment):
