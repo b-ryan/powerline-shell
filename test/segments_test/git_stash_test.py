@@ -4,6 +4,7 @@ import tempfile
 import shutil
 import sh
 import powerline_shell.segments.git_stash as git_stash
+from powerline_shell.utils import RepoStats
 
 
 class GitStashTest(unittest.TestCase):
@@ -32,7 +33,7 @@ class GitStashTest(unittest.TestCase):
 
     @mock.patch('powerline_shell.utils.get_PATH')
     def test_git_not_installed(self, get_PATH):
-        get_PATH.return_value = "" # so git can't be found
+        get_PATH.return_value = ""  # so git can't be found
         self.segment.start()
         self.segment.add_to_powerline()
         self.assertEqual(self.powerline.append.call_count, 0)
@@ -55,7 +56,7 @@ class GitStashTest(unittest.TestCase):
         self._stash()
         self.segment.start()
         self.segment.add_to_powerline()
-        expected = u' {} '.format(git_stash.STASH_SYMBOL)
+        expected = u' {} '.format(RepoStats.symbols["stash"])
         self.assertEqual(self.powerline.append.call_args[0][0], expected)
 
     def test_multiple_stashes(self):
@@ -72,5 +73,5 @@ class GitStashTest(unittest.TestCase):
 
         self.segment.start()
         self.segment.add_to_powerline()
-        expected = u' 3{} '.format(git_stash.STASH_SYMBOL)
+        expected = u' 3{} '.format(RepoStats.symbols["stash"])
         self.assertEqual(self.powerline.append.call_args[0][0], expected)
