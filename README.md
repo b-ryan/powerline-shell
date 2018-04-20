@@ -95,7 +95,7 @@ python setup.py install
 
 ### Bash
 
-Add the following to your `.bashrc` (or `.profile` on Mac):
+Add the following to your `.bashrc` (or `.bash_profile` on macOS):
 
 ```
 function _update_ps1() {
