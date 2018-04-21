@@ -10,6 +10,7 @@ from .utils import py3
 
 
 def getOppositeColor(r,g,b):
+    r, g, b = [x/255.0 for x in r, g, b] # convert to float before getting hls value
     hls = rgb_to_hls(r,g,b)
     opp = list(hls[:])
     opp[0] = (opp[0]+0.2)%1 # shift hue (a.k.a. color)
