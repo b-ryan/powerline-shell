@@ -1,5 +1,10 @@
 # Changes
 
+2018-04-21 (version 0.5.3)
+
+* New theme! (gruvbox)
+  ([@monicaycli](https://github.com/b-ryan/powerline-shell/pull/388))
+
 2018-04-21 (version 0.5.2)
 
 * Fix hostname colorize bug
