@@ -3,9 +3,11 @@ from setuptools import setup, find_packages
 
 setup(
     name="powerline-shell",
-    version="0.5.1",
+    version="0.5.2",
     description="A pretty prompt for your shell",
     author="Buck Ryan",
+    author_email="buck@buckryan.com",
+    license="MIT",
     url="https://github.com/banga/powerline-shell",
     classifiers=[],
     packages=[

@@ -1,5 +1,14 @@
 # Changes
 
+2018-04-21 (version 0.5.2)
+
+* Fix hostname colorize bug
+  ([@comagnaw](https://github.com/b-ryan/powerline-shell/issues/353))
+* Fix issue with prompt bleeding behavior
+  ([@bytebeast](https://github.com/b-ryan/powerline-shell/issues/249))
+* Better error message when config file cannot be decoded (Closes
+  [#371](https://github.com/b-ryan/powerline-shell/issues/371))
+
 2018-04-13 (version 0.5.1)
 
 * Fix Python 3 compatibility of `git_stash` segment
