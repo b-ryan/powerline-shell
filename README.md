@@ -1,7 +1,6 @@
 # A Powerline style prompt for your shell
 
-A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash,
-ZSH, Fish, and tcsh:
+A beautiful and useful prompt generator for Bash, ZSH, Fish, and tcsh:
 
 ![MacVim+Solarized+Powerline+CtrlP](https://raw.github.com/b-ryan/powerline-shell/master/bash-powerline-screenshot.png)
 
@@ -10,6 +9,10 @@ ZSH, Fish, and tcsh:
 - If you're too deep into a directory tree, shortens the displayed path with an ellipsis
 - Shows the current Python [virtualenv](http://www.virtualenv.org/) environment
 - It's easy to customize and extend. See below for details.
+
+The generated prompts are designed to resemble
+[powerline](https://github.com/powerline/powerline), but otherwise this project
+has no relation to powerline.
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
