@@ -202,7 +202,12 @@ def main():
     config_path = find_config()
     if config_path:
         with open(config_path) as f:
-            config = json.loads(f.read())
+            try:
+                config = json.loads(f.read())
+            except Exception as e:
+                warn("Config file ({0}) could not be decoded! Error: {1}"
+                     .format(config_path, e))
+                config = DEFAULT_CONFIG
     else:
         config = DEFAULT_CONFIG
 
