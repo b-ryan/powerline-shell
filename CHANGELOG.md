@@ -1,5 +1,11 @@
 # Changes
 
+2018-04-22 (version 0.5.4)
+
+* Reverted fix for
+  ([#249](https://github.com/b-ryan/powerline-shell/issues/249)) because it
+  caused issues on Mac.
+
 2018-04-21 (version 0.5.3)
 
 * New theme! (gruvbox)

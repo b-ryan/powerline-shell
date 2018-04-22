@@ -90,7 +90,7 @@ class Powerline(object):
         self.cwd = get_valid_cwd()
         mode = config.get("mode", "patched")
         self.color_template = self.color_templates[args.shell]
-        self.reset = self.color_template % '[0m\]\[\e[0K'
+        self.reset = self.color_template % '[0m'
         self.lock = Powerline.symbols[mode]['lock']
         self.network = Powerline.symbols[mode]['network']
         self.separator = Powerline.symbols[mode]['separator']
