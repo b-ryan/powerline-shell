@@ -95,7 +95,7 @@ python setup.py install
 
 ### Bash
 
-Add the following to your `.bashrc` (or `.bash_profile` on macOS):
+Add the following to your `.bashrc` file:
 
 ```
 function _update_ps1() {
@@ -106,6 +106,8 @@ if [[ $TERM != linux && ! $PROMPT_COMMAND =~ _update_ps1 ]]; then
     PROMPT_COMMAND="_update_ps1; $PROMPT_COMMAND"
 fi
 ```
+
+**Note:** On macOS, you must add this to one of `.bash_profile`, `.bash_login`, or `.profile`. macOS will execute the files in the aforementioned order and will stop execution at the first file it finds. For more information on the order of precedence, see the section **INVOCATION** in `man bash`.
 
 ### ZSH
 
