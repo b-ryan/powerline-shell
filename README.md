@@ -192,6 +192,7 @@ are:
 - `node_version` - `node --version`
 - `npm_version` - `npm --version`
 - `php_version` - Version of php on the machine.
+- `python_version` - `python --version`
 - `rbenv` - `rbenv local`
 - `read_only` - Shows a lock icon if the current directory is read-only.
 - `root` - Shows a `#` if logged in as root, `$` otherwise.
