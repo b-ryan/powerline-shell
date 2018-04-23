@@ -1,12 +1,14 @@
 import subprocess
-from ..utils import ThreadedSegment
+from ..utils import ThreadedSegment, decode
 
 
 class Segment(ThreadedSegment):
     def run(self):
         try:
-            p1 = subprocess.Popen(["python", "-V"], stdout=subprocess.PIPE)
-            self.version = p1.communicate()[0].decode("utf-8").rstrip()
+            output = decode(
+                subprocess.check_output(["python", "--version"],
+                                        stderr=subprocess.STDOUT))
+            self.version = output.rstrip().lower()
         except OSError:
             self.version = None
 
