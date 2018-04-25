@@ -191,6 +191,7 @@ are:
 - `newline` - Inserts a newline into the prompt.
 - `node_version` - `node --version`
 - `npm_version` - `npm --version`
+- `perl_version` - Version of $PERLBREW_PERL
 - `php_version` - Version of php on the machine.
 - `rbenv` - `rbenv local`
 - `read_only` - Shows a lock icon if the current directory is read-only.
