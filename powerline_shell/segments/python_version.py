@@ -1,15 +1,19 @@
+import os
 import subprocess
 from ..utils import ThreadedSegment, decode
 
 
 class Segment(ThreadedSegment):
     def run(self):
-        try:
-            output = decode(
-                subprocess.check_output(["python", "--version"],
-                                        stderr=subprocess.STDOUT))
-            self.version = output.rstrip().lower()
-        except OSError:
+        if os.getenv('VIRTUAL_ENV'):
+            try:
+                output = decode(
+                    subprocess.check_output(["python", "--version"],
+                                            stderr=subprocess.STDOUT))
+                self.version = output.rstrip().lower()
+            except OSError:
+                self.version = None
+        else:
             self.version = None
 
     def add_to_powerline(self):
