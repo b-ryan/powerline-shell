@@ -58,6 +58,9 @@ class DefaultColor(object):
     GIT_CONFLICTED_BG = 9
     GIT_CONFLICTED_FG = 15
 
+    GIT_STASH_BG = 221
+    GIT_STASH_FG = 0
+
     VIRTUAL_ENV_BG = 35  # a mid-tone green
     VIRTUAL_ENV_FG = 00
 

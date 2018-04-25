@@ -7,6 +7,9 @@ class Segment(BasicSegment):
         env = os.getenv('VIRTUAL_ENV') \
             or os.getenv('CONDA_ENV_PATH') \
             or os.getenv('CONDA_DEFAULT_ENV')
+        if os.getenv('VIRTUAL_ENV') \
+            and os.path.basename(env) == '.venv':
+            env = os.path.basename(os.path.dirname(env))
         if not env:
             return
         env_name = os.path.basename(env)

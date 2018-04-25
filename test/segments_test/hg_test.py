@@ -5,6 +5,7 @@ import shutil
 import sh
 import powerline_shell.segments.hg as hg
 from powerline_shell.utils import RepoStats
+from ..testing_utils import dict_side_effect_fn
 
 
 test_cases = {
@@ -20,6 +21,9 @@ class HgTest(unittest.TestCase):
 
     def setUp(self):
         self.powerline = mock.MagicMock()
+        self.powerline.segment_conf.side_effect = dict_side_effect_fn({
+            ("vcs", "show_symbol"): False,
+        })
 
         self.dirname = tempfile.mkdtemp()
         sh.cd(self.dirname)
@@ -38,7 +42,7 @@ class HgTest(unittest.TestCase):
     def _checkout_new_branch(self, branch):
         sh.hg("branch", branch)
 
-    @mock.patch("powerline_shell.segments.hg.get_PATH")
+    @mock.patch("powerline_shell.utils.get_PATH")
     def test_hg_not_installed(self, get_PATH):
         get_PATH.return_value = "" # so hg can"t be found
         self.segment.start()

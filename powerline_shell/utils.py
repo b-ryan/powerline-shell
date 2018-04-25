@@ -1,11 +1,17 @@
 import sys
+import os
 import threading
 
 py3 = sys.version_info[0] == 3
 
 if py3:
-    def unicode(x):
+    def unicode_(x):
         return str(x)
+    def decode(x):
+        return x.decode("utf-8")
+else:
+    unicode_ = unicode
+    decode = unicode
 
 
 class RepoStats(object):
@@ -17,6 +23,7 @@ class RepoStats(object):
         'changed': u'\u270E',
         'new': u'?',
         'conflicted': u'\u273C',
+        'stash': u'\u2398',
         'git': u'\uE0A0',
         'hg': u'\u263F',
         'bzr': u'\u2B61\u20DF',
@@ -66,7 +73,7 @@ class RepoStats(object):
 
             segment = repo_stats.n_or_empty("new") + icon_string
         """
-        return unicode(self[_key]) if int(self[_key]) > 1 else u''
+        return unicode_(self[_key]) if int(self[_key]) > 1 else u''
 
     def add_to_powerline(self, powerline):
         def add(_key, fg, bg):
@@ -118,3 +125,28 @@ def import_file(module_name, path):
     else:
         import imp
         return imp.load_source(module_name, path)
+
+
+def get_PATH():
+    """Normally gets the PATH from the OS. This function exists to enable
+    easily mocking the PATH in tests.
+    """
+    return os.getenv("PATH")
+
+
+def get_subprocess_env(**envs):
+    defaults = {
+        # https://github.com/milkbikis/powerline-shell/pull/153
+        "PATH": get_PATH(),
+    }
+    defaults.update(envs)
+    env = dict(os.environ)
+    env.update(defaults)
+    return env
+
+
+def get_git_subprocess_env():
+    # LANG is specified to ensure git always uses a language we are expecting.
+    # Otherwise we may be unable to parse the output.
+    return get_subprocess_env(LANG="C")
+

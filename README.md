@@ -1,15 +1,18 @@
 # A Powerline style prompt for your shell
 
-A [Powerline](https://github.com/Lokaltog/vim-powerline) like prompt for Bash,
-ZSH, Fish, and tcsh:
+A beautiful and useful prompt generator for Bash, ZSH, Fish, and tcsh:
 
-![MacVim+Solarized+Powerline+CtrlP](https://raw.github.com/banga/powerline-shell/master/bash-powerline-screenshot.png)
+![MacVim+Solarized+Powerline+CtrlP](https://raw.github.com/b-ryan/powerline-shell/master/bash-powerline-screenshot.png)
 
 - Shows some important details about the git/svn/hg/fossil branch (see below)
 - Changes color if the last command exited with a failure code
 - If you're too deep into a directory tree, shortens the displayed path with an ellipsis
 - Shows the current Python [virtualenv](http://www.virtualenv.org/) environment
 - It's easy to customize and extend. See below for details.
+
+The generated prompts are designed to resemble
+[powerline](https://github.com/powerline/powerline), but otherwise this project
+has no relation to powerline.
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -50,7 +53,7 @@ following symbols:
 - `✎` -- a file has been modified (but not staged for commit, in git)
 - `✔` -- a file is staged for commit (git) or added for tracking
 - `✼` -- a file has conflicts
-- `❓` -- a file is untracked
+- `?` -- a file is untracked
 
 Each of these will have a number next to it if more than one file matches.
 
@@ -63,7 +66,7 @@ with an option `show_symbol` set to `true` (see
 
 This script uses ANSI color codes to display colors in a terminal. These are
 notoriously non-portable, so may not work for you out of the box, but try
-setting your $TERM to `xterm-256color`, because that works for me.
+setting your $TERM to `xterm-256color`.
 
 - Patch the font you use for your terminal: see
   [powerline-fonts](https://github.com/Lokaltog/powerline-fonts)
@@ -88,7 +91,7 @@ install for just your user, if you'd like. But you may need to fiddle with your
 - Or, install from the git repository:
 
 ```
-git clone https://github.com/banga/powerline-shell
+git clone https://github.com/b-ryan/powerline-shell
 cd powerline-shell
 python setup.py install
 ```
@@ -155,14 +158,14 @@ alias precmd 'set prompt="`powerline-shell --shell tcsh $?`"'
 ### Config File
 
 Powerline-shell is customizable through the use of a config file. This file is
-expected to be located at `~/.powerline-shell.json`. You can generate the
-default config at this location using:
+expected to be located at `~/.config/powerline-shell/config.json`. You can
+generate the default config at this location using:
 
 ```
 powerline-shell --generate-config > ~/.powerline-shell.json
 ```
 
-(You can see an example config file
+(As an example, my config file is located here:
 [here](https://github.com/b-ryan/dotfiles/blob/master/home/powerline-shell.json))
 
 ### Adding, Removing and Re-arranging segments
@@ -184,6 +187,7 @@ are:
 - `env` - See [Generic Segments](#generic-segments)
 - `fossil` - Details about the current Fossil repo.
 - `git` - Details about the current Git repo.
+- `git_stash` - Number of stashes in the current Git repo.
 - `hg` - Details about the current Mercurial repo.
 - `hostname` - Current machine's hostname.
 - `jobs` - Number of background jobs currently running.
@@ -337,6 +341,6 @@ requirements in `requirements-dev.txt`.
 
 ## Troubleshooting
 
-See the [FAQ](https://github.com/banga/powerline-shell/wiki/FAQ). If you
+See the [FAQ](https://github.com/b-ryan/powerline-shell/wiki/FAQ). If you
 continue to have issues, please open an
-[issue](https://github.com/banga/powerline-shell/issues/new).
+[issue](https://github.com/b-ryan/powerline-shell/issues/new).

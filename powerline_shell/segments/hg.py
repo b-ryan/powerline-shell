@@ -1,24 +1,12 @@
-import os
 import subprocess
-from ..utils import RepoStats, ThreadedSegment
-
-
-def get_PATH():
-    """Normally gets the PATH from the OS. This function exists to enable
-    easily mocking the PATH in tests.
-    """
-    return os.getenv("PATH")
-
-
-def hg_subprocess_env():
-    return {"PATH": get_PATH()}
+from ..utils import RepoStats, ThreadedSegment, get_subprocess_env
 
 
 def _get_hg_branch():
     p = subprocess.Popen(["hg", "branch"],
                          stdout=subprocess.PIPE,
                          stderr=subprocess.PIPE,
-                         env=hg_subprocess_env())
+                         env=get_subprocess_env())
     branch = p.communicate()[0].decode("utf-8").rstrip('\n')
     return branch
 
@@ -46,7 +34,7 @@ def build_stats():
         p = subprocess.Popen(["hg", "status"],
                              stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE,
-                             env=hg_subprocess_env())
+                             env=get_subprocess_env())
     except OSError:
         # Will be thrown if hg cannot be found
         return None, None

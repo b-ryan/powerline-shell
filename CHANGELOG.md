@@ -1,5 +1,48 @@
 # Changes
 
+2018-04-22 (version 0.5.4)
+
+* Reverted fix for
+  ([#249](https://github.com/b-ryan/powerline-shell/issues/249)) because it
+  caused issues on Mac.
+
+2018-04-21 (version 0.5.3)
+
+* New theme! (gruvbox)
+  ([@monicaycli](https://github.com/b-ryan/powerline-shell/pull/388))
+
+2018-04-21 (version 0.5.2)
+
+* Fix hostname colorize bug
+  ([@comagnaw](https://github.com/b-ryan/powerline-shell/issues/353))
+* Fix issue with prompt bleeding behavior
+  ([@bytebeast](https://github.com/b-ryan/powerline-shell/issues/249))
+* Better error message when config file cannot be decoded (Closes
+  [#371](https://github.com/b-ryan/powerline-shell/issues/371))
+
+2018-04-13 (version 0.5.1)
+
+* Fix Python 3 compatibility of `git_stash` segment
+
+2018-04-10 (version 0.5.0)
+
+* Patch environment for VCS subprocesses rather than generating a new one
+* Fix `cwd` segment so it respects `max_depth` configuration
+* Fix Ruby segment for Python 3 compatibility
+  ([@Blue-Dog-Archolite](https://github.com/b-ryan/powerline-shell/pull/366))
+* Configuration is now expected to be at
+  `~/.config/powerline-shell/config.json` ([@emansije and
+  @kc9jud](https://github.com/b-ryan/powerline-shell/pull/334))
+* New `git_stash` segment
+  ([@apinkney97](https://github.com/b-ryan/powerline-shell/pull/379))
+
+2018-02-19 (version 0.4.9)
+
+* Fix root user segment
+  ([@TiGR](https://github.com/b-ryan/powerline-shell/pull/362))
+* Fixes and enhancements for SVN segment
+  ([@emansije](https://github.com/b-ryan/powerline-shell/pull/349))
+
 2018-01-29 (version 0.4.8)
 
 * Bring back the ability to create custom themes
