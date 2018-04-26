@@ -109,3 +109,7 @@ class Color(DefaultColor):
 
     TIME_FG = light2
     TIME_BG = dark4
+
+    PRIVATE_IP_FG = light3
+    PRIVATE_IP_BG = dark3
+    PRIVATE_IP_OFFLINE = neutral_red

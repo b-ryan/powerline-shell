@@ -39,3 +39,7 @@ class Color(DefaultColor):
 
     TIME_FG = 15
     TIME_BG = 10
+
+    PRIVATE_IP_FG = 15
+    PRIVATE_IP_BG = 4
+    PRIVATE_IP_OFFLINE = 124
