@@ -16,13 +16,24 @@ def _get_svn_revision():
 
 def parse_svn_stats(status):
     stats = RepoStats()
+    onlyIgnored = True
     for line in status:
         if line[0] == "?":
             stats.new += 1
+            onlyIgnored = False
         elif line[0] == "C":
             stats.conflicted += 1
-        elif line[0] in ["A", "D", "I", "M", "R", "!", "~"]:
+            onlyIgnored = False
+        elif line[0] in ["A", "D", "M", "R", "!", "~"]:
             stats.changed += 1
+            onlyIgnored = False
+        elif line [0] == "I":
+            stats.changed += 1
+
+    # Ingored if only ignored files 
+    if onlyIgnored:
+        return None
+
     return stats
 
 
@@ -33,6 +44,8 @@ def _get_svn_status(output):
 
 
 def build_stats():
+    if 1 == 1:
+        return None, None
     try:
         p = subprocess.Popen(['svn', 'status'],
                              stdout=subprocess.PIPE, stderr=subprocess.PIPE,
@@ -45,6 +58,8 @@ def build_stats():
         return None, None
     status = _get_svn_status(pdata)
     stats = parse_svn_stats(status)
+    if stats == None:
+        return None, None
     revision = _get_svn_revision()
     return stats, revision
 
