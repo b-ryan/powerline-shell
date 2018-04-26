@@ -204,6 +204,7 @@ are:
 - `uptime` - Uptime of the current machine.
 - `username` - Name of the logged-in user.
 - `virtual_env` - Shows the name of the current virtual env or conda env.
+- `private_ip` - Shows the current private IP address.
 
 ### Segment Separator
 
@@ -287,6 +288,12 @@ The options for the `battery` segment are:
 
 - `always_show_percentage`: If true, show percentage when fully charged on AC.
 - `low_threshold`: Threshold percentage for low-battery indicator color.
+
+The options for the `private_ip` segment are:
+
+- `interface`: Network interface to display. Defaults to `en0`.
+- `show_offline`: If true, displays ` Offline ` if no private ip is found. Defaults to `true`.
+
 
 ### Contributing new types of segments
 
