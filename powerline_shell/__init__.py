@@ -188,7 +188,7 @@ def main():
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument('--generate-config', action='store_true',
                             help='Generate the default config and print it to stdout')
-    arg_parser.add_argument('--config-file', action='store', default='"~/.powerline-shell.json"',
+    arg_parser.add_argument('--config-file', action='store', default='~/.powerline-shell.json',
                             help='Override config location')
     arg_parser.add_argument('--shell', action='store', default='bash',
                             help='Set this to your shell type',
