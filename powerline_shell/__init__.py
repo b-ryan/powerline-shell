@@ -142,10 +142,10 @@ class Powerline(object):
             segment[3]))
 
 
-def find_config():
+def find_config(default_location):
     for location in [
         "powerline-shell.json",
-        "~/.powerline-shell.json",
+        default_location,
         os.path.join(os.environ.get("XDG_CONFIG_HOME", "~/.config"), "powerline-shell", "config.json"),
     ]:
         full = os.path.expanduser(location)
@@ -188,6 +188,8 @@ def main():
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument('--generate-config', action='store_true',
                             help='Generate the default config and print it to stdout')
+    arg_parser.add_argument('--config-file', action='store', default='"~/.powerline-shell.json"',
+                            help='Override config location')
     arg_parser.add_argument('--shell', action='store', default='bash',
                             help='Set this to your shell type',
                             choices=['bash', 'tcsh', 'zsh', 'bare'])
@@ -199,7 +201,7 @@ def main():
         print(json.dumps(DEFAULT_CONFIG, indent=2))
         return 0
 
-    config_path = find_config()
+    config_path = find_config(args.config_file)
     if config_path:
         with open(config_path) as f:
             try:
