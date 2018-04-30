@@ -166,6 +166,13 @@ powerline-shell --generate-config > ~/.powerline-shell.json
 (As an example, my config file is located here:
 [here](https://github.com/b-ryan/dotfiles/blob/master/home/powerline-shell.json))
 
+If you want to have multiple config files, tell Powerline-Shell where to look
+with the `--config-file` parameter.
+
+```
+powerline-shell --config-file ~/.powerline-shell-alternative.json
+```
+
 ### Adding, Removing and Re-arranging segments
 
 Once you have generated your config file, you can now start adding or removing

@@ -188,6 +188,8 @@ def main():
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument('--generate-config', action='store_true',
                             help='Generate the default config and print it to stdout')
+    arg_parser.add_argument('-c', '--config', action='store', default=None,
+                            help='Override default config file location')
     arg_parser.add_argument('--shell', action='store', default='bash',
                             help='Set this to your shell type',
                             choices=['bash', 'tcsh', 'zsh', 'bare'])
@@ -199,7 +201,13 @@ def main():
         print(json.dumps(DEFAULT_CONFIG, indent=2))
         return 0
 
-    config_path = find_config()
+    if args.config_file and not os.path.exists(os.path.expanduser(args.config_file)):
+        print("Cannot find config file: {}".format(args.config_file), file=sys.stderr)
+        return 1
+    elif args.config_file:
+        config_path = args.config_file
+    else:
+        config_path = find_config()
     if config_path:
         with open(config_path) as f:
             try:
