@@ -44,8 +44,6 @@ def _get_svn_status(output):
 
 
 def build_stats():
-    if 1 == 1:
-        return None, None
     try:
         p = subprocess.Popen(['svn', 'status'],
                              stdout=subprocess.PIPE, stderr=subprocess.PIPE,
