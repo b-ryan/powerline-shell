@@ -7,6 +7,7 @@ def _get_svn_revision():
                          stdout=subprocess.PIPE,
                          stderr=subprocess.PIPE,
                          env=get_subprocess_env())
+    revision = ""
     for line in p.communicate()[0].decode("utf-8").splitlines():
         if "revision" in line:
             revision = line.split("=")[1].split('"')[1]
@@ -14,7 +15,9 @@ def _get_svn_revision():
     return revision
 
 
-def parse_svn_stats(status):
+def _parse_svn_stats(status):
+    if len(status) == 1 and status[0][0] == "?":
+        return None
     stats = RepoStats()
     for line in status:
         if line[0] == "?":
@@ -26,13 +29,7 @@ def parse_svn_stats(status):
     return stats
 
 
-def _get_svn_status(output):
-    """This function exists to enable mocking the `svn status` output in tests.
-    """
-    return output[0].decode("utf-8").splitlines()
-
-
-def build_stats():
+def _get_svn_status():
     try:
         p = subprocess.Popen(['svn', 'status'],
                              stdout=subprocess.PIPE, stderr=subprocess.PIPE,
@@ -42,9 +39,17 @@ def build_stats():
         return None
     pdata = p.communicate()
     if p.returncode != 0 or pdata[1][:22] == b'svn: warning: W155007:':
+        return None
+    return pdata[0].decode("utf-8").splitlines()
+
+
+def build_stats():
+    status = _get_svn_status()
+    if not status:
         return None, None
-    status = _get_svn_status(pdata)
-    stats = parse_svn_stats(status)
+    stats = _parse_svn_stats(status)
+    if not stats:
+        return None, None
     revision = _get_svn_revision()
     return stats, revision
 
