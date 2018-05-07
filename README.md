@@ -288,6 +288,10 @@ The options for the `battery` segment are:
 - `always_show_percentage`: If true, show percentage when fully charged on AC.
 - `low_threshold`: Threshold percentage for low-battery indicator color.
 
+The options for the `time` segment are:
+
+- `format`: Format string as used by strftime function, e.g. `%H:%M`.
+
 ### Contributing new types of segments
 
 The `powerline_shell/segments` directory contains python scripts which are
