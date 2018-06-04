@@ -64,7 +64,7 @@ def build_stats():
     return stats, branch
 
 
-def limit_barnch(powerline, branch):
+def limit_branch(powerline, branch):
     max_lenght = powerline.segment_conf("git", "max_lenght", None)
 
     return branch[:max_lenght]
@@ -88,5 +88,5 @@ class Segment(ThreadedSegment):
         else:
             symbol = ""
 
-        self.powerline.append(" " + symbol + limit_barnch(self.powerline, self.branch) + " ", fg, bg)
+        self.powerline.append(" " + symbol + limit_branch(self.powerline, self.branch) + " ", fg, bg)
         self.stats.add_to_powerline(self.powerline)
