@@ -8,6 +8,7 @@ import importlib
 import json
 from .utils import warn, py3, import_file
 import re
+import imp
 
 
 def _current_dir():
@@ -216,7 +217,10 @@ def main():
     powerline = Powerline(args, config, theme)
     segments = []
     for seg_name in config["segments"]:
-        mod = importlib.import_module("powerline_shell.segments." + seg_name)
+        if seg_name.endswith(".py") and os.path.exists(seg_name):
+            mod = imp.load_source("powerline_shell.segments." + os.path.splitext(os.path.basename(seg_name))[0], seg_name)
+        else:
+            mod = importlib.import_module("powerline_shell.segments." + seg_name)
         segment = getattr(mod, "Segment")(powerline)
         segment.start()
         segments.append(segment)
