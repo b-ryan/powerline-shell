@@ -160,11 +160,12 @@ expected to be located at `~/.config/powerline-shell/config.json`. You can
 generate the default config at this location using:
 
 ```
-powerline-shell --generate-config > ~/.powerline-shell.json
+mkdir -p ~/.config/powerline-shell && \
+powerline-shell --generate-config > ~/.config/powerline-shell/config.json
 ```
 
 (As an example, my config file is located here:
-[here](https://github.com/b-ryan/dotfiles/blob/master/home/powerline-shell.json))
+[here](https://github.com/b-ryan/dotfiles/blob/master/home/config/powerline-shell/config.json))
 
 ### Adding, Removing and Re-arranging segments
 
@@ -227,8 +228,8 @@ they miss colors for any segments.
 If you want to create a custom theme, start by copying one of the existing
 themes, like the
 [basic](https://github.com/b-ryan/powerline-shell/blob/master/powerline_shell/themes/basic.py).
-and update your `~/.powerline-shell.json`, setting the `"theme"` to the path of
-the file. For example your configuration might have:
+and update your `~/.config/powerline-shell/config.json`, setting the `"theme"`
+to the path of the file. For example your configuration might have:
 
 ```
   "theme": "~/mythemes/my-great-theme.py"
@@ -246,7 +247,7 @@ settings.
 
 Some segments support additional configuration. The options for the segment are
 nested under the name of the segment itself. For example, all of the options
-for the `cwd` segment are set in `~/.powerline-shell.json` like:
+for the `cwd` segment are set in `~/.config/powerline-shell/config.json` like:
 
 ```
 {
