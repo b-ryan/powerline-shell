@@ -4,6 +4,8 @@ import os
 import tempfile
 import shutil
 import powerline_shell as p
+import powerline_shell.segments.cwd as cwd_segment
+from ..testing_utils import dict_side_effect_fn
 
 
 class CwdTest(unittest.TestCase):
@@ -51,3 +53,20 @@ class CwdTest(unittest.TestCase):
             p.get_valid_cwd()
 
         self.assertEqual(warn.call_count, 1)
+
+
+class PlainModeTest(unittest.TestCase):
+
+    def setUp(self):
+        self.powerline = mock.MagicMock()
+        self.powerline.segment_conf.side_effect = dict_side_effect_fn({
+            ("cwd", "mode"): "plain",
+        })
+
+
+    def test_home_directories(self):
+        os.chdir(os.getenv("HOME"))
+        segment = cwd_segment.Segment(self.powerline)
+        segment.start()
+        segment.add_to_powerline()
+        self.assertEqual(self.powerline.append.call_args[0][0], ' ~ ')

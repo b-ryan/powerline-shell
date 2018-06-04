@@ -2,13 +2,14 @@ import os
 import sys
 from ..utils import warn, py3, BasicSegment
 
-ELLIPSIS = u'\u2026'
+ELLIPSIS = u"\u2026"
+HOME_INDICATOR = "~"
 
 
 def replace_home_dir(cwd):
     home = os.path.realpath(os.getenv('HOME'))
     if cwd.startswith(home):
-        return '~' + cwd[len(home):]
+        return HOME_INDICATOR + cwd[len(home):]
     return cwd
 
 
@@ -60,7 +61,6 @@ def add_cwd_segment(powerline):
 
     names = split_path_into_names(cwd)
 
-    full_cwd = powerline.segment_conf("cwd", "full_cwd", False)
     max_depth = powerline.segment_conf("cwd", "max_depth", 5)
     if max_depth <= 0:
         warn("Ignoring cwd.max_depth option since it's not greater than 0")
@@ -75,16 +75,20 @@ def add_cwd_segment(powerline):
         n_before = 2 if max_depth > 2 else max_depth - 1
         names = names[:n_before] + [ELLIPSIS] + names[n_before - max_depth:]
 
+    if powerline.segment_conf("cwd", "mode") == "plain":
+        # We do this joining here instead of just using cwd in order to have
+        # the plain mode support the max_depth option.
+        joined = os.path.sep.join(names)
+        # if cwd[0] != HOME_INDICATOR:
+        #     joined = os.path.sep
+        powerline.append(" %s " % (joined,), powerline.theme.CWD_FG,
+                         powerline.theme.PATH_BG)
+        return
+
     if powerline.segment_conf("cwd", "mode") == "dironly":
         # The user has indicated they only want the current directory to be
         # displayed, so chop everything else off
         names = names[-1:]
-
-    elif powerline.segment_conf("cwd", "mode") == "plain":
-        joined = os.path.sep.join(names)
-        powerline.append(" %s " % (joined,), powerline.theme.CWD_FG,
-                         powerline.theme.PATH_BG)
-        return
 
     for i, name in enumerate(names):
         is_last_dir = (i == len(names) - 1)
@@ -96,6 +100,7 @@ def add_cwd_segment(powerline):
             separator = None
             separator_fg = None
 
+        full_cwd = powerline.segment_conf("cwd", "full_cwd", False)
         if not (is_last_dir and full_cwd):
             name = maybe_shorten_name(powerline, name)
         powerline.append(' %s ' % name, fg, bg, separator, separator_fg)
