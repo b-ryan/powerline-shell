@@ -75,6 +75,10 @@ class DefaultColor(object):
     TIME_FG = 250
     TIME_BG = 238
 
+    PRIVATE_IP_FG = 15
+    PRIVATE_IP_BG = 18
+    PRIVATE_IP_OFFLINE = 124
+
 class Color(DefaultColor):
     """
     This subclass is required when the user chooses to use 'default' theme.
