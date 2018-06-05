@@ -197,6 +197,7 @@ are:
 - `read_only` - Shows a lock icon if the current directory is read-only.
 - `root` - Shows a `#` if logged in as root, `$` otherwise.
 - `ruby_version` - `ruby --version`
+- `rvm` - Shows version and gemset from `RUBY_VERSION` and `GEM_HOME` environment vars.
 - `set_term_title` - If able, sets the title of your terminal to include some
   useful info.
 - `ssh` - If logged into over SSH, shows a network icon.
