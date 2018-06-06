@@ -43,3 +43,6 @@ class Color(DefaultColor):
 
     TIME_FG = 8
     TIME_BG = 7
+
+    ASCIINEMA_BG = 15
+    ASCIINEMA_FG = 1
