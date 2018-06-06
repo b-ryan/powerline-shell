@@ -289,6 +289,19 @@ The options for the `battery` segment are:
 - `always_show_percentage`: If true, show percentage when fully charged on AC.
 - `low_threshold`: Threshold percentage for low-battery indicator color.
 
+The `root` segment provides the option to customize `indicators` on each of the supported shells. For example:
+
+```
+{
+  "root": {
+    "indicators": {
+      "bash": " bash 🤖 ",
+      "zsh": " zsh 🤖 "
+    }
+  }
+}
+```
+
 ### Contributing new types of segments
 
 The `powerline_shell/segments` directory contains python scripts which are
