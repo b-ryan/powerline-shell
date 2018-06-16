@@ -3,6 +3,7 @@ from ..utils import ThreadedSegment, RepoStats, get_subprocess_env
 
 
 def _get_svn_revision():
+    revision=""
     p = subprocess.Popen(["svn", "info", "--xml"],
                          stdout=subprocess.PIPE,
                          stderr=subprocess.PIPE,
@@ -41,7 +42,7 @@ def build_stats():
         # Popen will throw an OSError if svn is not found
         return None
     pdata = p.communicate()
-    if p.returncode != 0 or pdata[1][:22] == b'svn: warning: W155007:':
+    if p.returncode != 0 or (pdata[1][:4] == b'svn:' and 'W155007' in pdata[1]):
         return None, None
     status = _get_svn_status(pdata)
     stats = parse_svn_stats(status)
