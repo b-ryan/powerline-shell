@@ -1,6 +1,6 @@
 # Changes
 
-Unreleased (version 0.6.0)
+2018-06-20 (version 0.6.0)
 
 * Support for custom themes
 * New option for the `time` segment to specify format of the displayed time
