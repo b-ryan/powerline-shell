@@ -60,7 +60,14 @@ def build_stats():
         branch = branch_info['local']
     else:
         branch = _get_git_detached_branch()
+
     return stats, branch
+
+
+def limit_branch(powerline, branch):
+    max_lenght = powerline.segment_conf("git", "max_lenght", None)
+
+    return branch[:max_lenght]
 
 
 class Segment(ThreadedSegment):
@@ -80,5 +87,6 @@ class Segment(ThreadedSegment):
             symbol = RepoStats().symbols["git"] + " "
         else:
             symbol = ""
-        self.powerline.append(" " + symbol + self.branch + " ", fg, bg)
+
+        self.powerline.append(" " + symbol + limit_branch(self.powerline, self.branch) + " ", fg, bg)
         self.stats.add_to_powerline(self.powerline)
