@@ -215,11 +215,36 @@ def main():
 
     powerline = Powerline(args, config, theme)
     segments = []
+    if 'POWERLINE_SHELL_SEGMENTS' in os.environ:
+        path_segments = os.environ['POWERLINE_SHELL_SEGMENTS']
+    else:
+        path_segments = None
     for seg_name in config["segments"]:
-        mod = importlib.import_module("powerline_shell.segments." + seg_name)
-        segment = getattr(mod, "Segment")(powerline)
-        segment.start()
-        segments.append(segment)
+        mod_name = "powerline_shell.segments." + seg_name
+        segment = None
+        if path_segments:
+            mod_fn = os.path.join(path_segments, seg_name+'.py')
+            spec = importlib.util.spec_from_file_location(mod_name, mod_fn)
+            mod = importlib.util.module_from_spec(spec)
+            try:
+                spec.loader.exec_module(mod)
+                segment = getattr(mod, "Segment")(powerline)
+            except (FileNotFoundError, AttributeError):
+                pass
+        if not segment:
+            try:
+                mod = importlib.import_module(mod_name)
+            except ModuleNotFoundError:
+                pass
+            try:
+                segment = getattr(mod, "Segment")(powerline)
+            except AttributeError:
+                pass
+        if segment:
+            segment.start()
+            segments.append(segment)
+        else:
+            warn("Segment not found: {:s}".format(seg_name))
     for segment in segments:
         segment.add_to_powerline()
     sys.stdout.write(powerline.draw())
