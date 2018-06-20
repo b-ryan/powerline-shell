@@ -1,5 +1,11 @@
 # Changes
 
+Unreleased (version 0.6.0)
+
+* Support for custom themes
+* New option for the `time` segment to specify format of the displayed time
+  ([@dundalek](https://github.com/b-ryan/powerline-shell/pull/383))
+
 2018-04-22 (version 0.5.4)
 
 * Reverted fix for

@@ -6,7 +6,10 @@ import time
 class Segment(BasicSegment):
     def add_to_powerline(self):
         powerline = self.powerline
-        if powerline.args.shell == 'bash':
+        format = powerline.segment_conf('time', 'format')
+        if format:
+            time_ = ' %s ' % time.strftime(format)
+        elif powerline.args.shell == 'bash':
             time_ = ' \\t '
         elif powerline.args.shell == 'zsh':
             time_ = ' %* '
