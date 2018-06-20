@@ -172,40 +172,33 @@ powerline-shell --generate-config > ~/.powerline-shell.json
 
 Once you have generated your config file, you can now start adding or removing
 "segments" - the building blocks of your shell. The list of segments available
-are:
+can be seen
+[here](https://github.com/b-ryan/powerline-shell/tree/master/powerline_shell/segments).
 
-- `aws_profile` - Show which AWS profile is in use. See the
-  [AWS](http://docs.aws.amazon.com/cli/latest/userguide/cli-multiple-profiles.html)
-  documentation.
-- `battery` - See percentage of battery charged and an icon when the battery is
-  charging.
-- `bzr` - Details about the current Bazaar repo.
-- `cwd` - Shows your current working directory. See [Segment
-  Configuration](#segment-configuration) for some options.
-- `exit_code` - When the previous command ends in a non-zero status, shows the
-  value of the exit status in red.
-- `fossil` - Details about the current Fossil repo.
-- `git` - Details about the current Git repo.
-- `git_stash` - Number of stashes in the current Git repo.
-- `hg` - Details about the current Mercurial repo.
-- `hostname` - Current machine's hostname.
-- `jobs` - Number of background jobs currently running.
-- `newline` - Inserts a newline into the prompt.
-- `node_version` - `node --version`
-- `npm_version` - `npm --version`
-- `php_version` - Version of php on the machine.
-- `rbenv` - `rbenv local`
-- `read_only` - Shows a lock icon if the current directory is read-only.
-- `root` - Shows a `#` if logged in as root, `$` otherwise.
-- `ruby_version` - `ruby --version`
-- `set_term_title` - If able, sets the title of your terminal to include some
-  useful info.
-- `ssh` - If logged into over SSH, shows a network icon.
-- `svn` - Details about the current SVN repo.
-- `time` - Shows the current time.
-- `uptime` - Uptime of the current machine.
-- `username` - Name of the logged-in user.
-- `virtual_env` - Shows the name of the current virtual env or conda env.
+You can also create custom segments. Start by copying an existing segment like
+[this](https://github.com/b-ryan/powerline-shell/blob/master/powerline_shell/segments/aws_profile.py).
+Make sure to change any relative imports to absolute imports. Ie. change things
+like:
+
+```python
+from ..utils import BasicSegment
+```
+
+to
+
+```python
+from powerline_shell.utils import BasicSegment
+```
+
+Then change the `add_to_powerline` function to do what you want. You can then
+use this segment in your configuration by putting the path to your segment in
+the segments section, like:
+
+```json
+"segments": [
+    "~/path/to/segment.py"
+]
+```
 
 ### Segment Separator
 
