@@ -167,21 +167,26 @@ DEFAULT_CONFIG = {
 }
 
 
-class ThemeNotFoundException(Exception):
+class ModuleNotFoundException(Exception):
     pass
 
 
-def read_theme(config):
-    theme_name = config.get("theme", "default")
-    try:
-        mod = importlib.import_module("powerline_shell.themes." + theme_name)
-    except ImportError:
+class CustomImporter(object):
+    def __init__(self):
+        self.file_import_count = 0
+
+    def import_(self, module_prefix, module_or_file, description):
         try:
-            mod = import_file("custom_theme", os.path.expanduser(theme_name))
+            mod = importlib.import_module(module_prefix + module_or_file)
         except ImportError:
-            raise ThemeNotFoundException(
-                "Theme " + theme_name + " cannot be found")
-    return getattr(mod, "Color")
+            try:
+                module_name = "_custom_mod_{0}".format(self.file_import_count)
+                mod = import_file(module_name, os.path.expanduser(module_or_file))
+                self.file_import_count += 1
+            except (ImportError, IOError):
+                msg = "{0} {1} cannot be found".format(description, module_or_file)
+                raise ModuleNotFoundException( msg)
+        return mod
 
 
 def main():
@@ -211,16 +216,24 @@ def main():
     else:
         config = DEFAULT_CONFIG
 
-    theme = read_theme(config)
+    custom_importer = CustomImporter()
+    theme_mod = custom_importer.import_(
+        "powerline_shell.themes.",
+        config.get("theme", "default"),
+        "Theme")
+    theme = getattr(theme_mod, "Color")
 
     powerline = Powerline(args, config, theme)
     segments = []
     for seg_conf in config["segments"]:
         if not isinstance(seg_conf, dict):
             seg_conf = {"type": seg_conf}
-        module_name = "powerline_shell.segments." + seg_conf["type"]
-        mod = importlib.import_module(module_name)
-        segment = getattr(mod, "Segment")(powerline, seg_conf)
+        seg_name = seg_conf["type"]
+        seg_mod = custom_importer.import_(
+            "powerline_shell.segments.",
+            seg_name,
+            "Segment")
+        segment = getattr(seg_mod, "Segment")(powerline, seg_conf)
         segment.start()
         segments.append(segment)
     for segment in segments:
