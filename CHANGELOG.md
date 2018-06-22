@@ -1,5 +1,9 @@
 # Changes
 
+2018-06-21 (version 0.7.0-rc1)
+
+* New generic `stdout` and `env` segments
+
 2018-06-20 (version 0.6.0)
 
 * Support for custom themes
