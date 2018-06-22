@@ -28,7 +28,7 @@ class FossilTest(unittest.TestCase):
         sh.fossil("init", "test.fossil")
         sh.fossil("open", "test.fossil")
 
-        self.segment = fossil.Segment(self.powerline)
+        self.segment = fossil.Segment(self.powerline, {})
 
     def tearDown(self):
         shutil.rmtree(self.dirname)

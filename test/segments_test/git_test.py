@@ -19,7 +19,7 @@ class GitTest(unittest.TestCase):
         sh.cd(self.dirname)
         sh.git("init", ".")
 
-        self.segment = git.Segment(self.powerline)
+        self.segment = git.Segment(self.powerline, {})
 
     def tearDown(self):
         shutil.rmtree(self.dirname)

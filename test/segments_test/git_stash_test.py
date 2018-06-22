@@ -15,7 +15,7 @@ class GitStashTest(unittest.TestCase):
         sh.cd(self.dirname)
         sh.git("init", ".")
 
-        self.segment = git_stash.Segment(self.powerline)
+        self.segment = git_stash.Segment(self.powerline, {})
 
     def tearDown(self):
         shutil.rmtree(self.dirname)
