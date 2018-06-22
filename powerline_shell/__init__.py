@@ -225,12 +225,15 @@ def main():
 
     powerline = Powerline(args, config, theme)
     segments = []
-    for seg_name in config["segments"]:
+    for seg_conf in config["segments"]:
+        if not isinstance(seg_conf, dict):
+            seg_conf = {"type": seg_conf}
+        seg_name = seg_conf["type"]
         seg_mod = custom_importer.import_(
             "powerline_shell.segments.",
             seg_name,
             "Segment")
-        segment = getattr(seg_mod, "Segment")(powerline)
+        segment = getattr(seg_mod, "Segment")(powerline, seg_conf)
         segment.start()
         segments.append(segment)
     for segment in segments:

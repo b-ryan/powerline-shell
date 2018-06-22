@@ -29,7 +29,7 @@ class HgTest(unittest.TestCase):
         sh.cd(self.dirname)
         sh.hg("init", ".")
 
-        self.segment = hg.Segment(self.powerline)
+        self.segment = hg.Segment(self.powerline, {})
 
     def tearDown(self):
         shutil.rmtree(self.dirname)

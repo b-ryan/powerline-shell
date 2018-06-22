@@ -1,4 +1,4 @@
 #!/bin/sh
-
+set -eu
 docker build -t powerline-shell .
-docker run --rm -it powerline-shell -c nosetests
+docker run --rm -it powerline-shell nosetests "$@"

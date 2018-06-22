@@ -75,6 +75,7 @@ class DefaultColor(object):
     TIME_FG = 250
     TIME_BG = 238
 
+
 class Color(DefaultColor):
     """
     This subclass is required when the user chooses to use 'default' theme.

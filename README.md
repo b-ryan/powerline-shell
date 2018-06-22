@@ -23,9 +23,11 @@ has no relation to powerline.
   - [Bash](#bash)
   - [ZSH](#zsh)
   - [Fish](#fish)
+  - [tcsh](#tcsh)
 - [Customization](#customization)
   - [Config File](#config-file)
   - [Adding, Removing and Re-arranging segments](#adding-removing-and-re-arranging-segments)
+  - [Generic Segments](#generic-segments)
   - [Segment Separator](#segment-separator)
   - [Themes](#themes)
   - [Segment Configuration](#segment-configuration)
@@ -198,6 +200,32 @@ the segments section, like:
 "segments": [
     "~/path/to/segment.py"
 ]
+```
+
+### Generic Segments
+
+There are two special segments available. `stdout` accepts an arbitrary command
+and the output of the command will be put into your prompt. `env` takes an
+environment variable and the value of the variable will be set in your prompt.
+For example, your config could look like this:
+
+```
+{
+  "segments": [
+    "cwd",
+    "git",
+    {
+      "type": "stdout",
+      "command": ["echo", "hi"],
+      "fg_color": 22,
+      "bg_color": 161
+    },
+    {
+      "type": "env",
+      "var": "DOCKER_MACHINE_NAME",
+    },
+  ]
+}
 ```
 
 ### Segment Separator

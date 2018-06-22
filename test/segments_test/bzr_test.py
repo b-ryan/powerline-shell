@@ -34,7 +34,7 @@ class BzrTest(unittest.TestCase):
         sh.cd("trunk")
         sh.bzr("init")
 
-        self.segment = bzr.Segment(self.powerline)
+        self.segment = bzr.Segment(self.powerline, {})
 
     def tearDown(self):
         shutil.rmtree(self.dirname)

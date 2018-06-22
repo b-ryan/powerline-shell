@@ -50,11 +50,6 @@ def build_stats():
 
 
 class Segment(ThreadedSegment):
-    def __init__(self, powerline):
-        super(Segment, self).__init__(powerline)
-        self.stats = None
-        self.revision = ""
-
     def run(self):
         self.stats, self.revision = build_stats()
 
