@@ -1,4 +1,6 @@
 #!/bin/sh
 set -eu
 docker build -t powerline-shell .
-docker run --rm -it powerline-shell nosetests "$@"
+docker run --rm --interactive --tty \
+    --volume $PWD:/code \
+    powerline-shell "$@"

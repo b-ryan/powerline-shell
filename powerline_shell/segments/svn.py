@@ -39,7 +39,7 @@ def build_stats():
                              env=get_subprocess_env())
     except OSError:
         # Popen will throw an OSError if svn is not found
-        return None
+        return None, None
     pdata = p.communicate()
     if p.returncode != 0 or pdata[1][:22] == b'svn: warning: W155007:':
         return None, None

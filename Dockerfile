@@ -9,7 +9,8 @@ RUN apk add --no-cache --update \
       git \
       mercurial \
       php5 \
-      subversion && \
+      subversion \
+      && \
     rm -rf /var/cache/apk/*
 
 RUN mkdir /code
@@ -22,7 +23,9 @@ RUN bzr whoami "root <root@example.com>" && \
     git config --global user.email "root@example.com" && \
     git config --global user.name "root"
 
-COPY . ./
-RUN ./setup.py install
+# COPY . ./
+# RUN ./setup.py install
 
 ENV USER root
+
+CMD ["nosetests"]
