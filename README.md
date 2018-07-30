@@ -319,6 +319,10 @@ The options for the `time` segment are:
 
 - `format`: Format string as used by strftime function, e.g. `%H:%M`.
 
+The `ruby_version` segment provides one option:
+
+- `mode`: If `fancy`, the word `"ruby"` will be replaced with the  character.
+
 ### Contributing new types of segments
 
 The `powerline_shell/segments` directory contains python scripts which are
