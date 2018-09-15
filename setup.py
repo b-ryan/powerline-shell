@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="powerline-shell",
-    version="0.7.0-rc1",
+    version="0.7.0",
     description="A pretty prompt for your shell",
     author="Buck Ryan",
     author_email="buck@buckryan.com",

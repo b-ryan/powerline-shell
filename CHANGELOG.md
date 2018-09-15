@@ -1,6 +1,6 @@
 # Changes
 
-2018-06-21 (version 0.7.0-rc1)
+2018-09-15 (version 0.7.0)
 
 * New generic `stdout` and `env` segments
 
