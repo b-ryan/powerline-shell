@@ -25,7 +25,7 @@ if __name__ == "__main__":
     print(' ' * len(str(bg_start)), end=' ')
     for fg_color in range(fg_start, fg_end + 1):
         print(' ' * (len(test_string) - len(str(fg_color))), fg_color, end=' ')
-    print
+    print()
 
     for bg_color in range(bg_start, bg_end + 1):
         print(bg_color, bg(bg_color), end=' ')
