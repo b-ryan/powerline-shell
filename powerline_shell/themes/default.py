@@ -72,6 +72,9 @@ class DefaultColor(object):
     AWS_PROFILE_FG = 39
     AWS_PROFILE_BG = 238
 
+    KUBECONFIG_PATH_FG = 39
+    KUBECONFIG_PATH_BG = 238
+
     TIME_FG = 250
     TIME_BG = 238
 
