@@ -1,3 +1,4 @@
+import os
 import re
 import subprocess
 from ..utils import RepoStats, ThreadedSegment, get_git_subprocess_env
