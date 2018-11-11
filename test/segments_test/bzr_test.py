@@ -34,7 +34,7 @@ class BzrTest(unittest.TestCase):
         sh.cd("trunk")
         sh.bzr("init")
 
-        self.segment = bzr.Segment(self.powerline)
+        self.segment = bzr.Segment(self.powerline, {})
 
     def tearDown(self):
         shutil.rmtree(self.dirname)
@@ -49,7 +49,7 @@ class BzrTest(unittest.TestCase):
         sh.bzr("branch", "trunk", branch)
         sh.cd(branch)
 
-    @mock.patch("powerline_shell.segments.bzr.get_PATH")
+    @mock.patch("powerline_shell.utils.get_PATH")
     def test_bzr_not_installed(self, get_PATH):
         get_PATH.return_value = "" # so bzr can't be found
         self.segment.start()

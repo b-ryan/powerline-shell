@@ -1,25 +1,12 @@
-import subprocess, os
-from ..utils import ThreadedSegment, RepoStats
-
-
-def get_PATH():
-    """Normally gets the PATH from the OS. This function exists to enable
-    easily mocking the PATH in tests.
-    """
-    return os.getenv("PATH")
-
-
-def svn_subprocess_env():
-    env = dict(os.environ)
-    env.update({"PATH": get_PATH()})
-    return env
+import subprocess
+from ..utils import ThreadedSegment, RepoStats, get_subprocess_env
 
 
 def _get_svn_revision():
     p = subprocess.Popen(["svn", "info", "--xml"],
                          stdout=subprocess.PIPE,
                          stderr=subprocess.PIPE,
-                         env=svn_subprocess_env())
+                         env=get_subprocess_env())
     for line in p.communicate()[0].decode("utf-8").splitlines():
         if "revision" in line:
             revision = line.split("=")[1].split('"')[1]
@@ -49,10 +36,10 @@ def build_stats():
     try:
         p = subprocess.Popen(['svn', 'status'],
                              stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                             env=svn_subprocess_env())
+                             env=get_subprocess_env())
     except OSError:
         # Popen will throw an OSError if svn is not found
-        return None
+        return None, None
     pdata = p.communicate()
     if p.returncode != 0 or pdata[1][:22] == b'svn: warning: W155007:':
         return None, None
@@ -63,11 +50,6 @@ def build_stats():
 
 
 class Segment(ThreadedSegment):
-    def __init__(self, powerline):
-        super(Segment, self).__init__(powerline)
-        self.stats = None
-        self.revision = ""
-
     def run(self):
         self.stats, self.revision = build_stats()
 

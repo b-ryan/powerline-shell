@@ -9,7 +9,7 @@ class HostnameTest(unittest.TestCase):
     def setUp(self):
         self.powerline = mock.MagicMock()
         self.powerline.theme = Color
-        self.segment = hostname.Segment(self.powerline)
+        self.segment = hostname.Segment(self.powerline, {})
 
     def test_colorize(self):
         self.powerline.segment_conf.return_value = True
