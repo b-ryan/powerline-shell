@@ -19,8 +19,7 @@ class Segment(ThreadedSegment):
         if self.powerline.args.shell == "tcsh":
             warn("newline segment not supported for tcsh (yet?)")
             return
-        if self.powerline.segment_conf("vcs", "newline"):
-            self.powerline.append("\n",
+        self.powerline.append("\n",
                                 self.powerline.theme.RESET,
                                 self.powerline.theme.RESET,
                                 separator="")
