@@ -7,13 +7,9 @@ def get_vcs_dir():
     git_return_code.communicate()[0].strip()   # Blocks until 'git status' completes execution
     hg_return_code = subprocess.Popen("hg status", shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, close_fds=True)
     hg_return_code.communicate()[0].strip()   # Blocks until 'git status' completes execution
-    svn_return_code = subprocess.Popen("svn status", shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, close_fds=True)
-    svn_stdout = svn_return_code.communicate()[0].strip()   # Blocks until 'git status' completes execution
-    if "warning: W155007" not in str(svn_stdout):
-        svn_true = False
-    else:
-        svn_true = True
-    if git_return_code.returncode==0 or hg_return_code.returncode==0 or svn_true is False:
+    svn_return_code = subprocess.Popen("svn info", shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, close_fds=True)
+    svn_return_code.communicate()[0].strip()   # Blocks until 'git status' completes execution
+    if git_return_code.returncode==0 or hg_return_code.returncode==0 or svn_return_code.returncode==0:
         return True
     else:
         return False
