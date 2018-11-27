@@ -73,6 +73,7 @@ def add_cwd_segment(powerline):
         # max_depth must be greater than n_before or else you end up repeating
         # parts of the path with the way the splicing is written below.
         n_before = 2 if max_depth > 2 else max_depth - 1
+        n_before = powerline.segment_conf("cwd", "n_before", n_before)
         names = names[:n_before] + [ELLIPSIS] + names[n_before - max_depth:]
 
     if powerline.segment_conf("cwd", "mode") == "dironly":
