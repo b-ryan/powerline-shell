@@ -91,6 +91,7 @@ class Powerline(object):
         mode = config.get("mode", "patched")
         self.color_template = self.color_templates[args.shell]
         self.reset = self.color_template % '[0m'
+        self.bold = self.color_template % '[1m'
         self.lock = Powerline.symbols[mode]['lock']
         self.network = Powerline.symbols[mode]['network']
         self.separator = Powerline.symbols[mode]['separator']
@@ -122,7 +123,7 @@ class Powerline(object):
             separator_fg if separator_fg is not None else bg))
 
     def draw(self):
-        text = (''.join(self.draw_segment(i) for i in range(len(self.segments)))
+        text = self.bold + (''.join(self.draw_segment(i) for i in range(len(self.segments)))
                 + self.reset) + ' '
         if py3:
             return text
