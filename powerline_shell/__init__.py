@@ -8,6 +8,8 @@ import importlib
 import json
 from .utils import warn, py3, import_file
 import re
+import io
+import platform
 
 
 def _current_dir():
@@ -238,5 +240,9 @@ def main():
         segments.append(segment)
     for segment in segments:
         segment.add_to_powerline()
+
+    if platform.system() == 'Windows':
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, 'utf-8' , line_buffering = True)
+
     sys.stdout.write(powerline.draw())
     return 0
