@@ -78,6 +78,9 @@ class DefaultColor(object):
     RUBY_FG = 254
     RUBY_BG = 124
 
+    NODE_FG = 00
+    NODE_BG = 35
+
 
 class Color(DefaultColor):
     """
