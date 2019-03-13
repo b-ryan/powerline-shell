@@ -41,13 +41,15 @@ class Segment(BasicSegment):
         except OSError:
             return
 
-        if ruby_version != SYSTEM_RUBY_VERSION:
-            if powerline.segment_conf('ruby_version', 'mode') == 'fancy':
-                ruby_version = ruby_version.replace('ruby', FANCY_RUBY)
-            gem_set = os.environ.get('GEM_HOME', '').split('@')[1:]
-            if gem_set:
+        gem_set = os.environ.get('GEM_HOME', '').split('@')[1:]
+        if gem_set:
+            if ruby_version != SYSTEM_RUBY_VERSION:
+                if powerline.segment_conf('ruby_version', 'mode') == 'fancy':
+                    ruby_version = ruby_version.replace('ruby', FANCY_RUBY)
                 ruby_version += "@{}".format(gem_set.pop())
-            powerline.append(' %s ' % ruby_version, powerline.theme.RUBY_FG, powerline.theme.RUBY_BG)
+            else:
+                ruby_version = "@{}".format(gem_set.pop())
+        powerline.append(' %s ' % ruby_version, powerline.theme.RUBY_FG, powerline.theme.RUBY_BG)
 
         if node_version != SYSTEM_NODE_VERSION:
             node_string = u'{} {}'.format(FANCY_NODE, node_version)
