@@ -6,7 +6,9 @@ class Segment(BasicSegment):
     def add_to_powerline(self):
         # See discussion in https://github.com/banga/powerline-shell/pull/204
         # regarding the directory where battery info is saved
-        if os.path.exists("/sys/class/power_supply/BAT0"):
+        if os.path.exists("/sys/class/power_supply/battery"):
+            dir_ = "/sys/class/power_supply/battery"
+        elif os.path.exists("/sys/class/power_supply/BAT0"):
             dir_ = "/sys/class/power_supply/BAT0"
         elif os.path.exists("/sys/class/power_supply/BAT1"):
             dir_ = "/sys/class/power_supply/BAT1"
