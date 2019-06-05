@@ -20,7 +20,7 @@ class RepoStats(object):
         'ahead': u'\u2B06',
         'behind': u'\u2B07',
         'staged': u'\u2714',
-        'changed': u'\u270E',
+        'changed': u'\u2712',
         'new': u'?',
         'conflicted': u'\u273C',
         'stash': u'\u2398',
@@ -149,4 +149,3 @@ def get_git_subprocess_env():
     # LANG is specified to ensure git always uses a language we are expecting.
     # Otherwise we may be unable to parse the output.
     return get_subprocess_env(LANG="C")
-
