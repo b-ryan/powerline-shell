@@ -5,6 +5,7 @@ import shutil
 import sh
 import powerline_shell.segments.fossil as fossil
 from powerline_shell.utils import RepoStats
+from ..testing_utils import dict_side_effect_fn
 
 test_cases = {
     "EXTRA      new-file": RepoStats(new=1),
@@ -18,13 +19,16 @@ class FossilTest(unittest.TestCase):
 
     def setUp(self):
         self.powerline = mock.MagicMock()
+        self.powerline.segment_conf.side_effect = dict_side_effect_fn({
+            ("vcs", "show_symbol"): False,
+        })
 
         self.dirname = tempfile.mkdtemp()
         sh.cd(self.dirname)
         sh.fossil("init", "test.fossil")
         sh.fossil("open", "test.fossil")
 
-        self.segment = fossil.Segment(self.powerline)
+        self.segment = fossil.Segment(self.powerline, {})
 
     def tearDown(self):
         shutil.rmtree(self.dirname)
@@ -38,7 +42,7 @@ class FossilTest(unittest.TestCase):
         sh.fossil("branch", "new", branch, "trunk")
         sh.fossil("checkout", branch)
 
-    @mock.patch("powerline_shell.segments.fossil.get_PATH")
+    @mock.patch("powerline_shell.utils.get_PATH")
     def test_fossil_not_installed(self, get_PATH):
         get_PATH.return_value = "" # so fossil can't be found
         self.segment.start()

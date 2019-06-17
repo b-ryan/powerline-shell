@@ -53,14 +53,10 @@ def get_fg_bg(powerline, name, is_last_dir):
 
 
 def add_cwd_segment(powerline):
-    cwd = powerline.cwd or os.getenv('PWD')
+    cwd = powerline.cwd
     if not py3:
         cwd = cwd.decode("utf-8")
     cwd = replace_home_dir(cwd)
-
-    if powerline.segment_conf("cwd", "mode") == 'plain':
-        powerline.append(' %s ' % (cwd,), powerline.theme.CWD_FG, powerline.theme.PATH_BG)
-        return
 
     names = split_path_into_names(cwd)
 
@@ -83,6 +79,12 @@ def add_cwd_segment(powerline):
         # The user has indicated they only want the current directory to be
         # displayed, so chop everything else off
         names = names[-1:]
+
+    elif powerline.segment_conf("cwd", "mode") == "plain":
+        joined = os.path.sep.join(names)
+        powerline.append(" %s " % (joined,), powerline.theme.CWD_FG,
+                         powerline.theme.PATH_BG)
+        return
 
     for i, name in enumerate(names):
         is_last_dir = (i == len(names) - 1)

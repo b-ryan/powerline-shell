@@ -1,12 +1,14 @@
 import subprocess
-from ..utils import ThreadedSegment
+from ..utils import ThreadedSegment, decode
 
 
 class Segment(ThreadedSegment):
     def run(self):
+        self.version = None
         try:
-            output = subprocess.check_output(['php', '-r', 'echo PHP_VERSION;'],
-                                             stderr=subprocess.STDOUT)
+            output = decode(
+                subprocess.check_output(['php', '-r', 'echo PHP_VERSION;'],
+                                        stderr=subprocess.STDOUT))
             self.version = output.split('-')[0] if '-' in output else output
         except OSError:
             self.version = None

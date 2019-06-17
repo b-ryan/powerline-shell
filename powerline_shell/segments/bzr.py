@@ -1,23 +1,11 @@
-import os
 import subprocess
-from ..utils import RepoStats, ThreadedSegment
-
-
-def get_PATH():
-    """Normally gets the PATH from the OS. This function exists to enable
-    easily mocking the PATH in tests.
-    """
-    return os.getenv("PATH")
-
-
-def bzr_subprocess_env():
-    return {"PATH": get_PATH()}
+from ..utils import RepoStats, ThreadedSegment, get_subprocess_env
 
 
 def _get_bzr_branch():
     p = subprocess.Popen(['bzr', 'nick'],
                          stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                         env=bzr_subprocess_env())
+                         env=get_subprocess_env())
     branch = p.communicate()[0].decode("utf-8").rstrip('\n')
     return branch
 
@@ -47,7 +35,7 @@ def build_stats():
     try:
         p = subprocess.Popen(['bzr', 'status'],
                              stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                             env=bzr_subprocess_env())
+                             env=get_subprocess_env())
     except OSError:
         # Popen will throw an OSError if bzr is not found
         return (None, None)
@@ -73,6 +61,9 @@ class Segment(ThreadedSegment):
         if self.stats.dirty:
             bg = self.powerline.theme.REPO_DIRTY_BG
             fg = self.powerline.theme.REPO_DIRTY_FG
-
-        self.powerline.append(" " + self.branch + " ", fg, bg)
+        if self.powerline.segment_conf("vcs", "show_symbol"):
+            symbol = RepoStats().symbols["bzr"] + " "
+        else:
+            symbol = ""
+        self.powerline.append(" " + symbol + self.branch + " ", fg, bg)
         self.stats.add_to_powerline(self.powerline)

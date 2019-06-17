@@ -1,17 +1,6 @@
 import os
 import subprocess
-from ..utils import RepoStats, ThreadedSegment
-
-
-def get_PATH():
-    """Normally gets the PATH from the OS. This function exists to enable
-    easily mocking the PATH in tests.
-    """
-    return os.getenv("PATH")
-
-
-def fossil_subprocess_env():
-    return {"PATH": get_PATH()}
+from ..utils import RepoStats, ThreadedSegment, get_subprocess_env
 
 
 def _get_fossil_branch():
@@ -49,7 +38,7 @@ def build_stats():
     try:
         subprocess.Popen(['fossil'], stdout=subprocess.PIPE,
                          stderr=subprocess.PIPE,
-                         env=fossil_subprocess_env()).communicate()
+                         env=get_subprocess_env()).communicate()
     except OSError:
         # Popen will throw an OSError if fossil is not found
         return (None, None)
@@ -74,6 +63,9 @@ class Segment(ThreadedSegment):
         if self.stats.dirty:
             bg = self.powerline.theme.REPO_DIRTY_BG
             fg = self.powerline.theme.REPO_DIRTY_FG
-
-        self.powerline.append(" " + self.branch + " ", fg, bg)
+        if self.powerline.segment_conf("vcs", "show_symbol"):
+            symbol = RepoStats().symbols["fossil"] + " "
+        else:
+            symbol = ""
+        self.powerline.append(" " + symbol + self.branch + " ", fg, bg)
         self.stats.add_to_powerline(self.powerline)

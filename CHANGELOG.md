@@ -1,5 +1,90 @@
 # Changes
 
+2018-09-15 (version 0.7.0)
+
+* New generic `stdout` and `env` segments
+
+2018-06-20 (version 0.6.0)
+
+* Support for custom themes
+* New option for the `time` segment to specify format of the displayed time
+  ([@dundalek](https://github.com/b-ryan/powerline-shell/pull/383))
+
+2018-04-22 (version 0.5.4)
+
+* Reverted fix for
+  ([#249](https://github.com/b-ryan/powerline-shell/issues/249)) because it
+  caused issues on Mac.
+
+2018-04-21 (version 0.5.3)
+
+* New theme! (gruvbox)
+  ([@monicaycli](https://github.com/b-ryan/powerline-shell/pull/388))
+
+2018-04-21 (version 0.5.2)
+
+* Fix hostname colorize bug
+  ([@comagnaw](https://github.com/b-ryan/powerline-shell/issues/353))
+* Fix issue with prompt bleeding behavior
+  ([@bytebeast](https://github.com/b-ryan/powerline-shell/issues/249))
+* Better error message when config file cannot be decoded (Closes
+  [#371](https://github.com/b-ryan/powerline-shell/issues/371))
+
+2018-04-13 (version 0.5.1)
+
+* Fix Python 3 compatibility of `git_stash` segment
+
+2018-04-10 (version 0.5.0)
+
+* Patch environment for VCS subprocesses rather than generating a new one
+* Fix `cwd` segment so it respects `max_depth` configuration
+* Fix Ruby segment for Python 3 compatibility
+  ([@Blue-Dog-Archolite](https://github.com/b-ryan/powerline-shell/pull/366))
+* Configuration is now expected to be at
+  `~/.config/powerline-shell/config.json` ([@emansije and
+  @kc9jud](https://github.com/b-ryan/powerline-shell/pull/334))
+* New `git_stash` segment
+  ([@apinkney97](https://github.com/b-ryan/powerline-shell/pull/379))
+
+2018-02-19 (version 0.4.9)
+
+* Fix root user segment
+  ([@TiGR](https://github.com/b-ryan/powerline-shell/pull/362))
+* Fixes and enhancements for SVN segment
+  ([@emansije](https://github.com/b-ryan/powerline-shell/pull/349))
+
+2018-01-29 (version 0.4.8)
+
+* Bring back the ability to create custom themes
+  ([@b-ryan](https://github.com/b-ryan/powerline-shell/pull/352))
+* Add the ability to customize the `time` segment in themes
+  ([@gaurav-nelson](https://github.com/b-ryan/powerline-shell/pull/338))
+
+2018-01-15 (version 0.4.7)
+
+* VCS segments (git, hg, etc.) can now show a symbol identifying what VPS the
+  current directory uses
+  ([@emansije](https://github.com/b-ryan/powerline-shell/pull/298))
+
+2018-01-11 (version 0.4.6)
+
+* Fix bug in SVN segment
+  ([@kc9jud](https://github.com/b-ryan/powerline-shell/pull/347))
+
+2017-12-20 (version 0.4.5)
+
+* Fix `cwd` segment in Bash for Windows
+  ([@b-ryan](https://github.com/b-ryan/powerline-shell/pull/340))
+
+2017-12-19 (version 0.4.4)
+
+* New options and symbol for the `battery` segment
+  ([@kc9jud](https://github.com/b-ryan/powerline-shell/pull/332))
+* Update `svn` segment to use threads
+  ([@kc9jud](https://github.com/b-ryan/powerline-shell/pull/333))
+* Fix `username` segment in cygwin
+  ([@ericLemanissier](https://github.com/b-ryan/powerline-shell/commits/master))
+
 2017-11-25 (version 0.4.3)
 
 * New option for `cwd` segment that allows the last directory to not be

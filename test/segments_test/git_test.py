@@ -4,18 +4,22 @@ import tempfile
 import shutil
 import sh
 import powerline_shell.segments.git as git
+from ..testing_utils import dict_side_effect_fn
 
 
 class GitTest(unittest.TestCase):
 
     def setUp(self):
         self.powerline = mock.MagicMock()
+        self.powerline.segment_conf.side_effect = dict_side_effect_fn({
+            ("vcs", "show_symbol"): False,
+        })
 
         self.dirname = tempfile.mkdtemp()
         sh.cd(self.dirname)
         sh.git("init", ".")
 
-        self.segment = git.Segment(self.powerline)
+        self.segment = git.Segment(self.powerline, {})
 
     def tearDown(self):
         shutil.rmtree(self.dirname)
@@ -31,7 +35,7 @@ class GitTest(unittest.TestCase):
     def _get_commit_hash(self):
         return sh.git("rev-parse", "HEAD")
 
-    @mock.patch('powerline_shell.segments.git.get_PATH')
+    @mock.patch('powerline_shell.utils.get_PATH')
     def test_git_not_installed(self, get_PATH):
         get_PATH.return_value = "" # so git can't be found
         self.segment.start()
