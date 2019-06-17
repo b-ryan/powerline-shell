@@ -3,16 +3,12 @@ import os, subprocess, re
 
 LOW_BATTERY_THRESHOLD = 20
 
-charge_state = {
-    "charged":"charged",
-    "discharging":"discharging",
-    "charging":"charging",
-    "finishing charge":"finishing charge",
-    
-    "full":"charged"
-}
+class ChargeState:
+    def __init__(self, parent, name, glyph):
+        self.name = name
+        self.glyph = parent.powerline.segment_conf("battery", name, glyph)
 
-GLYPH_FULL = u"\U0001F50C"
+GLYPH_FULL = u"\U0001F50C "
 GLYPH_CHARGING = u"\u26A1"
 GLYPH_DISCHARGING = u"\u2301"
 
@@ -20,22 +16,32 @@ GLYPH_BATT = u"\u2393"
 GLYPH_WALL = u"\u23E6"
 
 class Segment(BasicSegment):
+    def __init__(self, powerline):
+        BasicSegment.__init__(self, powerline)
+        self.sys_paths = ("/sys/class/power_supply/BAT0","/sys/class/power_supply/BAT1")
+        self.charge_state = {
+            "":                 ChargeState(self, "", ""),
+            None:               ChargeState(self, "None", "?"),
+            "charged":          ChargeState(self, "charged", GLYPH_FULL),
+            "discharging":      ChargeState(self, "discharging", GLYPH_DISCHARGING),
+            "charging":         ChargeState(self, "charging", GLYPH_CHARGING),
+            "finishing charge": ChargeState(self, "finishing charge", GLYPH_CHARGING)
+        }
+        self.charge_state["full"] = self.charge_state["charged"]
+        self.battery_state = {"":"", "battery":GLYPH_BATT, "ac":GLYPH_WALL}
+    
     def add_to_powerline(self):
         # See discussion in https://github.com/banga/powerline-shell/pull/204
         # regarding the directory where battery info is saved
-        
-        if os.path.exists("/sys/class/power_supply/BAT0"):
-            dir_ = "/sys/class/power_supply/BAT0"
-            self.handle_sys_class(dir_)
-            return
-        elif os.path.exists("/sys/class/power_supply/BAT1"):
-            dir_ = "/sys/class/power_supply/BAT1"
-            self.handle_sys_class(dir_)
-            return
-        elif os.path.exists("/usr/bin/pmset"):
+        for dir_ in self.sys_paths:
+            if os.path.exists(dir_):
+                self.handle_sys_class(dir_)
+                return
+        if os.path.exists("/usr/bin/pmset"):
             self.handle_pmset()
             return
         else:
+            #add support for other operating systems here
             warn("battery directory could not be found")
             return
     
@@ -54,87 +60,12 @@ class Segment(BasicSegment):
         @param dir_ path to a sys class battery file
         '''
         cap = -1
-        
         with open(os.path.join(dir_, "capacity")) as f:
             cap = int(f.read().strip())
         with open(os.path.join(dir_, "status")) as f:
             status = f.read().strip()
-            if status.lower() in charge_state:
-                status = charge_state[status.lowwer()]
+            test = db[status] if status in charge_state else status
         self.display(status, cap)
-    
-    def display(self, raw_status, raw_cap, raw_source="unknown"):
-        '''
-        sends formated text to powerline, displays lots of things when needed:
-        * battery/ac(glyph) percent_charge(number) charge_action(glyph)
-        * battery/ac glpyh always displays
-        * percent_charge may be hidden if 100
-        * charge_action always displays
-        @return status charging status is one of [charged|discharging|charging|finishing charge]
-        @cap capacity 0-100 as a string
-        '''
-        status = raw_status.strip().lower()
-        source = raw_source.strip().lower()
-        cap = int(raw_cap)
-        format = " {src:s} {cap:d}% {pow:s} "
-        
-        ################
-        # set display options based on source
-        if len(source)==0:
-            src = u""   # no source giving, display nothing
-        elif source=="battery":
-            src = GLYPH_BATT
-        elif source=="power":
-            src = GLYPH_WALL
-        else:
-            src = u""   #unknown source, display nothing
-        
-        ################
-        # set display options based on capacity
-        if cap<0 or 100<cap:
-            warn ("'%d' is not a valid battery capacity" % cap)
-        if cap < self.low_battery_threshold() and source!="ac":
-            # need human to take note of this state
-            bg = self.powerline.theme.BATTERY_LOW_BG
-            fg = self.powerline.theme.BATTERY_LOW_FG
-        else:
-            bg = self.powerline.theme.BATTERY_NORMAL_BG
-            fg = self.powerline.theme.BATTERY_NORMAL_FG
-        
-        '''
-        if status == "Full":
-            if self.powerline.segment_conf("battery", "always_show_percentage", False):
-                pwr_fmt = u" {cap:d}% \U0001F50C "
-            else:
-                pwr_fmt = u" \U0001F50C "
-        elif status == "Charging":
-            pwr_fmt = u" {cap:d}% \u26A1 "
-        else:
-            pwr_fmt = " {cap:d}% "
-
-        if cap < self.powerline.segment_conf("battery", "low_threshold", 20):
-        '''
-        
-        ################
-        # set display options based on status
-        if len(status)==0:
-            pwr = u""   # no status giving, display nothing
-        elif status == "charged":
-            # show less info if charged
-            pwr = self.powerline.segment_conf("battery","g_charged", GLYPH_FULL)
-            if not self.powerline.segment_conf("battery", "always_show_percentage", False):
-                format = "{src:s} {pow:s}"
-                pwr = self.powerline.segment_conf("battery","g_charged", GLYPH_FULL)
-        elif status == "discharging":
-            pwr = self.powerline.segment_conf("battery","g_discharging", GLYPH_DISCHARGING)
-        elif status == "charging":
-            pwr = self.powerline.segment_conf("battery","g_charging", GLYPH_CHARGING)
-        elif status == "finishing charge":
-            pwr = self.powerline.segment_conf("battery","g_finishing", GLYPH_CHARGING)
-        else:
-            pwr = u""   # unknown status given, display nothing
-        
-        self.powerline.append(format.format(src=src, cap=cap, pow=pwr), fg, bg)
     
     def handle_pmset(self):
         '''
@@ -163,5 +94,65 @@ class Segment(BasicSegment):
                 if m is not None:
                     status = m.group(1).strip()
                 break
-        
         self.display(status, cap, source)
+    
+    def display(self, raw_status, raw_cap, raw_source="unknown"):
+        '''
+        sends formated text to powerline, displays lots of things when needed
+        The primary output is in the format of "source capacity state". Source
+        is battery or ac, capacity is battery charge, and state is the charge
+        state (charging, discharging, full).
+        * source: battery/ac, glyph, always displays
+        * charge: percent charge, number, may be hidden if 100%
+        * state: charge direction, glyph, always displays
+        Style changes if state is very low
+        @return status charging status is one of [charged|discharging|charging|finishing charge]
+        @cap capacity 0-100 as a string
+        '''
+        status = raw_status.strip().lower()
+        source = raw_source.strip().lower()
+        cap = int(raw_cap)
+        if cap<0 or 100<cap:
+            warn ("'%d' is not a valid battery capacity" % cap)
+        format = " {src:s} {cap:d}% {pow:s} "
+        ################
+        # set display options based on source
+        #print (source)
+        src = self.battery_state[source] if source in self.battery_state else "?"
+        ################
+        # set display options based on capacity
+        if cap < self.low_battery_threshold() and source!="ac":
+            # need human to take note of this state
+            bg = self.powerline.theme.BATTERY_LOW_BG
+            fg = self.powerline.theme.BATTERY_LOW_FG
+        else:
+            bg = self.powerline.theme.BATTERY_NORMAL_BG
+            fg = self.powerline.theme.BATTERY_NORMAL_FG
+        
+        '''
+        if status == "Full":
+            if self.powerline.segment_conf("battery", "always_show_percentage", False):
+                pwr_fmt = u" {cap:d}% \U0001F50C "
+            else:
+                pwr_fmt = u" \U0001F50C "
+        elif status == "Charging":
+            pwr_fmt = u" {cap:d}% \u26A1 "
+        else:
+            pwr_fmt = " {cap:d}% "
+
+        if cap < self.powerline.segment_conf("battery", "low_threshold", 20):
+        '''
+        ################
+        # set display options based on status
+        if len(status)==0:
+            pwr = u""   # no status giving, display nothing
+        elif status in self.charge_state:
+            pwr = self.charge_state[status].glyph
+            #handle exceptions to the default behavior
+            if status == "charged":
+                if not self.powerline.segment_conf("battery", "always_show_percentage", False):
+                    format = "{src:s} {pow:s}"
+        else:
+            pwr = u"?"  #unknown state
+        
+        self.powerline.append(format.format(src=src, cap=cap, pow=pwr), fg, bg)
