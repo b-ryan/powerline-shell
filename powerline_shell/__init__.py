@@ -123,7 +123,7 @@ class Powerline(object):
             separator_fg if separator_fg is not None else bg))
 
     def draw(self):
-        text = self.bold + (''.join(self.draw_segment(i) for i in range(len(self.segments)))
+        text = (''.join(self.draw_segment(i) for i in range(len(self.segments)))
                 + self.reset) + ' '
         if py3:
             return text
