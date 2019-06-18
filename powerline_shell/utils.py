@@ -16,15 +16,15 @@ else:
 
 class RepoStats(object):
     symbols = {
-        'detached': u'\u2693',
-        'ahead': u'\u2B06',
-        'behind': u'\u2B07',
+        'detached': u'\uF127',
+        'ahead': u'\uF0EE',
+        'behind': u'\uF0ED',
         'staged': u'\u2795',
         'changed': u'\u270F\uFE0F',
         'new': u'\u2753',
-        'conflicted': u'\u273C',
-        'stash': u'\u2398',
-        'git': u'\uE0A0',
+        'conflicted': u'\uF0AD',
+        'stash': u'\uF41E',
+        'git': u'\uF418',
         'hg': u'\u263F',
         'bzr': u'\u2B61\u20DF',
         'fossil': u'\u2332',
