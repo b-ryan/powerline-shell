@@ -16,8 +16,8 @@ GLYPH_BATT = u"\u2393"
 GLYPH_WALL = u"\u23E6"
 
 class Segment(BasicSegment):
-    def __init__(self, powerline):
-        BasicSegment.__init__(self, powerline)
+    def __init__(self, powerline, segment_def):
+        BasicSegment.__init__(self, powerline, segment_def)
         self.sys_paths = ("/sys/class/power_supply/BAT0","/sys/class/power_supply/BAT1")
         self.charge_state = {
             "":                 ChargeState(self, "", ""),
@@ -90,7 +90,7 @@ class Segment(BasicSegment):
                 if m is not None:
                     raw_cap = int(m.group(1))
                     cap = raw_cap if (0<=raw_cap and raw_cap<=100) else -1
-                m = re.search('[0-9]{1,3}%; ([a-z ]+);', lines[1])
+                m = re.search('[0-9]{1,3}%; ([a-zA-Z ]+);', lines[1])
                 if m is not None:
                     status = m.group(1).strip()
                 break
