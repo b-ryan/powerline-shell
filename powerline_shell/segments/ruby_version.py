@@ -42,7 +42,7 @@ class Segment(BasicSegment):
             return
 
         if ruby_version == SYSTEM_RUBY_VERSION:
-            ruby_version = ""
+            ruby_version = '%s ' % FANCY_RUBY
         elif powerline.segment_conf('ruby_version', 'mode') == 'fancy':
             ruby_version = ruby_version.replace('ruby', FANCY_RUBY)
         else:
