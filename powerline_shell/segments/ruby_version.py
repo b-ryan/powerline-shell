@@ -5,8 +5,8 @@ from ..utils import BasicSegment
 FANCY_RUBY = u'\ue791'
 FANCY_NODE = u'\ue718'
 
-SYSTEM_NODE_VERSION = '7.10.0'
-SYSTEM_RUBY_VERSION = 'ruby 2.5.3p105'
+# SYSTEM_NODE_VERSION = '7.10.0'
+# SYSTEM_RUBY_VERSION = 'ruby 2.5.3p105'
 
 
 def _get_node_version():
@@ -41,12 +41,12 @@ class Segment(BasicSegment):
         except OSError:
             return
 
-        if ruby_version == SYSTEM_RUBY_VERSION:
-            ruby_version = '%s ' % FANCY_RUBY
-        elif powerline.segment_conf('ruby_version', 'mode') == 'fancy':
+        # if ruby_version == SYSTEM_RUBY_VERSION:
+        #     ruby_version = '%s ' % FANCY_RUBY
+        if powerline.segment_conf('ruby_version', 'mode') == 'fancy':
             ruby_version = ruby_version.replace('ruby', FANCY_RUBY)
-        else:
-            pass
+        # else:
+        #     pass
 
         gem_set = os.environ.get('GEM_HOME', '').split('@')[1:]
         if gem_set:
@@ -54,6 +54,6 @@ class Segment(BasicSegment):
         if ruby_version:
             powerline.append(' %s ' % ruby_version, powerline.theme.RUBY_FG, powerline.theme.RUBY_BG)
 
-        if node_version != SYSTEM_NODE_VERSION:
-            node_string = u'{} {}'.format(FANCY_NODE, node_version)
-            powerline.append(' %s ' % node_string, powerline.theme.VIRTUAL_ENV_FG, powerline.theme.VIRTUAL_ENV_BG)
+        # if node_version != SYSTEM_NODE_VERSION:
+        node_string = u'{} {}'.format(FANCY_NODE, node_version)
+        powerline.append(' %s ' % node_string, powerline.theme.VIRTUAL_ENV_FG, powerline.theme.VIRTUAL_ENV_BG)
