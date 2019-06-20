@@ -114,7 +114,7 @@ class Segment(BasicSegment):
         cap = int(raw_cap)
         if cap<0 or 100<cap:
             warn ("'%d' is not a valid battery capacity" % cap)
-        format = " {src:s} {cap:d}% {pow:s} "
+        format = "{src:s} {cap:d}% {pow:s}"
         ################
         # set display options based on source
         #print (source)
