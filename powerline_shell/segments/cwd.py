@@ -28,7 +28,7 @@ def split_path_into_names(cwd):
 def requires_special_home_display(powerline, name):
     """Returns true if the given directory name matches the home indicator and
     the chosen theme should use a special home indicator display."""
-    return (name == '~' and powerline.theme.HOME_SPECIAL_DISPLAY)
+    return (name == FANCY_HOME and powerline.theme.HOME_SPECIAL_DISPLAY)
 
 
 def maybe_shorten_name(powerline, name):
