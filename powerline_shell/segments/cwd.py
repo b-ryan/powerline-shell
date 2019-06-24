@@ -3,12 +3,13 @@ import sys
 from ..utils import warn, py3, BasicSegment
 
 ELLIPSIS = u'\u2026'
-
+FANCY_HOME = u'\ud83c\udfe0'
 
 def replace_home_dir(cwd):
     home = os.path.realpath(os.getenv('HOME'))
     if cwd.startswith(home):
-        return '~' + cwd[len(home):]
+        # return '~' + cwd[len(home):]
+        return u'{}{}'.format(FANCY_HOME, cwd[len(home):])
     return cwd
 
 
