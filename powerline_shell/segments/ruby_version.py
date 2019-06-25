@@ -2,7 +2,7 @@ import os
 import subprocess
 from ..utils import BasicSegment
 
-FANCY_RUBY = u'\ue791'
+FANCY_RUBY = u'\ue23e'
 FANCY_NODE = u'\ue718'
 
 # SYSTEM_NODE_VERSION = '7.10.0'
