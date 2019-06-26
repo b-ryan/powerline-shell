@@ -23,7 +23,7 @@ class RepoStats(object):
         'changed': u'\u270F\uFE0F',
         'new': u'\u2753',
         'conflicted': u'\uF0AD',
-        'stash': u'\uF41E',
+        'stash': u'\ud83d\udcb0',
         'git': u'\uF418',
         'hg': u'\u263F',
         'bzr': u'\u2B61\u20DF',
