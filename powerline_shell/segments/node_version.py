@@ -17,8 +17,8 @@ class Segment(ThreadedSegment):
             self.version = None
 
     def add_to_powerline(self):
-        # Do not render node version segment unless .ruby-version file exists
-        if not os.path.isfile('.node-version'):
+        # Do not render node version segment unless .node-version or .nvmrc file exists
+        if not os.path.isfile('.node-version') and not os.path.isfile('.nvmrc'):
             return
 
         self.join()
