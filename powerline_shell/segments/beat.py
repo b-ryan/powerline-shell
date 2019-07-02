@@ -11,7 +11,7 @@ class Segment(BasicSegment):
         beat = self.current_beat()
         format = "%05.1f" if self.show_decimal() else "%03.0f"
         if self.show_at_sign():
-            format = "@%s" % format
+            format = " @%s " % format
         pline.append(format % beat, pline.theme.TIME_FG, pline.theme.TIME_BG)
     def show_decimal(self):
         '''
