@@ -29,19 +29,19 @@ class Segment(ThreadedSegment):
                 output_proc.communicate()[0].decode("utf-8").splitlines()[1:])
             self.num_jobs = output.count(os.getppid()) - 1
         else:
-            pcmd = self.pidInfo(os.getppid(), "command")
+            pid_of_cmd = self.pidInfo(os.getppid(), "command")
             
-            pppid = self.pidInfo(os.getppid(), "ppid")
+            parent_process_id = self.pidInfo(os.getppid(), "ppid")
             
             #fish runs commands in a sub process, so you have to walk up the
             # tree one time to get back to where you were with bash or other
             # such shells
-            if pcmd=="fish" or self.powerline.args.shell=="fish":
-                pppid = self.pidInfo(pppid, "ppid")
+            if pid_of_cmd=="fish" or self.powerline.args.shell=="fish":
+                parent_process_id = self.pidInfo(parent_process_id, "ppid")
             
             output_proc = subprocess.Popen(['ps', '-a', '-o', 'ppid'], stdout=subprocess.PIPE)
             output = output_proc.communicate()[0].decode("utf-8")
-            self.num_jobs = len(re.findall(str(pppid), output)) - 1
+            self.num_jobs = len(re.findall(str(parent_process_id), output)) - 1
     def add_to_powerline(self):
         self.join()
         if self.num_jobs > 0:
