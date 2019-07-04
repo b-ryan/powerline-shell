@@ -160,7 +160,7 @@ def main():
                             help='Generate the default config and print it to stdout')
     arg_parser.add_argument('--shell', action='store', default='bash',
                             help='Set this to your shell type',
-                            choices=['bash', "fish", 'tcsh', 'zsh', 'bare'])
+                            choices=['bash', 'tcsh', 'zsh', 'bare'])
     arg_parser.add_argument('prev_error', nargs='?', type=int, default=0,
                             help='Error code returned by the last command')
     args = arg_parser.parse_args()
