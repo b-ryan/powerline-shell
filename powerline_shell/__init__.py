@@ -64,7 +64,6 @@ class Powerline(object):
 
     color_templates = {
         'bash': r'\[\e%s\]',
-        'fish': '%s',
         'tcsh': r'%%{\e%s%%}',
         'zsh': '%%{%s%%}',
         'bare': '%s',
