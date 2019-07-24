@@ -5,7 +5,7 @@ from ..utils import BasicSegment
 class Segment(BasicSegment):
     def add_to_powerline(self):
         env = os.getenv(self.segment_def["var"])
-        if env is None:
+        if env is None and "default" in self.segment_def:
             env = self.segment_def["default"]
         if env is not None:
             self.powerline.append(
