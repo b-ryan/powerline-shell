@@ -7,6 +7,8 @@ def _get_svn_revision():
                          stdout=subprocess.PIPE,
                          stderr=subprocess.PIPE,
                          env=get_subprocess_env())
+
+    revision = None
     for line in p.communicate()[0].decode("utf-8").splitlines():
         if "revision" in line:
             revision = line.split("=")[1].split('"')[1]
@@ -66,5 +68,7 @@ class Segment(ThreadedSegment):
             symbol = " " + RepoStats().symbols["svn"]
         else:
             symbol = ""
-        self.powerline.append(symbol + " rev " + self.revision + " ", fg, bg)
+
+        if self.revision:
+            self.powerline.append(symbol + " rev " + self.revision + " ", fg, bg)
         self.stats.add_to_powerline(self.powerline)
