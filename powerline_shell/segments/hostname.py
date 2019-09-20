@@ -10,6 +10,11 @@ class Segment(BasicSegment):
         if powerline.segment_conf("hostname", "colorize"):
             hostname = gethostname()
             FG, BG = stringToHashToColorAndOpposite(hostname)
+            # if we operate on a dark background then
+            # we want the brighter color to always be the
+            # background color
+            if powerline.segment_conf("hostname", "dark") and sum(FG) > sum(BG):
+                FG,BG = BG,FG
             FG, BG = (rgb2short(*color) for color in [FG, BG])
             host_prompt = " %s " % hostname.split(".")[0]
             powerline.append(host_prompt, FG, BG)
