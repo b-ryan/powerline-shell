@@ -299,10 +299,13 @@ The options for the `cwd` segment are:
 - `full_cwd`: If true, the last directory will not be shortened when
   `max_dir_size` is used.
 
-The `hostname` segment provides one option:
+The `hostname` segment provides two options:
 
 - `colorize`: If true, the hostname will be colorized based on a hash of
   itself.
+
+- `dark`: If true (and colorize=true), a bright color will be used as the 
+  background color
 
 The `vcs` segment provides one option:
 
