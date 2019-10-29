@@ -309,6 +309,11 @@ The `vcs` segment provides one option:
 - `show_symbol`: If `true`, the version control system segment will start with
   a symbol representing the specific version control system in use in the
   current directory.
+  
+The options for the `git` segment are:
+
+- `master_is_M`: If `true`, the master branch will be abbreviated to M.
+- `branch_max_length`: Maximum number of characters displayed for the branch name.
 
 The options for the `battery` segment are:
 
