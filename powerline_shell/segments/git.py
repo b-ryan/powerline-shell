@@ -66,7 +66,17 @@ def build_stats():
 class Segment(ThreadedSegment):
     def run(self):
         self.stats, self.branch = build_stats()
+        
+        # Abbreviates master branch to M
+        if self.powerline.segment_conf("git", "master_is_M"):
+            if self.branch == "master":     
+                 self.branch = "M"
 
+        # Truncates branch length
+        branch_max_length = self.powerline.segment_conf("git", "branch_max_length", -1)
+        if len(self.branch) > branch_max_length :
+            self.branch = self.branch = self.branch[:branch_max_length] + u'\u2026' 
+        
     def add_to_powerline(self):
         self.join()
         if not self.stats:
