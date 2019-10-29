@@ -75,7 +75,7 @@ class Segment(ThreadedSegment):
         # Truncates branch length
         branch_max_length = self.powerline.segment_conf("git", "branch_max_length", -1)
         if len(self.branch) > branch_max_length :
-            self.branch = self.branch = self.branch[:branch_max_length] + u'\u2026' 
+            self.branch = self.branch[:branch_max_length] + u'\u2026' 
         
     def add_to_powerline(self):
         self.join()
