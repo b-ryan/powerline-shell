@@ -48,6 +48,9 @@ def build_stats():
 
 
 class Segment(ThreadedSegment):
+    def __init__(self):
+        self.stats, self.branch = None, None
+    
     def run(self):
         self.stats, self.branch = build_stats()
 
