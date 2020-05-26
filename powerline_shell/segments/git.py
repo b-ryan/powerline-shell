@@ -9,7 +9,7 @@ def parse_git_branch_info(status):
 
 
 def _get_git_detached_branch():
-    p = subprocess.Popen(['git', 'describe', '--tags', '--always'],
+    p = subprocess.Popen(['git', '--no-optional-locks', 'describe', '--tags', '--always'],
                          stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                          env=get_git_subprocess_env())
     detached_ref = p.communicate()[0].decode("utf-8").rstrip('\n')
@@ -39,7 +39,7 @@ def parse_git_stats(status):
 
 def build_stats():
     try:
-        p = subprocess.Popen(['git', 'status', '--porcelain', '-b'],
+        p = subprocess.Popen(['git', '--no-optional-locks', 'status', '--porcelain', '-b'],
                              stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                              env=get_git_subprocess_env())
     except OSError:
