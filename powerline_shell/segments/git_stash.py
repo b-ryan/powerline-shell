@@ -4,7 +4,7 @@ from ..utils import RepoStats, ThreadedSegment, get_git_subprocess_env
 
 def get_stash_count():
     try:
-        p = subprocess.Popen(['git', 'stash', 'list'],
+        p = subprocess.Popen(['git', '--no-optional-locks', 'stash', 'list'],
                              stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                              env=get_git_subprocess_env())
     except OSError:
