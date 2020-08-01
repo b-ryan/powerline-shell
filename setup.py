@@ -2,7 +2,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="powerline-shell",
+    name="powerline-shell-test",
     version="0.7.0",
     description="A pretty prompt for your shell",
     author="Buck Ryan",
@@ -27,6 +27,6 @@ setup(
     ],
     entry_points="""
     [console_scripts]
-    powerline-shell=powerline_shell:main
+    powerline-shell-test=powerline_shell:main
     """,
 )

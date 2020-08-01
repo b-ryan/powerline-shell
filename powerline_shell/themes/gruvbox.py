@@ -109,3 +109,6 @@ class Color(DefaultColor):
 
     TIME_FG = light2
     TIME_BG = dark4
+
+    KUBECONFIG_BG = neutral_blue
+    KUBECONFIG_FG = dark2

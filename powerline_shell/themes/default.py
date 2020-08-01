@@ -75,6 +75,8 @@ class DefaultColor(object):
     TIME_FG = 250
     TIME_BG = 238
 
+    KUBECONFIG_FG = 38
+    KUBECONFIG_BG = 239
 
 class Color(DefaultColor):
     """
