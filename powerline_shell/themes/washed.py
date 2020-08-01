@@ -43,5 +43,5 @@ class Color(DefaultColor):
     TIME_FG = 8
     TIME_BG = 7
 
-    KUBECONFIG_FG = 0
-    KUBECONFIG_BG = 7
+    KUBE_CONTEXT_FG = 0
+    KUBE_CONTEXT_BG = 7
