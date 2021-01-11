@@ -319,6 +319,19 @@ The options for the `time` segment are:
 
 - `format`: Format string as used by strftime function, e.g. `%H:%M`.
 
+The options for the `stdout` segment are:
+- `command`: A list of arguments determining the command to run.
+- `fg_color`: The foreground color of the segment when the command succeeded.
+- `bg_color`: The background color of the segment when the command succeeded.
+- `error_fg_color`: The foreground color of the segment when the command
+  returned a non-zero exit code.
+- `error_bg_color`: The background color of the segment when the command
+  returned a non-zero exit code.
+- `allow_error`: If true, the segment will be shown when the command returns a
+  non-zero exit code.
+- `hide_empty`: If true, the segment will not be shown when the command outputs
+  an empty string or only whitespace.
+
 ### Contributing new types of segments
 
 The `powerline_shell/segments` directory contains python scripts which are
