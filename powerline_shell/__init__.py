@@ -87,8 +87,6 @@ class Powerline(object):
     def __init__(self, args, config, theme):
         self.args = args
         self.config = config
-        theme_wants_truecolor = hasattr(theme, "use_truecolor") and theme.use_truecolor
-
         env_colorterm = os.getenv("COLORTERM")
         self.truecolor_supported = env_colorterm is not None and "truecolor" in env_colorterm
         self.theme = theme
