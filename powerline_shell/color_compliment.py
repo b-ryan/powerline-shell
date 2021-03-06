@@ -12,7 +12,7 @@ from .utils import py3
 def getOppositeColor(r,g,b):
     """returns RGB components of complementary color"""
     # colorsys functions expect values to be between 0 and 1
-    hls = rgb_to_hls(*[x/255.0 for x in [r, g, b]]) # r,g,b are now between 0 and 1
+    hls = rgb_to_hls(r, g, b) # r,g,b are now between 0 and 1
     opp = hls_to_rgb(*[ (x+0.5)%1 for x in hls ])
     return tuple([ int(x*255) for x in opp ]) # convert back to value range 0-255
 
