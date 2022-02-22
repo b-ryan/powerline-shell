@@ -3,7 +3,8 @@ import sys
 from ..utils import warn, py3, BasicSegment
 
 ELLIPSIS = u'\u2026'
-FANCY_HOME = u'\ud83c\udfe0'
+# FANCY_HOME = u'\ud83c\udfe0' # emoji house
+FANCY_HOME = u'\uf015' # u'\ue88a'
 
 def replace_home_dir(cwd):
     home = os.path.realpath(os.getenv('HOME'))

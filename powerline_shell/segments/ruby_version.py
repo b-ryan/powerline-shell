@@ -2,7 +2,7 @@ import os
 import subprocess
 from ..utils import ThreadedSegment
 
-FANCY_RUBY = u'\ue23e'
+FANCY_RUBY = u'\ue92b' # u'\ue791' # u'\ue739'
 
 
 class Segment(ThreadedSegment):

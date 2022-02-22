@@ -61,7 +61,7 @@ class DefaultColor(object):
     GIT_STASH_BG = 22
     GIT_STASH_FG = 15
 
-    VIRTUAL_ENV_BG = 35  # a mid-tone green
+    VIRTUAL_ENV_BG = 40  # a mid-tone green
     VIRTUAL_ENV_FG = 00
 
     BATTERY_NORMAL_BG = 22
@@ -69,17 +69,17 @@ class DefaultColor(object):
     BATTERY_LOW_BG = 196
     BATTERY_LOW_FG = 7
 
-    AWS_PROFILE_FG = 39
     AWS_PROFILE_BG = 238
+    AWS_PROFILE_FG = 39
 
-    TIME_FG = 250
     TIME_BG = 238
+    TIME_FG = 250
 
-    RUBY_FG = 255
     RUBY_BG = 160
+    RUBY_FG = 255
 
+    NODE_BG = 227
     NODE_FG = 0
-    NODE_BG = 40
 
 
 class Color(DefaultColor):

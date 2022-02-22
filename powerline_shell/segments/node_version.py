@@ -2,7 +2,7 @@ import os
 import subprocess
 from ..utils import ThreadedSegment
 
-FANCY_NODE = u'\ue718'
+FANCY_NODE = u'\ue781' # u'\ue718'
 
 
 class Segment(ThreadedSegment):
@@ -28,4 +28,4 @@ class Segment(ThreadedSegment):
         if self.powerline.segment_conf('node_version', 'mode') == 'fancy':
             self.version = u'{} {}'.format(FANCY_NODE, self.version)
 
-        self.powerline.append(' %s ' % self.version, self.powerline.theme.VIRTUAL_ENV_FG, self.powerline.theme.VIRTUAL_ENV_BG)
+        self.powerline.append(' %s ' % self.version, self.powerline.theme.NODE_FG, self.powerline.theme.NODE_BG)
