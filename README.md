@@ -226,7 +226,7 @@ For example, your config could look like this:
     },
     {
       "type": "env",
-      "var": "DOCKER_MACHINE_NAME",
+      "var": "DOCKER_MACHINE_NAME"
     },
   ]
 }
