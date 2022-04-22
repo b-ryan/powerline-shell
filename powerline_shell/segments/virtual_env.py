@@ -15,4 +15,8 @@ class Segment(BasicSegment):
         env_name = os.path.basename(env)
         bg = self.powerline.theme.VIRTUAL_ENV_BG
         fg = self.powerline.theme.VIRTUAL_ENV_FG
-        self.powerline.append(" " + env_name + " ", fg, bg)
+        if self.powerline.segment_conf("virtual_env", "show_symbol"):
+            symbol = "\U0001F40D "
+        else:
+            symbol = ""
+        self.powerline.append(" " + symbol + env_name + " ", fg, bg)

@@ -102,4 +102,10 @@ def add_cwd_segment(powerline):
 
 class Segment(BasicSegment):
     def add_to_powerline(self):
+        if self.powerline.segment_conf("cwd", "show_symbol"):
+            symbol = "\U0001F5C1 "
+        else:
+            symbol = ""
+        fg, bg = self.powerline.theme.HOME_FG, self.powerline.theme.HOME_BG
+        self.powerline.append(symbol, fg, bg)
         add_cwd_segment(self.powerline)
