@@ -88,7 +88,7 @@ coverage.xml
 # intel compiler pgo
 *.dyn
 *.dpi
-*.lock
+# *.lock
 
 # dwarf dynamic debug info
 *.dwo
