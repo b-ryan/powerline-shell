@@ -22,7 +22,7 @@
 *.oo
 *.elf
 *.s
-*.d
+*.dep
 core.*
 lib*.so.*
 *.gch
@@ -101,3 +101,6 @@ coverage.xml
 
 # repositries of deb packages
 /deb/mypackage/DEBIAN/control
+
+# generic
+*.log
