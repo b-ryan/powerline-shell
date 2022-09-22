@@ -9,7 +9,8 @@ class Segment(ThreadedSegment):
 
     def run(self):
         self.num_jobs = 0
-        if platform.system().startswith("CYGWIN"):
+        system = platform.system()
+        if system.startswith("CYGWIN") or system.startswith("MINGW"):
             # cygwin ps is a special snowflake...
             output_proc = subprocess.Popen(["ps", "-af"], stdout=subprocess.PIPE)
             output = map(lambda l: int(l.split()[2].strip()),
