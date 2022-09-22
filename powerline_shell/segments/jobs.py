@@ -6,6 +6,20 @@ from ..utils import ThreadedSegment
 
 
 class Segment(ThreadedSegment):
+
+    def pidInfo(self, pid, tag):
+        '''
+        run a ps and get some data from it
+        pid process to query
+        tag -o property in the ps command to query for
+        return the value from ps
+        '''
+        ppid = str(pid)
+        proc = subprocess.Popen(['ps', '-p', ppid, '-o%s=' % tag],
+            stdout=subprocess.PIPE)
+        info = proc.communicate()[0].decode("utf-8").strip()
+        return info
+
     def run(self):
         self.num_jobs = 0
         if platform.system().startswith('CYGWIN'):
@@ -15,14 +29,18 @@ class Segment(ThreadedSegment):
                 output_proc.communicate()[0].decode("utf-8").splitlines()[1:])
             self.num_jobs = output.count(os.getppid()) - 1
         else:
-            pppid_proc = subprocess.Popen(['ps', '-p', str(os.getppid()), '-oppid='],
-                                          stdout=subprocess.PIPE)
-            pppid = pppid_proc.communicate()[0].decode("utf-8").strip()
-            output_proc = subprocess.Popen(['ps', '-a', '-o', 'ppid'],
-                                           stdout=subprocess.PIPE)
+            parent_command = self.pidInfo(os.getppid(), "command")
+            parent_process_id = self.pidInfo(os.getppid(), "ppid")
+            
+            #fish runs commands in a sub process, so you have to walk up the
+            # tree one time to get back to where you were with bash or other
+            # such shells
+            if parent_command=="fish":
+                parent_process_id = self.pidInfo(parent_process_id, "ppid")
+            
+            output_proc = subprocess.Popen(['ps', '-a', '-o', 'ppid'], stdout=subprocess.PIPE)
             output = output_proc.communicate()[0].decode("utf-8")
-            self.num_jobs = len(re.findall(str(pppid), output)) - 1
-
+            self.num_jobs = len(re.findall(str(parent_process_id), output)) - 1
     def add_to_powerline(self):
         self.join()
         if self.num_jobs > 0:
