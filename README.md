@@ -261,10 +261,17 @@ to the path of the file. For example your configuration might have:
   "theme": "~/mythemes/my-great-theme.py"
 ```
 
-You can then modify the color codes to your liking. Theme colors are specified
-using [Xterm-256 color codes](https://jonasjacek.github.io/colors/).
+You can then modify the color codes to your liking. Theme colors can be specified
+using [Xterm-256 color codes](https://jonasjacek.github.io/colors/), or using RGB tuple values
+if your terminal supports TrueColor. To check if this is the case, you can run:
 
-A script for testing color combinations is provided at `colortest.py`. Note
+```
+  $ echo $COLORTERM
+```
+
+If `truecolor` is printed, you're good to go with RGB values.
+
+Scripts for testing color combinations are provided at `colortest.py` and `colortest_truecolor.py`. Note
 that the colors you see may vary depending on your terminal. When designing a
 theme, please test your theme on multiple terminals, especially with default
 settings.

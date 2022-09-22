@@ -6,6 +6,7 @@ import os
 import sys
 import importlib
 import json
+from . import colortrans
 from .utils import warn, py3, import_file
 import re
 
@@ -86,6 +87,8 @@ class Powerline(object):
     def __init__(self, args, config, theme):
         self.args = args
         self.config = config
+        env_colorterm = os.getenv("COLORTERM")
+        self.truecolor_supported = env_colorterm is not None and "truecolor" in env_colorterm
         self.theme = theme
         self.cwd = get_valid_cwd()
         mode = config.get("mode", "patched")
@@ -105,6 +108,12 @@ class Powerline(object):
             return ''
         elif code == self.theme.RESET:
             return self.reset
+        elif isinstance(code, tuple):
+            # Do we support TrueColor? If not, supply the closest possible xterm-256 color.
+            if self.truecolor_supported:
+                return self.color_template % ('[%s;2;%s;%s;%sm' % (prefix, *code))
+            else:
+                return self.color_template % ('[%s;5;%sm' % (prefix, colortrans.rgb2short(*code)))
         else:
             return self.color_template % ('[%s;5;%sm' % (prefix, code))
 
