@@ -13,8 +13,7 @@ class Segment(ThreadedSegment):
         if system.startswith("CYGWIN") or system.startswith("MINGW"):
             # cygwin ps is a special snowflake...
             output_proc = subprocess.Popen(["ps", "-af"], stdout=subprocess.PIPE)
-            output = map(lambda l: int(l.split()[2].strip()),
-                output_proc.communicate()[0].decode("utf-8").splitlines()[1:])
+            output = [int(l.split()[2].strip()) for l in output_proc.communicate()[0].decode("utf-8").splitlines()[1:]]
             self.num_jobs = output.count(os.getppid()) - 1
         else:
             # The following logic was tested on:
