@@ -19,6 +19,7 @@ class Segment(ThreadedSegment):
             # The following logic was tested on:
             # - fish, version 3.3.1
             # - GNU bash, version 5.1.16(1)-release (x86_64-pc-linux-gnu)
+            # - zsh 5.8.1 (x86_64-ubuntu-linux-gnu)
             # If you change the behavior to account for another shell's
             # behavior, please provide details of the shell version you tested
             # on in this comment.
