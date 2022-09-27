@@ -1,3 +1,4 @@
+import os
 import re
 import subprocess
 from ..utils import RepoStats, ThreadedSegment, get_git_subprocess_env
@@ -38,6 +39,15 @@ def parse_git_stats(status):
 
 
 def build_stats():
+    # check if we are in a git dir
+    path = '/'
+    for p in os.getenv("PWD").split('/'):
+        path += p + '/'
+        if os.path.isdir(path+'.git'):
+            break
+    else:
+        return None, None
+
     try:
         p = subprocess.Popen(['git', 'status', '--porcelain', '-b'],
                              stdout=subprocess.PIPE, stderr=subprocess.PIPE,
