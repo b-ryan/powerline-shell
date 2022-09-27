@@ -319,6 +319,10 @@ The options for the `time` segment are:
 
 - `format`: Format string as used by strftime function, e.g. `%H:%M`.
 
+The options for the `root` segment are:
+
+- `indicator`: Set custom indicator, e.g. ` → `.
+
 ### Contributing new types of segments
 
 The `powerline_shell/segments` directory contains python scripts which are
