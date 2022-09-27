@@ -205,6 +205,16 @@ the segments section, like:
     "~/path/to/segment.py"
 ]
 ```
+or
+```json
+"segments": [
+    {
+        "type": "~/path/to/segment.py",
+        "some": "segment",
+        "config": "values"
+    }
+]
+```
 
 ### Generic Segments
 
