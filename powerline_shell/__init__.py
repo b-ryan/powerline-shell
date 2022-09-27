@@ -149,7 +149,7 @@ def find_config():
         os.path.join(os.environ.get("XDG_CONFIG_HOME", "~/.config"), "powerline-shell", "config.json"),
     ]:
         full = os.path.expanduser(location)
-        if os.path.exists(full):
+        if os.path.isfile(full):
             return full
 
 DEFAULT_CONFIG = {
