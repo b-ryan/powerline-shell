@@ -53,26 +53,31 @@ def get_valid_cwd():
              + up)
     return cwd
 
-
 class Powerline(object):
     symbols = {
         'compatible': {
             'lock': 'RO',
             'network': 'SSH',
             'separator': u'\u25B6',
-            'separator_thin': u'\u276F'
+            'separator_thin': u'\u276F',
+            'separator_right': u'\u25C0',
+            'separator_right_thin': u'\u276E'
         },
         'patched': {
             'lock': u'\uE0A2',
             'network': 'SSH',
             'separator': u'\uE0B0',
-            'separator_thin': u'\uE0B1'
+            'separator_thin': u'\uE0B1',
+            'separator_right': u'\uE0B2',
+            'separator_right_thin': u'\uE0B3'
         },
         'flat': {
             'lock': u'\uE0A2',
             'network': 'SSH',
             'separator': '',
-            'separator_thin': ''
+            'separator_thin': '',
+            'separator_right': '',
+            'separator_right_thin': ''
         },
     }
 
@@ -83,7 +88,7 @@ class Powerline(object):
         'bare': '%s',
     }
 
-    def __init__(self, args, config, theme):
+    def __init__(self, args, config, theme, side=None):
         self.args = args
         self.config = config
         self.theme = theme
@@ -93,8 +98,13 @@ class Powerline(object):
         self.reset = self.color_template % '[0m'
         self.lock = Powerline.symbols[mode]['lock']
         self.network = Powerline.symbols[mode]['network']
-        self.separator = Powerline.symbols[mode]['separator']
-        self.separator_thin = Powerline.symbols[mode]['separator_thin']
+        self.side = side
+        if self.side == "right":
+            self.separator = Powerline.symbols[mode]['separator_right']
+            self.separator_thin = Powerline.symbols[mode]['separator_right_thin']
+        else:
+            self.separator = Powerline.symbols[mode]['separator']
+            self.separator_thin = Powerline.symbols[mode]['separator_thin']
         self.segments = []
 
     def segment_conf(self, seg_name, key, default=None):
@@ -117,13 +127,13 @@ class Powerline(object):
     def append(self, content, fg, bg, separator=None, separator_fg=None, sanitize=True):
         if self.args.shell == "bash" and sanitize:
             content = re.sub(r"([`$])", r"\\\1", content)
-        self.segments.append((content, fg, bg,
-            separator if separator is not None else self.separator,
-            separator_fg if separator_fg is not None else bg))
+        s = separator if separator is not None else self.separator
+        sfg = separator_fg if separator_fg is not None else bg
+        self.segments.append((content, fg, bg, s, sfg))
 
     def draw(self):
         text = (''.join(self.draw_segment(i) for i in range(len(self.segments)))
-                + self.reset) + ' '
+                + self.reset) #+ ' '
         if py3:
             return text
         else:
@@ -131,16 +141,29 @@ class Powerline(object):
 
     def draw_segment(self, idx):
         segment = self.segments[idx]
-        next_segment = self.segments[idx + 1] if idx < len(self.segments)-1 else None
 
-        return ''.join((
-            self.fgcolor(segment[1]),
-            self.bgcolor(segment[2]),
-            segment[0],
-            self.bgcolor(next_segment[2]) if next_segment else self.reset,
-            self.fgcolor(segment[4]),
-            segment[3]))
-
+        if self.side=="right":
+            # reminder: 0=content, 1=fg, 2=bg, 3=segment, 4=segment_bg
+            pre_segment = self.segments[idx -1] if 0 < idx else None
+            seg_text = ''.join((
+                " ",
+                self.bgcolor(pre_segment[2]) if pre_segment else self.reset,
+                self.fgcolor(segment[4]),
+                segment[3],
+                self.fgcolor(segment[1]),
+                self.bgcolor(segment[2]),
+                segment[0]
+                ))
+        else:
+            next_segment = self.segments[idx + 1] if idx < len(self.segments)-1 else None
+            seg_text = ''.join((
+                self.fgcolor(segment[1]),
+                self.bgcolor(segment[2]),
+                segment[0],
+                self.bgcolor(next_segment[2]) if next_segment else self.reset,
+                self.fgcolor(segment[4]),
+                segment[3] + " "))
+        return seg_text
 
 def find_config():
     for location in [
@@ -152,7 +175,7 @@ def find_config():
         if os.path.exists(full):
             return full
 
-DEFAULT_CONFIG = {
+DEFAULT_CONFIG_LEGACY = {
     "segments": [
         'virtual_env',
         'username',
@@ -166,6 +189,25 @@ DEFAULT_CONFIG = {
     ]
 }
 
+DEFAULT_CONFIG = {
+    "left": {
+        "segments": [
+            'virtual_env',
+            'username',
+            'hostname',
+            'ssh',
+            'cwd',
+            'root',
+        ]
+    },
+    "right": {
+        "segments": [
+            'git',
+            'hg',
+            'jobs'
+        ]
+    }
+}
 
 class ModuleNotFoundException(Exception):
     pass
@@ -196,6 +238,9 @@ def main():
     arg_parser.add_argument('--shell', action='store', default='bash',
                             help='Set this to your shell type',
                             choices=['bash', 'tcsh', 'zsh', 'bare'])
+    arg_parser.add_argument('--side', action='store', default='left',
+                            help='Set this to your shell type',
+                            choices=['left', 'right'])
     arg_parser.add_argument('prev_error', nargs='?', type=int, default=0,
                             help='Error code returned by the last command')
     args = arg_parser.parse_args()
@@ -223,9 +268,16 @@ def main():
         "Theme")
     theme = getattr(theme_mod, "Color")
 
-    powerline = Powerline(args, config, theme)
+    powerline = Powerline(args, config, theme, side=args.side)
     segments = []
-    for seg_conf in config["segments"]:
+
+    segment_list = []
+    if args.side in config.keys():
+        segment_list = config[args.side]["segments"]
+    else:
+        segment_list = config["segments"]
+
+    for seg_conf in segment_list:
         if not isinstance(seg_conf, dict):
             seg_conf = {"type": seg_conf}
         seg_name = seg_conf["type"]
