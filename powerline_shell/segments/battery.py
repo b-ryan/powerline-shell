@@ -11,7 +11,8 @@ class Segment(BasicSegment):
         elif os.path.exists("/sys/class/power_supply/BAT1"):
             dir_ = "/sys/class/power_supply/BAT1"
         else:
-            warn("battery directory could not be found")
+            if self.powerline.segment_conf("battery", "directory_warning", True):
+                warn("battery directory could not be found")
             return
 
         with open(os.path.join(dir_, "capacity")) as f:
