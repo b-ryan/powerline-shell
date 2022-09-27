@@ -10,21 +10,11 @@ from .utils import py3
 
 
 def getOppositeColor(r,g,b):
-    r, g, b = [x/255.0 for x in [r, g, b]] # convert to float before getting hls value
-    hls = rgb_to_hls(r,g,b)
-    opp = list(hls[:])
-    opp[0] = (opp[0]+0.2)%1 # shift hue (a.k.a. color)
-    if opp[1] > 255/2:   # for level you want to make sure they
-        opp[1] -= 255/2  # are quite different so easily readable
-    else:
-        opp[1] += 255/2
-    if opp[2] > -0.5: # if saturation is low on first color increase second's
-        opp[2] -= 0.5
-    opp = hls_to_rgb(*opp)
-    m = max(opp)
-    if m > 255: #colorsys module doesn't give caps to their conversions
-        opp = [ x*254/m for x in opp]
-    return tuple([ int(x) for x in opp])
+    """returns RGB components of complementary color"""
+    # colorsys functions expect values to be between 0 and 1
+    hls = rgb_to_hls(r, g, b) # r,g,b are now between 0 and 1
+    opp = hls_to_rgb(*[ (x+0.5)%1 for x in hls ])
+    return tuple([ int(x*255) for x in opp ]) # convert back to value range 0-255
 
 def stringToHashToColorAndOpposite(string):
     if py3:
