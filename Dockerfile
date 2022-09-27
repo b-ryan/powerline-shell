@@ -8,7 +8,7 @@ RUN apk add --no-cache --update \
       fossil \
       git \
       mercurial \
-      php5 \
+      php7 \
       subversion \
       && \
     rm -rf /var/cache/apk/*
