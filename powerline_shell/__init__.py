@@ -54,27 +54,30 @@ def get_valid_cwd():
     return cwd
 
 
-class Powerline(object):
-    symbols = {
-        'compatible': {
-            'lock': 'RO',
-            'network': 'SSH',
-            'separator': u'\u25B6',
-            'separator_thin': u'\u276F'
-        },
-        'patched': {
+DEFAULT_SYMBOLS = {
+    'compatible': {
+        'lock': 'RO',
+        'network': 'SSH',
+        'separator': u'\u25B6',
+        'separator_thin': u'\u276F'
+    },
+    'patched': {
             'lock': u'\uE0A2',
             'network': 'SSH',
             'separator': u'\uE0B0',
             'separator_thin': u'\uE0B1'
-        },
-        'flat': {
-            'lock': u'\uE0A2',
-            'network': 'SSH',
-            'separator': '',
-            'separator_thin': ''
-        },
+    },
+    'flat': {
+        'lock': u'\uE0A2',
+        'network': 'SSH',
+        'separator': '',
+        'separator_thin': ''
     }
+}
+
+
+class Powerline(object):
+    
 
     color_templates = {
         'bash': r'\[\e%s\]',
@@ -89,12 +92,16 @@ class Powerline(object):
         self.theme = theme
         self.cwd = get_valid_cwd()
         mode = config.get("mode", "patched")
+
+        template_symbols = getattr(theme, 'SYMBOLS', DEFAULT_SYMBOLS)
+        symbols = template_symbols.get(mode, DEFAULT_SYMBOLS.get(mode, DEFAULT_SYMBOLS['patched']))
+
         self.color_template = self.color_templates[args.shell]
         self.reset = self.color_template % '[0m'
-        self.lock = Powerline.symbols[mode]['lock']
-        self.network = Powerline.symbols[mode]['network']
-        self.separator = Powerline.symbols[mode]['separator']
-        self.separator_thin = Powerline.symbols[mode]['separator_thin']
+        self.lock = symbols['lock']
+        self.network = symbols['network']
+        self.separator = symbols['separator']
+        self.separator_thin = symbols['separator_thin']
         self.segments = []
 
     def segment_conf(self, seg_name, key, default=None):
