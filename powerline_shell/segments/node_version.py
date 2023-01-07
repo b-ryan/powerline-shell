@@ -1,5 +1,5 @@
 import subprocess
-from ..utils import ThreadedSegment
+from ..utils import ThreadedSegment, find_upwards
 
 
 class Segment(ThreadedSegment):
@@ -12,7 +12,14 @@ class Segment(ThreadedSegment):
 
     def add_to_powerline(self):
         self.join()
+
+        require_package = self.powerline.segment_conf("node_version", "require_package", False)
+        chars = int(self.powerline.segment_conf("node_version", "chars", 10))
+        has_package = find_upwards("package.json") != None
+
+        if require_package and not has_package:
+            return
         if not self.version:
             return
         # FIXME no hard-coded colors
-        self.powerline.append("node " + self.version, 15, 18)
+        self.powerline.append(" node " + self.version[:chars], 15, 18)

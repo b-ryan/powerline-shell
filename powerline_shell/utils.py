@@ -1,6 +1,7 @@
 import sys
 import os
 import threading
+from pathlib import Path
 
 py3 = sys.version_info[0] == 3
 
@@ -150,3 +151,9 @@ def get_git_subprocess_env():
     # Otherwise we may be unable to parse the output.
     return get_subprocess_env(LANG="C")
 
+
+def find_upwards(filename: str, cwd: Path = Path.cwd()) -> Path | None:
+    if cwd == Path(cwd.root) or cwd == cwd.parent:
+        return None
+    fullpath = cwd / filename
+    return fullpath if fullpath.exists() else find_upwards(filename, cwd.parent)
