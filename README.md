@@ -280,7 +280,7 @@ for the `cwd` segment are set in `~/.config/powerline-shell/config.json` like:
     "segments": [...],
     "cwd": {
         options go here
-    }
+    },
     "theme": "theme-name",
     "vcs": {
         options go here
