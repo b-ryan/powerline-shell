@@ -8,7 +8,8 @@ class Segment(BasicSegment):
         powerline = self.powerline
         try:
             output = decode(subprocess.check_output(['uptime'], stderr=subprocess.STDOUT))
-            raw_uptime = re.search('(?<=up).+(?=,\s+\d+\s+user)', output).group(0)
+            raw_uptime = re.search('(?<=up).+(?=,\s+\d+\s+user)', output)
+            raw_uptime = '' if not raw_uptime else raw_uptime.group(0)
             day_search = re.search('\d+(?=\s+day)', output)
             days = '' if not day_search else '%sd ' % day_search.group(0)
             hour_search =  re.search('\d{1,2}(?=\:)', raw_uptime)
