@@ -72,6 +72,10 @@ class DefaultColor(object):
     AWS_PROFILE_FG = 39
     AWS_PROFILE_BG = 238
 
+    K8S_FG = 57
+    K8S_BG = 7
+    K8S_SYMBOL_FG = 57
+
     TIME_FG = 250
     TIME_BG = 238
 
