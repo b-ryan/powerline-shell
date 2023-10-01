@@ -1,4 +1,6 @@
 import unittest
+from contextlib import ExitStack
+
 import mock
 import tempfile
 import shutil
@@ -12,10 +14,14 @@ class GitStashTest(unittest.TestCase):
     def setUp(self):
         self.powerline = mock.MagicMock()
         self.dirname = tempfile.mkdtemp()
-        sh.cd(self.dirname)
-        sh.git("init", ".")
+        with sh.pushd(self.dirname):
+            sh.git("init", ".")
 
         self.segment = git_stash.Segment(self.powerline, {})
+
+        with ExitStack() as stack:
+            self._resource = stack.enter_context(sh.pushd(self.dirname))
+            self.addCleanup(stack.pop_all().close)
 
     def tearDown(self):
         shutil.rmtree(self.dirname)

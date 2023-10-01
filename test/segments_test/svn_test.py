@@ -16,8 +16,8 @@ class SvnTest(unittest.TestCase):
         })
 
         self.dirname = tempfile.mkdtemp()
-        sh.cd(self.dirname)
-        # sh.svn("init", ".")
+        with sh.pushd(self.dirname):
+            sh.svn("init", ".")
 
         self.segment = svn.Segment(self.powerline, {})
 

@@ -1,4 +1,6 @@
 import unittest
+from contextlib import ExitStack
+
 import mock
 import tempfile
 import shutil
@@ -24,11 +26,15 @@ class FossilTest(unittest.TestCase):
         })
 
         self.dirname = tempfile.mkdtemp()
-        sh.cd(self.dirname)
-        sh.fossil("init", "test.fossil")
-        sh.fossil("open", "test.fossil")
+        with sh.pushd(self.dirname):
+            sh.fossil("init", "test.fossil")
+            sh.fossil("open", "test.fossil")
 
         self.segment = fossil.Segment(self.powerline, {})
+
+        with ExitStack() as stack:
+            self._resource = stack.enter_context(sh.pushd(self.dirname))
+            self.addCleanup(stack.pop_all().close)
 
     def tearDown(self):
         shutil.rmtree(self.dirname)
@@ -72,4 +78,4 @@ class FossilTest(unittest.TestCase):
     def test_all(self, check_output):
         for stdout, result in test_cases.items():
             stats = fossil.parse_fossil_stats([stdout])
-            self.assertEquals(result, stats)
+            self.assertEqual(result, stats)

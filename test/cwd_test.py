@@ -3,6 +3,9 @@ import mock
 import os
 import tempfile
 import shutil
+
+import sh
+
 import powerline_shell as p
 
 
@@ -33,9 +36,9 @@ class CwdTest(unittest.TestCase):
     @mock.patch('powerline_shell.warn')
     def test_falls_back_to_getcwd(self, warn, getenv):
         getenv.return_value = None
-        os.chdir(self.dirname)
-        self.assertEqual(p.get_valid_cwd(), self.dirname)
-        self.assertEqual(warn.call_count, 0)
+        with sh.pushd(self.dirname):
+            self.assertEqual(p.get_valid_cwd(), self.dirname)
+            self.assertEqual(warn.call_count, 0)
 
     @mock.patch('os.getenv')
     @mock.patch('powerline_shell.warn')
@@ -44,10 +47,10 @@ class CwdTest(unittest.TestCase):
         getenv.return_value = None
 
         os.mkdir(subdir)
-        os.chdir(subdir)
-        os.rmdir(subdir)
+        with sh.pushd(subdir):
+            os.rmdir(subdir)
 
-        with self.assertRaises(SystemExit) as e:
-            p.get_valid_cwd()
+            with self.assertRaises(SystemExit) as e:
+                p.get_valid_cwd()
 
-        self.assertEqual(warn.call_count, 1)
+            self.assertEqual(warn.call_count, 1)
