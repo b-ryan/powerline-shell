@@ -1,5 +1,6 @@
 import unittest
 from contextlib import ExitStack
+from os import environ
 
 import mock
 import tempfile
@@ -19,6 +20,7 @@ test_cases = {
 
 class FossilTest(unittest.TestCase):
 
+    @mock.patch.dict(environ, {"USER": "root"})
     def setUp(self):
         self.powerline = mock.MagicMock()
         self.powerline.segment_conf.side_effect = dict_side_effect_fn({
@@ -61,12 +63,14 @@ class FossilTest(unittest.TestCase):
         self.segment.add_to_powerline()
         self.assertEqual(self.powerline.append.call_count, 0)
 
+    @mock.patch.dict(environ, {"USER": "root"})
     def test_standard(self):
         self._add_and_commit("foo")
         self.segment.start()
         self.segment.add_to_powerline()
         self.assertEqual(self.powerline.append.call_args[0][0], " trunk ")
 
+    @mock.patch.dict(environ, {"USER": "root"})
     def test_different_branch(self):
         self._add_and_commit("foo")
         self._checkout_new_branch("bar")
