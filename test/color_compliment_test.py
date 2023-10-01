@@ -7,7 +7,7 @@ from powerline_shell.color_compliment import getOppositeColor
 def build_inputs():
     
     # Build 768 hex/rgb values to test against getOppositeColor
-    input_bytes = map(hex, xrange(pow(2,8)))
+    input_bytes = list(map(hex, range(pow(2,8))))
 
     input_list = []
     for x in input_bytes:
