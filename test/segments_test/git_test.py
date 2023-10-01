@@ -20,6 +20,8 @@ class GitTest(unittest.TestCase):
         self.dirname = tempfile.mkdtemp()
         with sh.pushd(self.dirname):
             sh.git("init", ".")
+            sh.git("config", "user.name", "Test")
+            sh.git("config", "user.email", "example@example.com")
 
         self.segment = git.Segment(self.powerline, {})
 
