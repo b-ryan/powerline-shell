@@ -3,7 +3,7 @@ import unittest
 import shutil
 from contextlib import ExitStack
 
-import mock
+from unittest import mock
 import sh
 import powerline_shell.segments.svn as svn
 from ..testing_utils import dict_side_effect_fn

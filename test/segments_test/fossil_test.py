@@ -2,7 +2,7 @@ import unittest
 from contextlib import ExitStack
 from os import environ
 
-import mock
+from unittest import mock
 import tempfile
 import shutil
 import sh

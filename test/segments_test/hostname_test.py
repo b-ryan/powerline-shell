@@ -1,5 +1,5 @@
 import unittest
-import mock
+from unittest import mock
 import powerline_shell.segments.hostname as hostname
 from powerline_shell.themes.default import Color
 from argparse import Namespace

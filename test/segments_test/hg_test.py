@@ -1,7 +1,7 @@
 import unittest
 from contextlib import ExitStack
 
-import mock
+from unittest import mock
 import tempfile
 import shutil
 import sh
