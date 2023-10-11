@@ -1,5 +1,7 @@
 import unittest
-import mock
+from contextlib import ExitStack
+
+from unittest import mock
 import tempfile
 import shutil
 import sh
@@ -16,10 +18,17 @@ class GitTest(unittest.TestCase):
         })
 
         self.dirname = tempfile.mkdtemp()
-        sh.cd(self.dirname)
-        sh.git("init", ".")
+        with sh.pushd(self.dirname):
+            sh.git("init", ".")
+            sh.git("config", "user.name", "Test")
+            sh.git("config", "user.email", "example@example.com")
 
         self.segment = git.Segment(self.powerline, {})
+
+        with ExitStack() as stack:
+            self._resource = stack.enter_context(sh.pushd(self.dirname))
+            self.addCleanup(stack.pop_all().close)
+
 
     def tearDown(self):
         shutil.rmtree(self.dirname)
@@ -57,7 +66,7 @@ class GitTest(unittest.TestCase):
         self._add_and_commit("foo")
         self.segment.start()
         self.segment.add_to_powerline()
-        self.assertEqual(self.powerline.append.call_args[0][0], ' master ')
+        self.assertIn(self.powerline.append.call_args[0][0], [' master ', ' main '])
 
     def test_different_branch(self):
         self._add_and_commit("foo")

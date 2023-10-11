@@ -1,5 +1,7 @@
 import unittest
-import mock
+from contextlib import ExitStack
+
+from unittest import mock
 import tempfile
 import shutil
 import sh
@@ -28,13 +30,19 @@ class BzrTest(unittest.TestCase):
         })
 
         self.dirname = tempfile.mkdtemp()
-        sh.cd(self.dirname)
-        sh.bzr("init-repo", ".")
-        sh.mkdir("trunk")
-        sh.cd("trunk")
-        sh.bzr("init")
+        with sh.pushd(self.dirname):
+            sh.bzr("init-repo", ".")
+            sh.mkdir("trunk")
+
+        with sh.pushd(self.dirname + "/trunk"):
+            sh.bzr("init")
+            sh.bzr("whoami", "--branch", '"Example <example@example.com>"')
 
         self.segment = bzr.Segment(self.powerline, {})
+
+        with ExitStack() as stack:
+            self._resource = stack.enter_context(sh.pushd(self.dirname + "/trunk"))
+            self.addCleanup(stack.pop_all().close)
 
     def tearDown(self):
         shutil.rmtree(self.dirname)
@@ -45,9 +53,8 @@ class BzrTest(unittest.TestCase):
         sh.bzr("commit", "-m", "add file " + filename)
 
     def _checkout_new_branch(self, branch):
-        sh.cd("..")
-        sh.bzr("branch", "trunk", branch)
-        sh.cd(branch)
+        with sh.pushd(self.dirname):
+            sh.bzr("branch", "trunk", branch)
 
     @mock.patch("powerline_shell.utils.get_PATH")
     def test_bzr_not_installed(self, get_PATH):
@@ -71,12 +78,14 @@ class BzrTest(unittest.TestCase):
     def test_different_branch(self):
         self._add_and_commit("foo")
         self._checkout_new_branch("bar")
-        self.segment.start()
-        self.segment.add_to_powerline()
-        self.assertEqual(self.powerline.append.call_args[0][0], " bar ")
+        with sh.pushd(self.dirname + "/bar"):
+            self.segment.start()
+            self.segment.add_to_powerline()
+            self.assertEqual(self.powerline.append.call_args[0][0], " bar ")
 
     @mock.patch('powerline_shell.segments.bzr._get_bzr_status')
     def test_all(self, check_output):
         for stdout, result in test_cases:
-            stats = bzr.parse_bzr_stats(stdout)
-            self.assertEquals(result, stats)
+            with sh.pushd(self.dirname + "/trunk"):
+                stats = bzr.parse_bzr_stats(stdout)
+                self.assertEqual(result, stats)

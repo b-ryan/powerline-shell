@@ -1,5 +1,7 @@
 import unittest
-import mock
+from contextlib import ExitStack
+
+from unittest import mock
 import tempfile
 import shutil
 import sh
@@ -26,10 +28,14 @@ class HgTest(unittest.TestCase):
         })
 
         self.dirname = tempfile.mkdtemp()
-        sh.cd(self.dirname)
-        sh.hg("init", ".")
+        with sh.pushd(self.dirname):
+            sh.hg("init", ".")
 
         self.segment = hg.Segment(self.powerline, {})
+
+        with ExitStack() as stack:
+            self._resource = stack.enter_context(sh.pushd(self.dirname))
+            self.addCleanup(stack.pop_all().close)
 
     def tearDown(self):
         shutil.rmtree(self.dirname)
@@ -72,4 +78,4 @@ class HgTest(unittest.TestCase):
     def test_all(self, check_output):
         for stdout, result in test_cases.items():
             stats = hg.parse_hg_stats([stdout])
-            self.assertEquals(result, stats)
+            self.assertEqual(result, stats)

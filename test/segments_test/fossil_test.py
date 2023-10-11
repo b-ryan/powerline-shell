@@ -1,5 +1,8 @@
 import unittest
-import mock
+from contextlib import ExitStack
+from os import environ
+
+from unittest import mock
 import tempfile
 import shutil
 import sh
@@ -17,6 +20,7 @@ test_cases = {
 
 class FossilTest(unittest.TestCase):
 
+    @mock.patch.dict(environ, {"USER": "root"})
     def setUp(self):
         self.powerline = mock.MagicMock()
         self.powerline.segment_conf.side_effect = dict_side_effect_fn({
@@ -24,11 +28,15 @@ class FossilTest(unittest.TestCase):
         })
 
         self.dirname = tempfile.mkdtemp()
-        sh.cd(self.dirname)
-        sh.fossil("init", "test.fossil")
-        sh.fossil("open", "test.fossil")
+        with sh.pushd(self.dirname):
+            sh.fossil("init", "test.fossil")
+            sh.fossil("open", "test.fossil")
 
         self.segment = fossil.Segment(self.powerline, {})
+
+        with ExitStack() as stack:
+            self._resource = stack.enter_context(sh.pushd(self.dirname))
+            self.addCleanup(stack.pop_all().close)
 
     def tearDown(self):
         shutil.rmtree(self.dirname)
@@ -55,12 +63,14 @@ class FossilTest(unittest.TestCase):
         self.segment.add_to_powerline()
         self.assertEqual(self.powerline.append.call_count, 0)
 
+    @mock.patch.dict(environ, {"USER": "root"})
     def test_standard(self):
         self._add_and_commit("foo")
         self.segment.start()
         self.segment.add_to_powerline()
         self.assertEqual(self.powerline.append.call_args[0][0], " trunk ")
 
+    @mock.patch.dict(environ, {"USER": "root"})
     def test_different_branch(self):
         self._add_and_commit("foo")
         self._checkout_new_branch("bar")
@@ -72,4 +82,4 @@ class FossilTest(unittest.TestCase):
     def test_all(self, check_output):
         for stdout, result in test_cases.items():
             stats = fossil.parse_fossil_stats([stdout])
-            self.assertEquals(result, stats)
+            self.assertEqual(result, stats)
