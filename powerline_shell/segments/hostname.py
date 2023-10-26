@@ -1,3 +1,4 @@
+import os
 from ..utils import BasicSegment
 from ..color_compliment import stringToHashToColorAndOpposite
 from ..colortrans import rgb2short
@@ -7,6 +8,9 @@ from socket import gethostname
 class Segment(BasicSegment):
     def add_to_powerline(self):
         powerline = self.powerline
+        if powerline.segment_conf("hostname", "only_on_ssh"):
+            if not os.getenv('SSH_CLIENT'):
+                return
         if powerline.segment_conf("hostname", "colorize"):
             hostname = gethostname()
             FG, BG = stringToHashToColorAndOpposite(hostname)
