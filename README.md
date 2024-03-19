@@ -102,7 +102,7 @@ python setup.py install
 
 Add the following to your `.bashrc` file:
 
-```
+```bash
 function _update_ps1() {
     PS1=$(powerline-shell $?)
 }
@@ -121,7 +121,7 @@ order of precedence, see the section **INVOCATION** in `man bash`.
 
 Add the following to your `.zshrc`:
 
-```
+```zsh
 function powerline_precmd() {
     PS1="$(powerline-shell --shell zsh $?)"
 }
@@ -144,7 +144,7 @@ fi
 
 Redefine `fish_prompt` in ~/.config/fish/config.fish:
 
-```
+```fish
 function fish_prompt
     powerline-shell --shell bare $status
 end
@@ -154,7 +154,7 @@ end
 
 Add the following to your `.tcshrc`:
 
-```
+```tcsh
 alias precmd 'set prompt="`powerline-shell --shell tcsh $?`"'
 ```
 
@@ -213,7 +213,7 @@ and the output of the command will be put into your prompt. `env` takes an
 environment variable and the value of the variable will be set in your prompt.
 For example, your config could look like this:
 
-```
+```json
 {
   "segments": [
     "cwd",
