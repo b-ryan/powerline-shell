@@ -15,7 +15,7 @@ def _current_dir():
     in their shell (ie. without following symbolic links).
 
     With the introduction of Bash for Windows, we can't use the PWD environment
-    variable very easily. `os.sep` for windows is `\` but the PWD variable will
+    variable very easily. `os.sep` for windows is `\\` but the PWD variable will
     use `/`. So just always use the `os` functions for dealing with paths. This
     also is fine because the use of PWD below is done to avoid following
     symlinks, which Windows doesn't have.
