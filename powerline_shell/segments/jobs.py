@@ -1,5 +1,4 @@
 import os
-import re
 import subprocess
 import platform
 from ..utils import ThreadedSegment
@@ -25,7 +24,9 @@ class Segment(ThreadedSegment):
             # on in this comment.
             output_proc = subprocess.Popen(["ps", "-a", "-o", "ppid"], stdout=subprocess.PIPE)
             output = output_proc.communicate()[0].decode("utf-8")
-            self.num_jobs = len(re.findall(str(os.getppid()), output)) - 1
+            parent_pid = str(os.getppid())
+            self.num_jobs = sum(line.strip() == parent_pid
+                                for line in output.splitlines()) - 1
 
     def add_to_powerline(self):
         self.join()
